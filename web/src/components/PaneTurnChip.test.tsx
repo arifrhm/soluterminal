@@ -23,4 +23,20 @@ describe('PaneTurnChip', () => {
     rerender(<PaneTurnChip pane={{ ...pane, turn: { ...pane.turn!, active: true, startedMs: now } }} unseen={false} />);
     expect(container.textContent).toBe('');
   });
+
+  it('formats singular and plural file counts correctly in accessible aria-label', () => {
+    const singleFilePane = {
+      ...pane,
+      turn: { ...pane.turn!, last: { ...pane.turn!.last!, files: 1 } },
+    } as PaneInfo;
+    const { rerender } = render(<PaneTurnChip pane={singleFilePane} unseen={false} />);
+    expect(screen.getByRole('button', { name: 'last turn changed 1 file. Review changes' })).toBeDefined();
+
+    const multiFilePane = {
+      ...pane,
+      turn: { ...pane.turn!, last: { ...pane.turn!.last!, files: 3 } },
+    } as PaneInfo;
+    rerender(<PaneTurnChip pane={multiFilePane} unseen={false} />);
+    expect(screen.getByRole('button', { name: 'last turn changed 3 files. Review changes' })).toBeDefined();
+  });
 });

@@ -40,7 +40,7 @@ export function PaneTurnChip({ pane, unseen }: { pane: PaneInfo; unseen: boolean
         <button
           type="button"
           className={cls}
-          aria-label={`${unseen ? 'New: ' : ''}last turn changed ${t.files} files. Review changes`}
+          aria-label={`${unseen ? 'New: ' : ''}last turn changed ${t.files} file${t.files === 1 ? '' : 's'}. Review changes`}
           onClick={(e) => {
             e.stopPropagation();
             openTurnDiff(pane.id, t.n);
