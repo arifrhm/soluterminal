@@ -1,0 +1,9 @@
+{
+  "scenario": "account-pool-disabled",
+  "policy": "ask",
+  "outcome": "no_rotation",
+  "cursor": 0,
+  "accountRotated": {
+    "allowed": false
+  }
+}

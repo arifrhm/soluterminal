@@ -1,0 +1,101 @@
+# CI for the public SoluTerminal repository. GitHub-hosted runners only, no
+# secrets, read-only token; pull requests run the same checks as pushes.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+      - run: npm ci --no-audit --no-fund
+        working-directory: web
+      - run: npx tsc -b
+        working-directory: web
+      - run: npx vite build
+        working-directory: web
+      - run: npx vitest run
+        working-directory: web
+
+  daemon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GOFLAGS: -buildvcs=false
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: daemon/go.mod
+      - name: Placeholder web bundle (the daemon embeds web/dist; built in the web job)
+        working-directory: daemon
+        run: mkdir -p webdist && echo '<!doctype html>' > webdist/index.html
+      - run: go vet ./...
+        working-directory: daemon
+      - run: GOOS=windows go vet ./...
+        working-directory: daemon
+      - run: GOOS=darwin go build -o /dev/null .
+        working-directory: daemon
+      - run: go build ./...
+        working-directory: daemon
+      - run: go test -short -count=1 -timeout 40m ./...
+        working-directory: daemon
+
+  shared:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: shared/go.mod
+      - run: go vet ./... && go test -count=1 ./...
+        working-directory: shared
+
+  desktop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Tauri system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev \
+            build-essential file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Placeholder bundle inputs (sidecars are built by the release, not here)
+        working-directory: desktop/src-tauri
+        run: |
+          triple="$(rustc -vV | sed -n 's/^host: //p')"
+          mkdir -p binaries resources
+          : >"binaries/solud-${triple}"
+          chmod +x "binaries/solud-${triple}"
+          : >resources/solud-linux-amd64.gz
+          : >resources/solud-linux-arm64.gz
+      - run: cargo check --locked
+        working-directory: desktop/src-tauri
+      - run: cargo test --locked --lib
+        working-directory: desktop/src-tauri

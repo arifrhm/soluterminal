@@ -1,0 +1,10 @@
+{
+  "scenario": "account-pool-allowed",
+  "policy": "auto_compatible",
+  "outcome": "rotate:B",
+  "cursor": 0,
+  "accountRotated": {
+    "allowed": true,
+    "account": "B"
+  }
+}

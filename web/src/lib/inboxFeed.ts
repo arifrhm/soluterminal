@@ -1,0 +1,116 @@
+import type { Schedule, WardenRun } from '../types';
+import type { AgentReport, FeedbackEvent } from '../api';
+import { reportsFeed, type ReportFeedItem } from './reportsFeed';
+import { isWardenRunRead, wardenRunId } from './wardenRead';
+
+// The inbox: ONE chronological surface for everything addressed to the human.
+// Sources today: scheduled-task reports (reportsFeed), feedback-pipeline
+// events (needs-info / fixed, from the reporter loop), managed-agent decisions, and Warden briefs
+// (fleet caretaker debrief/triage/brief). Hard inclusion rule: only things a
+// person is meant to READ — routine agent telemetry stays out, while an
+// agent's explicit Needs-you report is a decision and belongs here;
+// the ◇ Agents cockpit owns health.
+//
+// Each source keeps its OWN read state (schedules: daemon-synced lastReadAt;
+// feedback: cloud-side read_at; warden: a client-side ledger since a run
+// carries no server read state — see wardenRead) — the inbox is a view, not a
+// store.
+
+export interface InboxItem {
+  key: string;
+  source: 'report' | 'feedback' | 'warden' | 'agentreport';
+  /** Who this is from — the schedule's name, "Feedback", or "Warden". */
+  sender: string;
+  at: string;
+  title: string;
+  preview: string;
+  unread: boolean;
+  needsYou: boolean;
+  /** source=report: the underlying feed item (open the reader). */
+  report?: ReportFeedItem;
+  /** source=feedback: the underlying event (open My reports + mark read). */
+  feedback?: FeedbackEvent;
+  /** source=warden: the run (open its brief via api.wardenRunLog). */
+  warden?: WardenRun;
+  /** source=agentreport: the durable operator-decision report. */
+  agentReport?: AgentReport;
+}
+
+export function agentReportToInbox(report: AgentReport): InboxItem {
+  return {
+    key: `agentreport:${report.agentId}:${report.runId}`,
+    source: 'agentreport',
+    sender: report.agentName,
+    at: report.at,
+    title: report.title,
+    preview: report.preview ?? '',
+    // GET /api/agents/reports is a pending-only feed. Treat every row as unread;
+    // this also keeps older daemons' serialized zero time from making a pending
+    // decision look acknowledged in JavaScript.
+    unread: true,
+    needsYou: true,
+    agentReport: report,
+  };
+}
+
+const WARDEN_KIND_LABEL: Record<string, string> = {
+  brief: 'Fleet brief',
+  debrief: 'Debrief',
+  triage: 'Triage',
+};
+
+export function wardenToInbox(run: WardenRun): InboxItem {
+  const paneSuffix = run.paneTitle ? ` — ${run.paneTitle}` : '';
+  return {
+    key: `warden:${wardenRunId(run)}`,
+    source: 'warden',
+    sender: 'Warden',
+    at: run.at,
+    title: (WARDEN_KIND_LABEL[run.kind] ?? 'Warden') + paneSuffix,
+    preview: run.summary ?? run.detail ?? '',
+    unread: !isWardenRunRead(run),
+    // Only a triage is a demand on the user; briefs/debriefs are informational.
+    needsYou: run.kind === 'triage',
+    warden: run,
+  };
+}
+
+export function feedbackToInbox(ev: FeedbackEvent): InboxItem {
+  return {
+    key: `fb:${ev.number}:${ev.event}`,
+    source: 'feedback',
+    sender: 'Feedback',
+    at: ev.at,
+    title: ev.title,
+    preview: ev.message,
+    unread: !ev.readAt,
+    // "fixed" is good news, not a demand; only an open ask needs the user.
+    needsYou: ev.event === 'needs-info',
+    feedback: ev,
+  };
+}
+
+export function inboxFeed(
+  schedules: Schedule[],
+  feedback: FeedbackEvent[],
+  warden: WardenRun[] = [],
+  agentReports: AgentReport[] = [],
+  cap = 50,
+): InboxItem[] {
+  const items: InboxItem[] = reportsFeed(schedules, cap).map((r) => ({
+    key: `${r.schedule.id}:${r.run.at}`,
+    source: 'report' as const,
+    sender: r.schedule.name,
+    at: r.run.at,
+    title: r.schedule.name,
+    preview: '', // rows render runPreview(r.run) lazily; kept empty to avoid double work
+    unread: r.unread,
+    needsYou: r.needsYou,
+    report: r,
+  }));
+  for (const ev of feedback) items.push(feedbackToInbox(ev));
+  for (const run of warden) items.push(wardenToInbox(run));
+  for (const report of agentReports) items.push(agentReportToInbox(report));
+  items.sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+  return items.slice(0, cap);
+}

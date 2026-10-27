@@ -1,0 +1,87 @@
+/* Syntax-highlight token colors for the FileTile viewer. Scoped under
+   .file-line-content so they only apply inside the file body. One Dark-ish
+   palette, tuned for the dark terminal background. */
+.file-line-content .hl-str { color: var(--syn-str); }
+.file-line-content .hl-num { color: var(--syn-num); }
+.file-line-content .hl-comment { color: var(--fg-dim); font-style: italic; }
+.file-line-content .hl-key { color: var(--syn-key); }
+.file-line-content .hl-kw { color: var(--syn-kw); }
+.file-line-content .hl-bool { color: var(--syn-bool); }
+
+/* ---- Theme B: viewer polish (wrap, search, touch actions) ----
+   These override the base .file-line rules in styles.css. Kept here so the
+   file viewer owns its own polish and we don't touch the shared stylesheet. */
+
+/* Line wrap (default): long lines wrap instead of dead-ending in an ellipsis.
+   The line number + actions align to the first visual row. */
+.file-lines.wrap .file-line { white-space: normal; align-items: flex-start; }
+.file-lines.wrap .file-line-content { overflow: visible; text-overflow: clip; white-space: pre-wrap; word-break: break-word; }
+.file-lines.wrap .file-line-content code { white-space: pre-wrap; word-break: break-word; }
+.file-lines.wrap .file-lineno { padding-top: 1px; }
+.file-lines.wrap .file-line-actions { align-self: flex-start; }
+
+/* No-wrap mode: let the body scroll horizontally so truncated content stays
+   reachable (instead of being clipped with no way to see the rest). */
+.file-lines.nowrap { width: max-content; min-width: 100%; }
+.file-lines.nowrap .file-line-content { overflow: visible; text-overflow: clip; }
+
+/* Search match highlighting. The current match gets a stronger background
+   plus a left rule so it stands out while stepping through hits. */
+.file-line.search-match { background: color-mix(in srgb, var(--syn-type) 13%, transparent); }
+.file-line.search-current { background: color-mix(in srgb, var(--syn-type) 30%, transparent); box-shadow: inset 2px 0 0 var(--accent); }
+
+/* Find bar — sits between the toolbar and the body. */
+.file-search {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+/* Toggle on-state for the find / wrap toolbar buttons. */
+.file-toolbar .iconbtn.active { color: var(--accent); border-color: var(--accent-2); background: var(--bg-3); }
+
+.file-search-icon { font-size: 11px; opacity: 0.7; }
+.file-search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 2px 6px;
+  font-family: 'SF Mono','Menlo',monospace;
+  font-size: 12px;
+  background: var(--bg-3);
+  color: var(--fg);
+  border: 1px solid var(--accent-2);
+  border-radius: 3px;
+  outline: none;
+}
+.file-search-count {
+  font-size: 10px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Touch devices have no hover, so the per-line reveal/copy/edit buttons were
+   unreachable. Show them by default and enlarge the tap targets there. */
+@media (hover: none) {
+  .file-line-actions { display: inline-flex !important; }
+  .file-line-actions .iconbtn { padding: 3px 8px; font-size: 13px; }
+  .file-search .iconbtn { padding: 3px 8px; font-size: 13px; }
+}
+
+/* "Not easy to read": the file tile is a code-reading surface, not chrome. */
+.file-pane .file-lines {
+  font-size: 13px;
+  line-height: 1.6;
+}
+/* Keep the gutter legible without competing with the source text. */
+.file-pane .file-lineno {
+  font-size: 11px;
+  opacity: 0.7;
+}
+.file-pane .file-body {
+  padding: 6px 0;
+}

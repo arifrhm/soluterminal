@@ -1,0 +1,196 @@
+package main
+
+import (
+	"context"
+	"encoding/base64"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+)
+
+func fakeEntitlementsCloud(t *testing.T, teamBearers map[string]bool, status int) *httptest.Server {
+	t.Helper()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/entitlements" {
+			http.NotFound(w, r)
+			return
+		}
+		if status != http.StatusOK {
+			w.WriteHeader(status)
+			return
+		}
+		bearer := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
+		if teamBearers[bearer] {
+			_, _ = w.Write([]byte(`{"team":true}`))
+		} else {
+			_, _ = w.Write([]byte(`{"team":false}`))
+		}
+	}))
+	t.Cleanup(srv.Close)
+	return srv
+}
+
+func TestEntitlementsVerdictOrder(t *testing.T) {
+	t.Setenv("SOLU_TEAM_FEATURES", "")
+	dir := t.TempDir()
+	legacy := false
+	e := newTeamEntitlements(dir, nil, func() bool { return legacy })
+	if team, src := e.verdict(); team || src != "none" {
+		t.Fatalf("fresh install = %t/%s, want off", team, src)
+	}
+
+	legacyDir := t.TempDir()
+	legacy = true
+	e = newTeamEntitlements(legacyDir, nil, func() bool { return legacy })
+	if team, src := e.verdict(); !team || src != "existing-install" {
+		t.Fatalf("existing install = %t/%s, want on", team, src)
+	}
+
+	t.Setenv("SOLU_TEAM_FEATURES", "0")
+	if team, src := e.verdict(); team || src != "env" {
+		t.Fatalf("env off = %t/%s", team, src)
+	}
+	t.Setenv("SOLU_TEAM_FEATURES", "1")
+	fresh := newTeamEntitlements(t.TempDir(), nil, nil)
+	if team, _ := fresh.verdict(); !team {
+		t.Fatal("env on must enable a fresh install")
+	}
+}
+
+func TestEntitlementsMachineVerdictPersistsAndOverridesLegacy(t *testing.T) {
+	t.Setenv("SOLU_TEAM_FEATURES", "")
+	cloud := fakeEntitlementsCloud(t, map[string]bool{"team-machine": true}, http.StatusOK)
+	dir := t.TempDir()
+	creds := func() (string, string) { return cloud.URL, "stranger-machine" }
+	e := newTeamEntitlements(dir, creds, func() bool { return true })
+	e.refresh(context.Background(), "")
+	if team, src := e.verdict(); team || src != "machine" {
+		t.Fatalf("cloud said stranger: got %t/%s", team, src)
+	}
+
+	creds = func() (string, string) { return cloud.URL, "team-machine" }
+	e = newTeamEntitlements(dir, creds, nil)
+	if team, _ := e.verdict(); team {
+		t.Fatal("persisted stranger verdict must load on restart")
+	}
+	e.refresh(context.Background(), "")
+	reloaded := newTeamEntitlements(dir, nil, nil)
+	if team, src := reloaded.verdict(); !team || src != "machine" {
+		t.Fatalf("persisted team verdict = %t/%s", team, src)
+	}
+	info, err := os.Stat(filepath.Join(dir, entitlementsFile))
+	if err != nil || info.Mode().Perm() != 0o600 {
+		t.Fatalf("entitlements file mode = %v, err %v", info, err)
+	}
+}
+
+func TestEntitlementsOldCloudKeepsVerdict(t *testing.T) {
+	t.Setenv("SOLU_TEAM_FEATURES", "")
+	cloud := fakeEntitlementsCloud(t, nil, http.StatusNotFound)
+	e := newTeamEntitlements(t.TempDir(), func() (string, string) { return cloud.URL, "tok" }, func() bool { return true })
+	e.refresh(context.Background(), "")
+	if team, src := e.verdict(); !team || src != "existing-install" {
+		t.Fatalf("404 from an older cloud must not change the verdict: %t/%s", team, src)
+	}
+}
+
+func testJWT(sub string) string {
+	payload := base64.RawURLEncoding.EncodeToString([]byte(`{"sub":"` + sub + `"}`))
+	return "eyJhbGciOiJIUzI1NiJ9." + payload + ".sig"
+}
+
+func TestEntitlementsAccountTokenWhenUnpaired(t *testing.T) {
+	t.Setenv("SOLU_TEAM_FEATURES", "")
+	member := testJWT("member")
+	cloud := fakeEntitlementsCloud(t, map[string]bool{member: true}, http.StatusOK)
+	t.Setenv("SOLU_CLOUD_URL", cloud.URL)
+	a := &apiServer{}
+	a.entitlements = newTeamEntitlements(t.TempDir(), a.cloudCreds, nil)
+
+	gate := a.teamFeatureGate(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	rec := httptest.NewRecorder()
+	gate.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/claude/accounts", nil))
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("stranger install: status %d, want 403", rec.Code)
+	}
+	rec = httptest.NewRecorder()
+	gate.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/panes", nil))
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("ungated route: status %d", rec.Code)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/entitlements", nil)
+	req.Header.Set(entitlementsAccountHdr, member)
+	rec = httptest.NewRecorder()
+	a.handleEntitlements(rec, req)
+	if !strings.Contains(rec.Body.String(), `"team":true`) {
+		t.Fatalf("member token: body %s", rec.Body.String())
+	}
+	rec = httptest.NewRecorder()
+	gate.ServeHTTP(rec, httptest.NewRequest(http.MethodPost, "/api/claude/accounts/x/activate", nil))
+	if rec.Code != http.StatusNoContent {
+		t.Fatalf("team install: status %d, want pass-through", rec.Code)
+	}
+	if !a.entitlements.stale("someone-else") {
+		t.Fatal("a different signed-in account must trigger a re-check")
+	}
+}
+
+func TestTeamOnlyPath(t *testing.T) {
+	// "team" gates saved-account switching; "operator" gates the credential
+	// pool, which stays off any customer plan.
+	for path, want := range map[string]string{
+		"/api/claude/accounts":            "team",
+		"/api/claude/accounts/a/activate": "team",
+		"/api/codex/autoswitch/history":   "team",
+		"/api/claude/team/rules":          "operator",
+		"/api/team/broker/activity":       "operator",
+		"/api/muse/team":                  "operator",
+		"/api/claude/accountsx":           "",
+		"/api/codex/live-auth":            "",
+		"/api/key-providers/anthropic":    "",
+	} {
+		got := ""
+		switch {
+		case teamOnlyPath(path) && operatorOnlyPath(path):
+			got = "both"
+		case teamOnlyPath(path):
+			got = "team"
+		case operatorOnlyPath(path):
+			got = "operator"
+		}
+		if got != want {
+			t.Errorf("gate(%q) = %q, want %q", path, got, want)
+		}
+	}
+}
+
+func TestJevCloudEntitledFromCache(t *testing.T) {
+	t.Setenv("SOLU_TEAM_FEATURES", "")
+	prev := jevEntitlementsRef.Load()
+	t.Cleanup(func() { jevEntitlementsRef.Store(prev) })
+
+	jevEntitlementsRef.Store(nil)
+	if allowed, known := jevCloudEntitledFromCache(); allowed || known {
+		t.Fatalf("no cache: allowed=%t known=%t, want unknown", allowed, known)
+	}
+	e := newTeamEntitlements(t.TempDir(), nil, nil)
+	jevEntitlementsRef.Store(e)
+	if _, known := jevCloudEntitledFromCache(); known {
+		t.Fatal("no cloud verdict yet must be unknown")
+	}
+	e.store(entitlementRecord{Tier: tierAccount, SmartApprovals: true, Source: "machine", CheckedAt: time.Now()})
+	if allowed, known := jevCloudEntitledFromCache(); !allowed || !known {
+		t.Fatalf("account with smart approvals: allowed=%t known=%t", allowed, known)
+	}
+	e.store(entitlementRecord{Tier: tierAccount, SmartApprovals: false, Source: "machine", CheckedAt: time.Now()})
+	if allowed, known := jevCloudEntitledFromCache(); allowed || !known {
+		t.Fatalf("account without smart approvals: allowed=%t known=%t", allowed, known)
+	}
+}

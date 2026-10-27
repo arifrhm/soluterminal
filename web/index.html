@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- interactive-widget=resizes-visual is the modern default, but pin it
+         explicitly: the mobile keyboard strategy (useKeyboardInsetShift
+         translates the pane, no box resize) DEPENDS on the soft keyboard
+         OVERLAYING the layout viewport rather than shrinking it. If a browser
+         defaulted to resizes-content, the layout would shrink -> pane
+         ResizeObserver -> SIGWINCH/flash. Pinning removes that dependency. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-visual" />
+    <meta name="theme-color" content="#0b0d10" />
+    <!-- Theme key and values must stay in sync with store.ts. -->
+    <script>
+      (function () {
+        var t;
+        try { t = localStorage.getItem('solu.appTheme'); } catch (e) {}
+        // First launch (no appearance stored): a brand-new install follows the
+        // OS; an existing install keeps Dark. Persisted so the store agrees.
+        // Same rule as src/appThemeDefault.ts.
+        if (t !== 'dark' && t !== 'light' && t !== 'system') {
+          var fresh = true;
+          try {
+            for (var i = 0; i < localStorage.length; i++) {
+              var k = localStorage.key(i);
+              if (k && k.indexOf('solu.') === 0 && k !== 'solu.appTheme') { fresh = false; break; }
+            }
+          } catch (e) { fresh = false; }
+          t = fresh ? 'system' : 'dark';
+          if (window.self === window.top) {
+            try { localStorage.setItem('solu.appTheme', t); } catch (e) {}
+          }
+        }
+        try {
+          if (window.self !== window.top) {
+            var q = new URLSearchParams(location.search);
+            var saved = false;
+            try { saved = sessionStorage.getItem('solu.embed') === 'shinoque'; } catch (e) {}
+            var requested = q.get('embed') === 'shinoque' || saved;
+            var parent = location.ancestorOrigins && location.ancestorOrigins[0] || document.referrer;
+            if (requested && parent) try {
+              var p = new URL(parent);
+              if ((p.protocol === 'http:' || p.protocol === 'https:') &&
+                  ['127.0.0.1', 'localhost', '[::1]'].includes(p.hostname)) {
+                var hostTheme = q.get('theme');
+                if (hostTheme === 'light' || hostTheme === 'dark') t = hostTheme;
+              }
+            } catch (e) {}
+          }
+        } catch (e) {}
+        try {
+          var light = t === 'light' || (t === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
+          if (light) {
+            document.documentElement.setAttribute('data-theme', 'light');
+            var m = document.querySelector('meta[name="theme-color"]');
+            if (m) m.setAttribute('content', '#f5f7fa');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <title>SoluTerminal</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png" />
+
+    <!-- "Add to Home Screen" / PWA install support. The mobile-web-app-capable
+         meta is the cross-browser name; the apple-prefixed version is still
+         required by iOS Safari. Chrome will warn if only the apple one is
+         present, hence we include both. -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SoluTerminal" />
+
+    <!-- Prevent iOS zoom on input focus -->
+    <meta name="format-detection" content="telephone=no" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

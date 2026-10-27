@@ -1,0 +1,114 @@
+"$schema" = "../gen/schemas/desktop-schema.json"
+
+[default]
+description = "Default permissions for soluterminal-desktop custom commands."
+permissions = [
+    "allow-open-external-window",
+    "allow-open-workspace-window",
+    "allow-desktop-set-backend-mode",
+    "allow-desktop-set-up-wsl",
+    "allow-desktop-set-launch-mode",
+    "allow-desktop-get-autostart",
+    "allow-desktop-set-autostart",
+    "allow-apply-shell-update",
+    "allow-apply-shell-update-silent",
+    "allow-exit-for-update",
+    "allow-reveal-shell-installer",
+    "allow-global-hotkey-owned",
+    "allow-browser-pane-ping",
+    "allow-browser-pane-create",
+    "allow-browser-pane-set-bounds",
+    "allow-browser-pane-navigate",
+    "allow-browser-pane-close",
+    "allow-browser-pane-set-visible",
+]
+
+[[permission]]
+identifier = "allow-desktop-set-backend-mode"
+description = "Allow the main UI to set the Windows backend mode and restart the desktop shell."
+commands.allow = ["desktop_set_backend_mode"]
+
+[[permission]]
+identifier = "allow-desktop-set-up-wsl"
+description = "Allow the main UI to start the guided Linux (WSL) setup and restart the desktop shell into it."
+commands.allow = ["desktop_set_up_wsl"]
+
+[[permission]]
+identifier = "allow-desktop-set-launch-mode"
+description = "Allow the main UI to switch between Local daemon and Cloud account hosting and restart the shell."
+commands.allow = ["desktop_set_launch_mode"]
+
+[[permission]]
+identifier = "allow-desktop-get-autostart"
+description = "Allow the main UI to read the desktop shell's launch-on-startup setting."
+commands.allow = ["desktop_get_autostart"]
+
+[[permission]]
+identifier = "allow-desktop-set-autostart"
+description = "Allow the main UI to change the desktop shell's launch-on-startup setting."
+commands.allow = ["desktop_set_autostart"]
+
+[[permission]]
+identifier = "allow-apply-shell-update"
+description = "Allow the main UI to download, verify, and launch the latest shell installer (cloud-mode self-update)."
+commands.allow = ["apply_shell_update"]
+
+[[permission]]
+identifier = "allow-apply-shell-update-silent"
+description = "Allow the app UI to stage a verified silent shell update courier."
+commands.allow = ["apply_shell_update_silent"]
+
+[[permission]]
+identifier = "allow-exit-for-update"
+description = "Allow the app UI to flush geometry and exit after the update courier starts."
+commands.allow = ["exit_for_update"]
+
+[[permission]]
+identifier = "allow-reveal-shell-installer"
+description = "Allow the main UI to reveal the verified shell installer in Explorer."
+commands.allow = ["reveal_shell_installer"]
+
+[[permission]]
+identifier = "allow-global-hotkey-owned"
+description = "Allow the main UI to probe whether another app owns a global hotkey combo (RegisterHotKey 1409 probe)."
+commands.allow = ["global_hotkey_owned"]
+
+[[permission]]
+identifier = "allow-browser-pane-ping"
+description = "Sentinel ping: returns the Tauri shell version so JS can verify which MSI is running."
+commands.allow = ["browser_pane_ping"]
+
+[[permission]]
+identifier = "allow-open-external-window"
+description = "Allow JS to spawn a Tauri WebviewWindow for an arbitrary URL (pop-out browser)."
+commands.allow = ["open_external_window"]
+
+[[permission]]
+identifier = "allow-open-workspace-window"
+description = "Allow JS to spawn a second full-app workspace window (multi-monitor)."
+commands.allow = ["open_workspace_window"]
+
+[[permission]]
+identifier = "allow-browser-pane-create"
+description = "Allow JS to create an in-pane native browser webview."
+commands.allow = ["browser_pane_create"]
+
+[[permission]]
+identifier = "allow-browser-pane-set-bounds"
+description = "Allow JS to reposition/resize an in-pane browser webview."
+commands.allow = ["browser_pane_set_bounds"]
+
+[[permission]]
+identifier = "allow-browser-pane-navigate"
+description = "Allow JS to navigate an in-pane browser webview to a new URL."
+commands.allow = ["browser_pane_navigate"]
+
+[[permission]]
+identifier = "allow-browser-pane-close"
+description = "Allow JS to destroy an in-pane browser webview."
+commands.allow = ["browser_pane_close"]
+
+[[permission]]
+identifier = "allow-browser-pane-set-visible"
+description = "Allow JS to show/hide an in-pane browser webview."
+commands.allow = ["browser_pane_set_visible"]

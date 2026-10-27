@@ -1,0 +1,91 @@
+{
+  "profile": "latest_gpt_jev",
+  "objective": "Honor explicit latest GPT and Jev task routing with qualified role fit, real readiness and bounded recovery while preserving all authority and frozen-route constraints.",
+  "policyCriteria": [
+    "Explicit supported latest-only task admission freezes qualified current GPT/Jev routes for owner, specialists, supervision and verification without global settings writes.",
+    "Availability and fallback claims reflect real scoped evidence, role floors, effort/capabilities and existing cost/permission constraints.",
+    "Legacy callers and retained task models, approval/grants/consent and consumed budgets remain intact through restart/recovery.",
+    "Real API, web and browser acceptance cases verify fresh/latest/unavailable/unknown models and actionable owner/leader outcomes.",
+    "Normal verification, independent review and applicable engine approval/landing reach an observable truthful done-state.",
+    "Generated global and repository instructions permit explicitly user-authorized settings assistance; bounded interactive preview/apply actions preserve authority and reject scoped/scheduled callers, stale/expired previews and unsupported changes."
+  ],
+  "cases": [
+    {
+      "id": "current",
+      "sol": "gpt-6.1-sol",
+      "astra": "gpt-6-astra"
+    },
+    {
+      "id": "new-sol",
+      "hypothetical": true,
+      "declarations": [
+        {
+          "runtime": "codex-headless",
+          "model": "gpt-6.2-sol",
+          "tier": "premium",
+          "nativeEfforts": [
+            "low",
+            "high"
+          ]
+        }
+      ],
+      "sol": "gpt-6.2-sol",
+      "astra": "gpt-6-astra"
+    },
+    {
+      "id": "new-astra",
+      "hypothetical": true,
+      "declarations": [
+        {
+          "runtime": "codex-headless",
+          "model": "gpt-7-astra",
+          "tier": "frontier",
+          "nativeEfforts": [
+            "low",
+            "high"
+          ]
+        }
+      ],
+      "sol": "gpt-6.1-sol",
+      "astra": "gpt-7-astra"
+    },
+    {
+      "id": "incompatible-effort",
+      "hypothetical": true,
+      "declarations": [
+        {
+          "runtime": "codex-headless",
+          "model": "gpt-6.2-sol",
+          "tier": "premium",
+          "nativeEfforts": [
+            "low"
+          ]
+        }
+      ],
+      "error": true
+    },
+    {
+      "id": "missing-facts",
+      "hypothetical": true,
+      "declarations": [
+        {
+          "runtime": "codex-headless",
+          "model": "gpt-6.2-sol"
+        }
+      ],
+      "error": true
+    },
+    {
+      "id": "frontier-floor",
+      "floors": {
+        "executor": "frontier"
+      },
+      "sol": "gpt-6.1-sol",
+      "astra": "gpt-6-astra",
+      "executor": [
+        "gpt-6-astra"
+      ]
+    }
+  ],
+  "evidence": "Catalog declarations are structural facts; no case asserts provider entitlement, consent or paid access. Hypothetical declarations are test-only, not available product claims."
+}

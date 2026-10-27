@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "criteriaVersion": "sha256:1cb42afa32a60c32e7fcd1aedc17f69ba3528f55ebc2aa57981b26bb77ece17e",
+  "source": {
+    "taskId": "wft_ea3fefaf",
+    "promptDigest": "sha256:70319ef00157d11c3a87b9c7bd662742a74a219c25adaef4424c97f532cc1482",
+    "specArtifactId": "art_settings_ia"
+  },
+  "flows": [
+    {
+      "id": "settings-category-appearance",
+      "title": "Appearance category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Appearance."],
+      "expected": ["Theme and Text size sections render with their controls."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-workspace",
+      "title": "Panes and sidebar category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Panes & sidebar."],
+      "expected": ["Panes and Sidebar sections render with their controls."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-sessions",
+      "title": "Claude sessions category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Claude sessions."],
+      "expected": ["Session behaviour renders recovery, prompt, and Focus controls."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-workflows",
+      "title": "Workflows and models category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Workflows & models."],
+      "expected": ["Models & fallbacks, Notifications & delivery, Engine automation, and Budgets & resources render."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-agents",
+      "title": "Agents category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Agents."],
+      "expected": ["Warden and Aria agent sections render with their controls."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-credentials",
+      "title": "Credentials category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Credentials."],
+      "expected": ["Provider accounts, Runtime API keys, Auto-switch, Team pool health, and Screen-share safety render."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-team",
+      "title": "Team pool category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Team pool."],
+      "expected": ["The team membership and shared credential pool surface renders."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-category-devices",
+      "title": "Devices and updates category renders its complete settings surface",
+      "steps": ["1. Open Settings and select Devices & updates."],
+      "expected": ["Pairing & desktop, Updates, and Diagnostics sections render."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-section-deep-link",
+      "title": "An exact section deep link opens and focuses the requested section",
+      "steps": ["1. Load {preview}/#settings=appearance.text directly."],
+      "expected": ["Settings opens in Appearance with the Text size section focused and visible."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-control-deep-link",
+      "title": "An exact control deep link opens and focuses the requested control",
+      "steps": ["1. Load {preview}/#settings=workflows.resources.maxHeavyOps directly."],
+      "expected": ["Settings opens in Workflows & models with Max heavy operations focused and visible."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-legacy-deep-link",
+      "title": "A legacy deep link resolves to its canonical settings destination",
+      "steps": ["1. Load {preview}/#settings=tasks.modelsFallbacks directly."],
+      "expected": ["Settings opens at Models & fallbacks and the URL identifies the canonical destination."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-search-match",
+      "title": "Settings search finds and navigates to an exact matching control",
+      "steps": ["1. Search Settings for max heavy operations and select the result."],
+      "expected": ["The matching control result is shown and selecting it focuses Max heavy operations in Budgets & resources."],
+      "risk": "none"
+    },
+    {
+      "id": "settings-search-no-match",
+      "title": "Settings search presents a stable no-match state",
+      "steps": ["1. Search Settings for a deliberately unknown value such as zzz-no-setting-exists."],
+      "expected": ["A no-results state renders without hiding category navigation or producing an error."],
+      "negative": true,
+      "risk": "none"
+    }
+  ]
+}

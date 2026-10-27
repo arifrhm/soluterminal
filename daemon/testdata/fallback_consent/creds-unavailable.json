@@ -1,0 +1,1666 @@
+{
+  "task": {
+    "id": "wft_fallback_creds-unavailable",
+    "title": "Fallback credentials unavailable",
+    "prompt": "test",
+    "repoPath": "/repo/fallback-consent",
+    "requestedTier": "standard",
+    "resolvedTier": "standard",
+    "status": "paused_for_fallback",
+    "stage": "implement",
+    "repairCount": 0,
+    "landRepairCount": 0,
+    "budgets": {
+      "stageTimeoutSec": 0,
+      "maxRepairLoops": 0,
+      "landRepairLoops": 0,
+      "maxInvocations": 0,
+      "maxRefuters": 0,
+      "maxArtifactRetries": 0
+    },
+    "fallbackChains": {
+      "executor": [
+        {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        {
+          "runtime": "codex-alt",
+          "model": "premium",
+          "effort": "high"
+        },
+        {
+          "runtime": "codex-last",
+          "model": "premium",
+          "effort": "high"
+        }
+      ]
+    },
+    "fallbackPolicyPlane": 1,
+    "fallbackDecisions": [
+      {
+        "id": "wfd_00000000",
+        "stage": "implement",
+        "role": "executor",
+        "baseRole": "executor",
+        "fromIndex": 0,
+        "toIndex": 2,
+        "from": {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        "to": {
+          "runtime": "codex-last",
+          "model": "premium",
+          "effort": "high"
+        },
+        "reason": "quota",
+        "detail": "quota_window",
+        "error": "quota exhausted",
+        "facts": {
+          "reason": "quota",
+          "detail": "quota_window",
+          "failureKind": "quota",
+          "from": {
+            "runtime": "codex-headless",
+            "model": "premium",
+            "effort": "high"
+          },
+          "to": {
+            "runtime": "codex-last",
+            "model": "premium",
+            "effort": "high"
+          },
+          "fromProvider": "fake",
+          "toProvider": "fake",
+          "crossProvider": false,
+          "fromTier": "premium",
+          "toTier": "premium",
+          "tierKnown": true,
+          "tierDelta": "same",
+          "belowFloor": false,
+          "fromEffortIntent": "thorough",
+          "toEffortIntent": "thorough",
+          "effortKnown": true,
+          "effortReduced": false,
+          "fromPermission": "edit",
+          "toPermission": "edit",
+          "permissionEqual": true,
+          "requiredCapabilities": [
+            "structured_output",
+            "sandbox"
+          ],
+          "costRatio": 1,
+          "costSource": "tier-equal",
+          "costRatioMax": 1.5,
+          "costKnown": true,
+          "costWithinBound": true,
+          "spentUsd": 0,
+          "projectedOverCeiling": false,
+          "credentialState": "ok",
+          "toAccountClass": "unknown",
+          "breakerState": "closed",
+          "stageRisk": "normal",
+          "resolvedTier": "standard",
+          "chainSource": "task-chain-exact",
+          "priorEngagements": 0,
+          "priorAttempts": 0,
+          "compatible": true,
+          "plane": "availability",
+          "fromAccess": {
+            "provider": "fake",
+            "vendor": "fake",
+            "runtime": "codex-headless",
+            "accessPath": "native"
+          },
+          "toAccess": {
+            "provider": "fake",
+            "vendor": "fake",
+            "runtime": "codex-last",
+            "accessPath": "native"
+          }
+        },
+        "skipped": [
+          {
+            "index": 1,
+            "binding": {
+              "runtime": "codex-alt",
+              "model": "premium",
+              "effort": "high"
+            },
+            "reason": "ineligible:exhausted_until"
+          }
+        ],
+        "policy": {
+          "value": "ask",
+          "source": "settings-default",
+          "scope": "settings"
+        },
+        "consequence": {
+          "ifAccepted": "runs codex-last/premium on fake (unknown, premium tier, thorough effort) at an estimated 1.00x cost",
+          "ifDeclined": "parks with a blind re-probe on codex-headless/premium",
+          "declinedPath": "quota_park"
+        },
+        "state": "proposed",
+        "proposedAt": "2026-08-26T00:00:00Z",
+        "settingsDiff": {
+          "path": "fallbackPolicy.routes",
+          "before": "null",
+          "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+          "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+        },
+        "attempt": 1,
+        "plane": "availability",
+        "candidates": [
+          {
+            "index": 0,
+            "binding": {
+              "runtime": "codex-headless",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": false,
+            "reasonCode": "failed_head",
+            "detail": "the route that failed",
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          },
+          {
+            "index": 1,
+            "binding": {
+              "runtime": "codex-alt",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": false,
+            "reasonCode": "exhausted_until",
+            "detail": "ineligible:exhausted_until",
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          },
+          {
+            "index": 2,
+            "binding": {
+              "runtime": "codex-last",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": true,
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          }
+        ]
+      }
+    ],
+    "pendingFallbackDecisionId": "wfd_00000000",
+    "stages": null,
+    "invocations": null,
+    "artifacts": null,
+    "error": "quota exhausted",
+    "failureKind": "quota",
+    "lastResumedAt": "0001-01-01T00:00:00Z",
+    "lastAppliedEventSeq": 3,
+    "createdAt": "2026-08-26T00:00:00Z",
+    "updatedAt": "2026-08-26T00:00:00Z",
+    "disposition": "active",
+    "decision": {
+      "kind": "fallback_consent",
+      "title": "Fallback credentials unavailable",
+      "outcomeSought": "Decide whether executor may continue on codex-last/premium after quota on codex-headless/premium.",
+      "whatHappened": "quota exhausted",
+      "needToAct": true,
+      "recommendedAction": {
+        "label": "Decide fallback",
+        "apiPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+        "consequence": "parks with a blind re-probe on codex-headless/premium"
+      },
+      "furtherMergeDecision": false,
+      "taskId": "wft_fallback_creds-unavailable",
+      "lineage": [],
+      "recoveryAttempts": null,
+      "fallback": {
+        "id": "wfd_00000000",
+        "stage": "implement",
+        "role": "executor",
+        "baseRole": "executor",
+        "fromIndex": 0,
+        "toIndex": 2,
+        "from": {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        "to": {
+          "runtime": "codex-last",
+          "model": "premium",
+          "effort": "high"
+        },
+        "reason": "quota",
+        "detail": "quota_window",
+        "error": "quota exhausted",
+        "facts": {
+          "reason": "quota",
+          "detail": "quota_window",
+          "failureKind": "quota",
+          "from": {
+            "runtime": "codex-headless",
+            "model": "premium",
+            "effort": "high"
+          },
+          "to": {
+            "runtime": "codex-last",
+            "model": "premium",
+            "effort": "high"
+          },
+          "fromProvider": "fake",
+          "toProvider": "fake",
+          "crossProvider": false,
+          "fromTier": "premium",
+          "toTier": "premium",
+          "tierKnown": true,
+          "tierDelta": "same",
+          "belowFloor": false,
+          "fromEffortIntent": "thorough",
+          "toEffortIntent": "thorough",
+          "effortKnown": true,
+          "effortReduced": false,
+          "fromPermission": "edit",
+          "toPermission": "edit",
+          "permissionEqual": true,
+          "requiredCapabilities": [
+            "structured_output",
+            "sandbox"
+          ],
+          "costRatio": 1,
+          "costSource": "tier-equal",
+          "costRatioMax": 1.5,
+          "costKnown": true,
+          "costWithinBound": true,
+          "spentUsd": 0,
+          "projectedOverCeiling": false,
+          "credentialState": "ok",
+          "toAccountClass": "unknown",
+          "breakerState": "closed",
+          "stageRisk": "normal",
+          "resolvedTier": "standard",
+          "chainSource": "task-chain-exact",
+          "priorEngagements": 0,
+          "priorAttempts": 0,
+          "compatible": true,
+          "plane": "availability",
+          "fromAccess": {
+            "provider": "fake",
+            "vendor": "fake",
+            "runtime": "codex-headless",
+            "accessPath": "native"
+          },
+          "toAccess": {
+            "provider": "fake",
+            "vendor": "fake",
+            "runtime": "codex-last",
+            "accessPath": "native"
+          }
+        },
+        "skipped": [
+          {
+            "index": 1,
+            "binding": {
+              "runtime": "codex-alt",
+              "model": "premium",
+              "effort": "high"
+            },
+            "reason": "ineligible:exhausted_until"
+          }
+        ],
+        "policy": {
+          "value": "ask",
+          "source": "settings-default",
+          "scope": "settings"
+        },
+        "consequence": {
+          "ifAccepted": "runs codex-last/premium on fake (unknown, premium tier, thorough effort) at an estimated 1.00x cost",
+          "ifDeclined": "parks with a blind re-probe on codex-headless/premium",
+          "declinedPath": "quota_park"
+        },
+        "state": "proposed",
+        "proposedAt": "2026-08-26T00:00:00Z",
+        "settingsDiff": {
+          "path": "fallbackPolicy.routes",
+          "before": "null",
+          "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+          "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+        },
+        "attempt": 1,
+        "candidates": [
+          {
+            "index": 0,
+            "binding": {
+              "runtime": "codex-headless",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": false,
+            "reasonCode": "failed_head",
+            "detail": "the route that failed",
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          },
+          {
+            "index": 1,
+            "binding": {
+              "runtime": "codex-alt",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": false,
+            "reasonCode": "exhausted_until",
+            "detail": "ineligible:exhausted_until",
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          },
+          {
+            "index": 2,
+            "binding": {
+              "runtime": "codex-last",
+              "model": "premium",
+              "effort": "high"
+            },
+            "eligible": true,
+            "provider": "fake",
+            "tier": "premium",
+            "nativeEffort": "high"
+          }
+        ],
+        "answerPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+        "alwaysDiff": {
+          "path": "fallbackPolicy.routes",
+          "before": "null",
+          "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+          "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+        },
+        "submitTimeDegradedAccepted": false,
+        "plane": "availability"
+      }
+    },
+    "waitingFor": "fallback decision",
+    "queueState": "fallback_paused",
+    "effectiveLimits": {
+      "idleSec": 0,
+      "hardSec": 0,
+      "source": "legacy"
+    },
+    "stops": [
+      {
+        "plane": "park",
+        "code": "fallback_consent_pending",
+        "authorityClass": "human_only",
+        "retry": "manual",
+        "reversibility": "reversible"
+      }
+    ],
+    "failureDetail": "quota exhausted",
+    "explanation": "What happened: stage implement: quota: quota exhausted; tried: no recorded recovery; recommended: waiting for your decision.",
+    "triageEligible": false,
+    "previewEligibility": {
+      "eligible": false,
+      "reason": "Previews are not enabled on this daemon."
+    },
+    "effectiveFallbackPolicy": {
+      "plane": "policy",
+      "roles": [
+        {
+          "role": "executor",
+          "value": "ask",
+          "source": "settings-default",
+          "scope": "settings"
+        }
+      ]
+    },
+    "fallbackCandidates": [
+      {
+        "index": 0,
+        "binding": {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        "eligible": false,
+        "reasonCode": "failed_head",
+        "detail": "the route that failed",
+        "provider": "fake",
+        "tier": "premium",
+        "nativeEffort": "high"
+      },
+      {
+        "index": 1,
+        "binding": {
+          "runtime": "codex-alt",
+          "model": "premium",
+          "effort": "high"
+        },
+        "eligible": false,
+        "reasonCode": "exhausted_until",
+        "detail": "ineligible:exhausted_until",
+        "provider": "fake",
+        "tier": "premium",
+        "nativeEffort": "high"
+      },
+      {
+        "index": 2,
+        "binding": {
+          "runtime": "codex-last",
+          "model": "premium",
+          "effort": "high"
+        },
+        "eligible": true,
+        "provider": "fake",
+        "tier": "premium",
+        "nativeEffort": "high"
+      }
+    ],
+    "health": {
+      "verdict": "needs_action",
+      "reason": "decision_required",
+      "headline": "Needs you — decision required",
+      "since": "2026-08-26T00:00:00Z",
+      "checkedAt": "2026-08-26T00:00:00Z",
+      "command": "implement",
+      "nextAction": {
+        "kind": "human",
+        "text": "Open the decision and choose the recommended action"
+      },
+      "evidence": [
+        "workflow inbox has an unresolved decision"
+      ]
+    },
+    "autonomyWait": {
+      "taskId": "wft_fallback_creds-unavailable",
+      "title": "Fallback credentials unavailable",
+      "class": "hard_human_decision",
+      "reason": "fallback consent: quota",
+      "nextAction": "Choose the fallback decision on the task."
+    }
+  },
+  "tasks": [
+    {
+      "explanation": "What happened: stage implement: quota: quota exhausted; tried: no recorded recovery; recommended: waiting for your decision.",
+      "health": {
+        "verdict": "needs_action",
+        "reason": "decision_required",
+        "headline": "Needs you — decision required",
+        "since": "2026-08-26T00:00:00Z",
+        "checkedAt": "2026-08-26T00:00:00Z",
+        "command": "implement",
+        "nextAction": {
+          "kind": "human",
+          "text": "Open the decision and choose the recommended action"
+        },
+        "evidence": [
+          "workflow inbox has an unresolved decision"
+        ]
+      },
+      "id": "wft_fallback_creds-unavailable",
+      "title": "Fallback credentials unavailable",
+      "status": "paused_for_fallback",
+      "stage": "implement",
+      "requestedTier": "standard",
+      "resolvedTier": "standard",
+      "repoPath": "/repo/fallback-consent",
+      "updatedAt": "2026-08-26T00:00:00Z",
+      "createdAt": "2026-08-26T00:00:00Z",
+      "failureKind": "quota",
+      "failureDetail": "quota exhausted",
+      "disposition": "active",
+      "decision": {
+        "kind": "fallback_consent",
+        "title": "Fallback credentials unavailable",
+        "outcomeSought": "Decide whether executor may continue on codex-last/premium after quota on codex-headless/premium.",
+        "whatHappened": "quota exhausted",
+        "needToAct": true,
+        "recommendedAction": {
+          "label": "Decide fallback",
+          "apiPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+          "consequence": "parks with a blind re-probe on codex-headless/premium"
+        },
+        "furtherMergeDecision": false,
+        "taskId": "wft_fallback_creds-unavailable",
+        "lineage": [],
+        "recoveryAttempts": null,
+        "fallback": {
+          "id": "wfd_00000000",
+          "stage": "implement",
+          "role": "executor",
+          "baseRole": "executor",
+          "fromIndex": 0,
+          "toIndex": 2,
+          "from": {
+            "runtime": "codex-headless",
+            "model": "premium",
+            "effort": "high"
+          },
+          "to": {
+            "runtime": "codex-last",
+            "model": "premium",
+            "effort": "high"
+          },
+          "reason": "quota",
+          "detail": "quota_window",
+          "error": "quota exhausted",
+          "facts": {
+            "reason": "quota",
+            "detail": "quota_window",
+            "failureKind": "quota",
+            "from": {
+              "runtime": "codex-headless",
+              "model": "premium",
+              "effort": "high"
+            },
+            "to": {
+              "runtime": "codex-last",
+              "model": "premium",
+              "effort": "high"
+            },
+            "fromProvider": "fake",
+            "toProvider": "fake",
+            "crossProvider": false,
+            "fromTier": "premium",
+            "toTier": "premium",
+            "tierKnown": true,
+            "tierDelta": "same",
+            "belowFloor": false,
+            "fromEffortIntent": "thorough",
+            "toEffortIntent": "thorough",
+            "effortKnown": true,
+            "effortReduced": false,
+            "fromPermission": "edit",
+            "toPermission": "edit",
+            "permissionEqual": true,
+            "requiredCapabilities": [
+              "structured_output",
+              "sandbox"
+            ],
+            "costRatio": 1,
+            "costSource": "tier-equal",
+            "costRatioMax": 1.5,
+            "costKnown": true,
+            "costWithinBound": true,
+            "spentUsd": 0,
+            "projectedOverCeiling": false,
+            "credentialState": "ok",
+            "toAccountClass": "unknown",
+            "breakerState": "closed",
+            "stageRisk": "normal",
+            "resolvedTier": "standard",
+            "chainSource": "task-chain-exact",
+            "priorEngagements": 0,
+            "priorAttempts": 0,
+            "compatible": true,
+            "plane": "availability",
+            "fromAccess": {
+              "provider": "fake",
+              "vendor": "fake",
+              "runtime": "codex-headless",
+              "accessPath": "native"
+            },
+            "toAccess": {
+              "provider": "fake",
+              "vendor": "fake",
+              "runtime": "codex-last",
+              "accessPath": "native"
+            }
+          },
+          "skipped": [
+            {
+              "index": 1,
+              "binding": {
+                "runtime": "codex-alt",
+                "model": "premium",
+                "effort": "high"
+              },
+              "reason": "ineligible:exhausted_until"
+            }
+          ],
+          "policy": {
+            "value": "ask",
+            "source": "settings-default",
+            "scope": "settings"
+          },
+          "consequence": {
+            "ifAccepted": "runs codex-last/premium on fake (unknown, premium tier, thorough effort) at an estimated 1.00x cost",
+            "ifDeclined": "parks with a blind re-probe on codex-headless/premium",
+            "declinedPath": "quota_park"
+          },
+          "state": "proposed",
+          "proposedAt": "2026-08-26T00:00:00Z",
+          "settingsDiff": {
+            "path": "fallbackPolicy.routes",
+            "before": "null",
+            "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+            "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+          },
+          "attempt": 1,
+          "candidates": [
+            {
+              "index": 0,
+              "binding": {
+                "runtime": "codex-headless",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": false,
+              "reasonCode": "failed_head",
+              "detail": "the route that failed",
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            },
+            {
+              "index": 1,
+              "binding": {
+                "runtime": "codex-alt",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": false,
+              "reasonCode": "exhausted_until",
+              "detail": "ineligible:exhausted_until",
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            },
+            {
+              "index": 2,
+              "binding": {
+                "runtime": "codex-last",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": true,
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            }
+          ],
+          "answerPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+          "alwaysDiff": {
+            "path": "fallbackPolicy.routes",
+            "before": "null",
+            "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+            "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+          },
+          "submitTimeDegradedAccepted": false,
+          "plane": "availability"
+        }
+      },
+      "fallbackDecision": {
+        "id": "wfd_00000000",
+        "role": "executor",
+        "state": "proposed",
+        "reason": "quota",
+        "from": {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        "to": {
+          "runtime": "codex-last",
+          "model": "premium",
+          "effort": "high"
+        },
+        "plane": "availability"
+      },
+      "queueState": "fallback_paused",
+      "autonomyWait": {
+        "taskId": "wft_fallback_creds-unavailable",
+        "title": "Fallback credentials unavailable",
+        "class": "hard_human_decision",
+        "reason": "fallback consent: quota",
+        "nextAction": "Choose the fallback decision on the task."
+      },
+      "stops": [
+        {
+          "plane": "park",
+          "code": "fallback_consent_pending",
+          "authorityClass": "human_only",
+          "retry": "manual",
+          "reversibility": "reversible"
+        }
+      ]
+    }
+  ],
+  "inbox": {
+    "decide": [
+      {
+        "taskId": "wft_fallback_creds-unavailable",
+        "title": "Fallback credentials unavailable",
+        "status": "paused_for_fallback",
+        "stage": "implement",
+        "disposition": "needs_decision",
+        "queueState": "fallback_paused",
+        "decision": {
+          "kind": "fallback_consent",
+          "title": "Fallback credentials unavailable",
+          "outcomeSought": "Decide whether executor may continue on codex-last/premium after quota on codex-headless/premium.",
+          "whatHappened": "quota exhausted",
+          "needToAct": true,
+          "recommendedAction": {
+            "label": "Decide fallback",
+            "apiPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+            "consequence": "parks with a blind re-probe on codex-headless/premium"
+          },
+          "furtherMergeDecision": false,
+          "taskId": "wft_fallback_creds-unavailable",
+          "lineage": [],
+          "recoveryAttempts": null,
+          "fallback": {
+            "id": "wfd_00000000",
+            "stage": "implement",
+            "role": "executor",
+            "baseRole": "executor",
+            "fromIndex": 0,
+            "toIndex": 2,
+            "from": {
+              "runtime": "codex-headless",
+              "model": "premium",
+              "effort": "high"
+            },
+            "to": {
+              "runtime": "codex-last",
+              "model": "premium",
+              "effort": "high"
+            },
+            "reason": "quota",
+            "detail": "quota_window",
+            "error": "quota exhausted",
+            "facts": {
+              "reason": "quota",
+              "detail": "quota_window",
+              "failureKind": "quota",
+              "from": {
+                "runtime": "codex-headless",
+                "model": "premium",
+                "effort": "high"
+              },
+              "to": {
+                "runtime": "codex-last",
+                "model": "premium",
+                "effort": "high"
+              },
+              "fromProvider": "fake",
+              "toProvider": "fake",
+              "crossProvider": false,
+              "fromTier": "premium",
+              "toTier": "premium",
+              "tierKnown": true,
+              "tierDelta": "same",
+              "belowFloor": false,
+              "fromEffortIntent": "thorough",
+              "toEffortIntent": "thorough",
+              "effortKnown": true,
+              "effortReduced": false,
+              "fromPermission": "edit",
+              "toPermission": "edit",
+              "permissionEqual": true,
+              "requiredCapabilities": [
+                "structured_output",
+                "sandbox"
+              ],
+              "costRatio": 1,
+              "costSource": "tier-equal",
+              "costRatioMax": 1.5,
+              "costKnown": true,
+              "costWithinBound": true,
+              "spentUsd": 0,
+              "projectedOverCeiling": false,
+              "credentialState": "ok",
+              "toAccountClass": "unknown",
+              "breakerState": "closed",
+              "stageRisk": "normal",
+              "resolvedTier": "standard",
+              "chainSource": "task-chain-exact",
+              "priorEngagements": 0,
+              "priorAttempts": 0,
+              "compatible": true,
+              "plane": "availability",
+              "fromAccess": {
+                "provider": "fake",
+                "vendor": "fake",
+                "runtime": "codex-headless",
+                "accessPath": "native"
+              },
+              "toAccess": {
+                "provider": "fake",
+                "vendor": "fake",
+                "runtime": "codex-last",
+                "accessPath": "native"
+              }
+            },
+            "skipped": [
+              {
+                "index": 1,
+                "binding": {
+                  "runtime": "codex-alt",
+                  "model": "premium",
+                  "effort": "high"
+                },
+                "reason": "ineligible:exhausted_until"
+              }
+            ],
+            "policy": {
+              "value": "ask",
+              "source": "settings-default",
+              "scope": "settings"
+            },
+            "consequence": {
+              "ifAccepted": "runs codex-last/premium on fake (unknown, premium tier, thorough effort) at an estimated 1.00x cost",
+              "ifDeclined": "parks with a blind re-probe on codex-headless/premium",
+              "declinedPath": "quota_park"
+            },
+            "state": "proposed",
+            "proposedAt": "2026-08-26T00:00:00Z",
+            "settingsDiff": {
+              "path": "fallbackPolicy.routes",
+              "before": "null",
+              "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+              "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+            },
+            "attempt": 1,
+            "candidates": [
+              {
+                "index": 0,
+                "binding": {
+                  "runtime": "codex-headless",
+                  "model": "premium",
+                  "effort": "high"
+                },
+                "eligible": false,
+                "reasonCode": "failed_head",
+                "detail": "the route that failed",
+                "provider": "fake",
+                "tier": "premium",
+                "nativeEffort": "high"
+              },
+              {
+                "index": 1,
+                "binding": {
+                  "runtime": "codex-alt",
+                  "model": "premium",
+                  "effort": "high"
+                },
+                "eligible": false,
+                "reasonCode": "exhausted_until",
+                "detail": "ineligible:exhausted_until",
+                "provider": "fake",
+                "tier": "premium",
+                "nativeEffort": "high"
+              },
+              {
+                "index": 2,
+                "binding": {
+                  "runtime": "codex-last",
+                  "model": "premium",
+                  "effort": "high"
+                },
+                "eligible": true,
+                "provider": "fake",
+                "tier": "premium",
+                "nativeEffort": "high"
+              }
+            ],
+            "answerPath": "/api/workflow/tasks/wft_fallback_creds-unavailable/fallback-decision",
+            "alwaysDiff": {
+              "path": "fallbackPolicy.routes",
+              "before": "null",
+              "after": "[{\"role\":\"executor\",\"from\":{\"runtime\":\"codex-headless\",\"model\":\"premium\",\"effort\":\"high\"},\"to\":{\"runtime\":\"codex-last\",\"model\":\"premium\",\"effort\":\"high\"},\"grantedAt\":\"2026-08-26T00:00:00Z\",\"source\":\"decision\",\"taskId\":\"wft_fallback_creds-unavailable\"}]",
+              "hash": "cac760aa907d337e0f12ebd62597d3337742e9f95f3a2b2571e63544bfa5812e"
+            },
+            "submitTimeDegradedAccepted": false,
+            "plane": "availability"
+          }
+        },
+        "lineage": [],
+        "updatedAt": "2026-08-26T00:00:00Z"
+      }
+    ],
+    "recovering": [],
+    "waiting": [],
+    "history": [],
+    "counts": {
+      "decide": 1,
+      "fallbackConsent": 1
+    },
+    "rootBlockers": [],
+    "pulse": {
+      "checkedAt": "2026-08-26T00:00:00Z",
+      "counts": {
+        "progressing": 0,
+        "waiting": 0,
+        "slow": 0,
+        "recovering": 0,
+        "stuck": 0,
+        "needsAction": 1
+      },
+      "machine": {
+        "running": 0,
+        "cap": 10,
+        "heavyRunning": 0,
+        "heavyCap": 2,
+        "heavyCapEff": 2,
+        "heavyQueued": 0,
+        "pressureElevated": false,
+        "cpuAdmissionSource": "unknown",
+        "cpuAdmissionReason": "cpu availability unknown",
+        "overdueGrants": 0,
+        "reapedGrants": 0
+      },
+      "allOk": false,
+      "attention": [
+        {
+          "taskId": "wft_fallback_creds-unavailable",
+          "title": "Fallback credentials unavailable",
+          "verdict": "needs_action",
+          "reason": "decision_required",
+          "headline": "Needs you — decision required"
+        }
+      ]
+    }
+  },
+  "settings": {
+    "defaultRoleBindings": {},
+    "narrator": {
+      "enabled": true,
+      "stalenessMinutes": 18
+    },
+    "triage": {
+      "enabled": true,
+      "maxTurns": 30,
+      "maxAutoRunsPerTask": 3,
+      "autoApply": {
+        "enabled": false,
+        "maxAutoResumesPerTask": 2,
+        "maxActionsPer10Min": 3,
+        "classes": {
+          "transientInfra": true,
+          "quotaParkedResume": false,
+          "reland": false,
+          "specSpawnFailure": false,
+          "contentSafetyRetry": true
+        }
+      }
+    },
+    "releaseTrain": {
+      "enabled": false,
+      "minFunctionalLandings": 6,
+      "maxUnreleasedAgeHours": 12,
+      "quietRequired": true,
+      "notifyVetoMinutes": 10,
+      "cutLockWaitMinutes": 45
+    },
+    "approvalAutopilot": {
+      "level": 1,
+      "vetoMinutes": 30,
+      "maxPolicyApprovalsPerHour": 6
+    },
+    "proposalAutopilot": {
+      "enabled": false,
+      "vetoMinutes": 30,
+      "maxAcceptsPerHour": 4
+    },
+    "janitor": {
+      "enabled": true,
+      "autoResolve": true,
+      "autoRepoint": true,
+      "proposedCancels": true,
+      "cancelVetoMinutes": 30
+    },
+    "delegation": {
+      "maxWaitMinutes": 10,
+      "suppressInformational": false
+    },
+    "fallbackPolicy": {
+      "enabled": true,
+      "default": "ask",
+      "autoCostRatioMax": 1.5,
+      "breaker": true
+    },
+    "throughputGuardian": {
+      "mode": "shadow"
+    }
+  },
+  "health": {
+    "runtimes": [
+      {
+        "id": "codex-alt",
+        "provider": "fake",
+        "signedIn": null,
+        "identity": {
+          "email": "",
+          "plan": ""
+        },
+        "quota": [],
+        "lastProbeAtEpoch": 0,
+        "probeSource": "cache",
+        "lastInvocation": null,
+        "status": "quota_exhausted",
+        "cooldownUntilEpoch": 1787705100,
+        "installed": null,
+        "breaker": {
+          "state": "closed",
+          "failures": 0
+        },
+        "credentialState": "exhausted_until",
+        "credentialUntilEpoch": 1787705100
+      },
+      {
+        "id": "codex-headless",
+        "provider": "fake",
+        "signedIn": null,
+        "identity": {
+          "email": "",
+          "plan": ""
+        },
+        "quota": [],
+        "lastProbeAtEpoch": 0,
+        "probeSource": "cache",
+        "lastInvocation": null,
+        "status": "unknown",
+        "installed": null,
+        "breaker": {
+          "state": "closed",
+          "failures": 0
+        },
+        "credentialState": "unknown"
+      },
+      {
+        "id": "codex-last",
+        "provider": "fake",
+        "signedIn": null,
+        "identity": {
+          "email": "",
+          "plan": ""
+        },
+        "quota": null,
+        "lastProbeAtEpoch": 0,
+        "probeSource": "",
+        "lastInvocation": null,
+        "status": "healthy",
+        "installed": null,
+        "credentialState": "ok"
+      }
+    ],
+    "resolution": [
+      {
+        "role": "acceptance_author",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      },
+      {
+        "role": "acceptance_verifier",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "architect",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      },
+      {
+        "role": "browser_driver",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "sonnet"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "challenger",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "codex-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": true,
+            "health": "unknown",
+            "installed": null,
+            "available": true
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "codex-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "classifier",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "executor",
+        "chain": [
+          {
+            "runtime": "codex-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": true,
+            "health": "unknown",
+            "installed": null,
+            "available": true
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "codex-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "codex-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ],
+        "fallbackDecision": {
+          "plane": "availability",
+          "candidates": [
+            {
+              "index": 0,
+              "binding": {
+                "runtime": "codex-headless",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": false,
+              "reasonCode": "failed_head",
+              "detail": "the route that failed",
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            },
+            {
+              "index": 1,
+              "binding": {
+                "runtime": "codex-alt",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": false,
+              "reasonCode": "exhausted_until",
+              "detail": "ineligible:exhausted_until",
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            },
+            {
+              "index": 2,
+              "binding": {
+                "runtime": "codex-last",
+                "model": "premium",
+                "effort": "high"
+              },
+              "eligible": true,
+              "provider": "fake",
+              "tier": "premium",
+              "nativeEffort": "high"
+            }
+          ]
+        }
+      },
+      {
+        "role": "judge",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "narrator",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "refuter",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "engine",
+        "sourceDetail": "engine-default",
+        "effective": {
+          "runtime": "claude-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:post_repair",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:regression_and_test_gaps",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:spec_compliance",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "scout",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "scout:review_evidence",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          }
+        ]
+      },
+      {
+        "role": "triage",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      }
+    ],
+    "diskLow": false,
+    "diskFreeMB": 0,
+    "diskFloorMB": 10240,
+    "hostDiskLow": false,
+    "hostDiskFreeMB": 0,
+    "hostDiskFloorMB": 0,
+    "diskBlockingLayer": "none",
+    "workflowEffort": {
+      "default": "xhigh",
+      "source": "shipped"
+    }
+  }
+}

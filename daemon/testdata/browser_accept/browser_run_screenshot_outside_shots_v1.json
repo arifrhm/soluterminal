@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "binding": {},
+  "sandbox": {},
+  "flows": [
+    {
+      "id": "flow-1",
+      "outcome": "pass",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Capture the saved settings",
+          "tool": "mcp__solubrowse__get_pane_screenshot",
+          "ok": true,
+          "consoleErrorsSinceAction": [],
+          "screenshotArtifactId": "captures/saved-settings.png"
+        }
+      ],
+      "oracles": {
+        "dom": {
+          "state": "pass",
+          "detail": "The saved value appeared"
+        },
+        "console": {
+          "state": "pass",
+          "detail": "No new console errors"
+        },
+        "network": {
+          "state": "pass",
+          "detail": "The save request returned 200"
+        },
+        "visual": {
+          "state": "pass",
+          "detail": "The saved value remained visible"
+        }
+      }
+    }
+  ],
+  "driverFailures": [],
+  "normalizedScreenshotCount": 99,
+  "appDefects": [],
+  "skipped": [],
+  "driverRestarts": 0,
+  "daemonSweep": {}
+}

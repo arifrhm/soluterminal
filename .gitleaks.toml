@@ -1,0 +1,110 @@
+# gitleaks configuration for .github/workflows/security-scan.yml.
+#
+# Default gitleaks rules plus NARROW allowlists for values reviewed by hand
+# and confirmed to be synthetic test fixtures or public-by-design. Every
+# entry matches the secret VALUE (not just a file), so a real credential
+# pasted into one of these files is still reported. To add an entry: confirm
+# the value is fake or public, add the narrowest pattern that matches it, and
+# say why in the description. Never allowlist a value because it is "probably
+# old" or "probably revoked" — rotate it instead.
+#
+# Pull-request scans read this file from the PR's BASE commit, so a PR cannot
+# allowlist its own finding; changes here take effect once merged.
+
+title = "soluterminal gitleaks config"
+
+[extend]
+useDefault = true
+
+# --- Synthetic fixtures in test code -------------------------------------
+# The redaction / secret-tripwire tests (daemon/redact_test.go,
+# daemon/redact_opaque_test.go, daemon/support_bundle_test.go,
+# daemon/aria_jev_*_test.go, daemon/mcp_scope_test.go,
+# daemon/workflow_runtime_*_test.go, cloud/redact_test.go, ...) feed
+# deliberately secret-SHAPED strings through the scrubbers. Each pattern
+# below matches one family of those hand-made values (sequential hex,
+# alphabet runs, the word SECRET, the jwt.io example payload, truncated PEM
+# bodies). AND-ed with a test-path filter, so the same shapes in production
+# code are still reported.
+#
+# targetRules is load-bearing: without it gitleaks treats a global
+# allowlist's `paths` as a whole-file skip and ignores condition = "AND"
+# (verified with gitleaks 8.30.1 — a real-looking token in a _test.go file
+# went unreported). Scoped to rules, the AND holds.
+[[allowlists]]
+description = "Synthetic secret-shaped fixtures in test files (reviewed 2026-10-24)"
+condition = "AND"
+targetRules = [
+  "generic-api-key", "aws-access-token", "github-pat", "curl-auth-header",
+  "curl-auth-user", "private-key", "jwt",
+]
+paths = [
+  '''(^|/)[^/]+_test\.go$''',
+  '''(^|/)[^/]+\.test\.mjs$''',
+  '''(^|/)[^/]+\.test\.tsx?$''',
+  '''(^|/)[^/]+\.Tests\.ps1$''',
+  '''(^|/)scripts/test-[^/]+\.sh$''',
+  '''(^|/)testdata/''',
+]
+regexes = [
+  # Sequential / reversed hex and alphabet runs.
+  '''0123456789abcdef''',
+  '''fedcba9876543210''',
+  '''abcdefghijklmnop''',
+  '''AbCdEf0123456789''',
+  '''ABCDEFGHIJKLMNOP''',
+  '''1A2b3C4d5E6f7G8h9I0j''',
+  # Hand-typed placeholder tokens that say what they are.
+  '''(?i)secret''',
+  '''CorrectHorseBatteryStaple''',
+  '''^aB7cD9eF1gH3iJ5kL7mN9pQ1rS3tU5vW7xY9$''',
+  '''^9fJ2kQ7xLm4Pz8Rt1Vb6Nc3Hs5Gd0WaYe$''',
+  '''^sk-DEEPSEEKCOMPAT0123456789$''',
+  # jwt.io example payload with a fake signature; alg=none / exp=1 stub.
+  '''^eyJhbGciOiJIUzI1NiJ9\.eyJzdWIiOiIxMjM0NTY3ODkwIn0\.signature123456$''',
+  '''^eyJhbGciOiJub25lIn0\.eyJleHAiOjF9\.c2ln$''',
+  # {"sub":"user"} with the literal signature "signature" (web relay-ticket test).
+  '''^eyJhbGciOiJIUzI1NiJ9\.eyJzdWIiOiJ1c2VyIn0\.c2lnbmF0dXJl$''',
+  # Session keys derived from the FIXED test keys of the private-relay
+  # handshake vector (daemon/private_relay_vector_test.go generates it).
+  '''^ed5ad940dcb945929983d9de6603920f574f9f5c0aa228699cfa7934d7044a14$''',
+  '''^29541e2ec135c0f31afbe56ffdca823b4929307aa96a6629ba79f72cc137d51d$''',
+  # Truncated, non-functional PEM bodies used to test block scrubbing. The
+  # OpenSSH one is ONLY the fixed "openssh-key-v1" magic header (identical in
+  # every key), so it is matched as the whole one-line body, never a prefix.
+  '''MIIBOgIBAAJBAKj34GkxFhD90vcNLYLInFEX\\nGTpLZ3qXyz/abcDEF==''',
+  '''BEGIN OPENSSH PRIVATE KEY-----",\s*"b3BlbnNzaC1rZXktdjEAAAAA",\s*"-----END''',
+  '''^b3BlbnNzaC1rZXktdjEAAAAA$''',
+]
+
+# --- Public-by-design values and identifier false positives -----------------
+[[allowlists]]
+description = "Public values and non-secret identifiers (reviewed 2026-10-24)"
+regexes = [
+  # Claude Code's public OAuth client ID (PKCE public client, ships inside
+  # the claude CLI; daemon/claudecreds_oauth.go). Not a credential.
+  '''^9d1c250a-e61b-44d9-88ed-5944d1962f5e$''',
+  # Ed25519 PUBLIC key that verifies update manifests
+  # (daemon/updater.go defaultUpdateManifestPubKey). Public by design; the
+  # private half never lives in this repository.
+  '''^sm\+MMrCMET4jQkfdIHySZ7RJWHLSV22qcBqKUVeU5k4=$''',
+  # Pane IDs and idempotency keys matched by the generic-api-key rule.
+  '''^SOLU_PANE_ID=[A-Za-z0-9_-]+$''',
+  '''^idempotency-[0-9]+$''',
+  # Go expression, not a value (daemon/workflow_account_health.go).
+  '''^wfRateLimitScopeVendorPrefix\+vendor$''',
+  # Prose in design docs matched as "api key = <word/word/word>".
+  '''^submit/get/approve/cancel$''',
+  '''^ownership/permission/billing$''',
+]
+
+# SHA-256 file digests in committed evidence manifests (filename -> digest).
+[[allowlists]]
+description = "SHA-256 digests in docs evidence manifests"
+condition = "AND"
+targetRules = ["generic-api-key"]
+paths = [
+  '''(^|/)docs/evidence/[^/]+/manifest\.json$''',
+  '''(^|/)docs/screenshots/[^/]+-evidence\.json$''',
+]
+regexes = ['''^[0-9a-f]{64}$''']

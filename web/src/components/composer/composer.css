@@ -1,0 +1,397 @@
+/* Voice-first chat composer (pill). Used by MobileQuickReply + NativePane via
+ * <Composer>. Adapted from the ARIA comms composer's composer.css, retoned to
+ * soluterminal's design tokens (styles.css :root). */
+
+.composer-row {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.composer-pill {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 3px 4px;
+  background: var(--bg-3);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  transition: border-color 140ms ease;
+}
+.composer-pill:focus-within {
+  border-color: var(--accent-2);
+  box-shadow: var(--focus-ring);
+}
+
+/* Ghost icon buttons inside the pill (attach). */
+.composer-btn {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fg-dim);
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+.composer-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  color: var(--fg);
+}
+.composer-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.composer-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  resize: none;
+  min-height: var(--composer-min-height);
+  max-height: 200px;
+  margin: 0;
+  padding: var(--composer-pad);
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: var(--composer-font-size);
+  line-height: var(--composer-line-height);
+  outline: none;
+}
+.composer-input::placeholder {
+  color: var(--fg-dim);
+}
+/* The pill (.composer-pill:focus-within) draws the focus ring at the pill's 22px
+   radius. The textarea also inherits a 4px radius from the global input rule and
+   the global :focus-visible adds its own box-shadow ring — which renders as a
+   tight, near-square highlight sitting INSIDE the rounded pill (mismatched ring).
+   Suppress the inner textarea's ring so focus is shown only by the rounded pill. */
+.composer-input:focus,
+.composer-input:focus-visible {
+  box-shadow: none;
+  outline: none;
+}
+
+/* The textarea + its recording overlay share this wrap so the box itself can
+   become the recorder (hold-to-talk) without a mic button. */
+.composer-input-wrap {
+  /* THE single source of truth for the metrics .composer-ghost must mirror
+     glyph-for-glyph — the ghost is an overlay sitting exactly on top of the
+     textarea, so any drift in padding/size/line-height visibly misaligns the
+     suggestion from where typed text actually starts. Consumers (.native-pane)
+     retune THESE VARS, never the individual rules: overriding
+     `.composer-input { font-size }` alone silently desyncs the ghost, which is
+     how the Focus composer ended up rendering 16px ghost text over a 15px
+     textarea with a 3px vertical offset. */
+  --composer-pad: 8px 6px;
+  --composer-min-height: 36px;
+  /* 16px avoids iOS Safari's auto-zoom-on-focus. */
+  --composer-font-size: 16px;
+  --composer-line-height: 1.4;
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+}
+
+/* Empty + voice-capable: suppress the native long-press magnifier / selection
+   callout + scroll-steal that would fight the hold gestures. Restored the
+   moment there's text (class removed). */
+.composer-input.is-voice-empty {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Recording overlay — covers the (hidden) textarea. pointer-events:none so a
+   hold's captured pointer is never intercepted; the hands-free buttons opt back
+   in individually. */
+.composer-rec {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  min-height: 36px;
+  pointer-events: none;
+}
+.composer-rec button {
+  pointer-events: auto;
+}
+/* Prompt-suggestion ghost text — a dim overlay on the empty composer mirroring
+   .composer-input's metrics so the suggestion aligns with where typed text
+   would start. Shown only over an empty, non-recording box (JS gates render);
+   pointer-events:none keeps the textarea beneath fully interactive. The empty
+   textarea is one line tall, so suggestions stay on one line and ellipsize
+   instead of wrapping into content that the overlay box silently clips. */
+.composer-ghost {
+  position: absolute;
+  inset: 0;
+  padding: var(--composer-pad);
+  color: var(--fg-dim);
+  font-family: inherit;
+  font-size: var(--composer-font-size);
+  line-height: var(--composer-line-height);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  user-select: none;
+}
+.composer-rec-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: composer-rec-blink 1.1s ease-in-out infinite;
+}
+@keyframes composer-rec-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.composer-rec-hint {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--fg-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.composer-rec-hint.is-cancel {
+  color: var(--danger);
+}
+.composer-rec-hint.is-lock {
+  color: var(--accent-2);
+  font-weight: 700;
+}
+.composer-rec.is-lock .composer-rec-dot {
+  background: var(--accent-2);
+}
+.composer-rec.is-cancel .composer-rec-dot {
+  background: var(--danger);
+}
+
+/* Raw-then-patch (voiceDeferCleanup): the just-shown raw text is PROVISIONAL
+   until the polish call swaps it in. Dim it a touch so the imminent change
+   reads as "still working", not a glitch. */
+.composer-input-wrap.is-polishing .composer-input {
+  opacity: 0.6;
+  transition: opacity var(--dur-fast, 120ms) var(--ease, ease);
+}
+/* Small "polishing…" pip, bottom-right of the box, out of the way of the text. */
+.composer-polishing {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  pointer-events: none;
+  user-select: none;
+}
+.composer-polishing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  animation: composer-rec-blink 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .composer-polishing-dot { animation: none; }
+  .composer-input-wrap.is-polishing .composer-input { transition: none; }
+}
+.composer-rec-status {
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.composer-rec-actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.composer-rec-cancel,
+.composer-rec-stop {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    filter 140ms ease;
+}
+.composer-rec-cancel {
+  background: color-mix(in srgb, var(--fg) 10%, transparent);
+  color: var(--fg-dim);
+  font-size: 14px;
+}
+.composer-rec-cancel:hover {
+  color: var(--fg);
+}
+.composer-rec-stop {
+  background: var(--accent-2);
+  color: var(--accent-fg);
+}
+.composer-rec-stop:hover {
+  filter: brightness(1.08);
+}
+.composer-rec-stop svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Reserve the far-right primary region in every state so the pill does not
+   change width when Send/Stop mounts or unmounts. */
+.composer-primary-slot {
+  flex: 0 0 auto;
+  width: 40px;
+  display: grid;
+  place-items: center;
+}
+
+/* Far-right circular primary button (send / stop). */
+.composer-primary {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition:
+    background 140ms ease,
+    filter 140ms ease,
+    transform 140ms ease;
+}
+.composer-primary:active:not(:disabled) {
+  transform: scale(0.94);
+}
+.composer-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.composer-primary.is-send {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.composer-primary.is-send:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.composer-primary.is-stop {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+.composer-primary.is-stop:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+.composer-spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-top-color: var(--accent-fg);
+  animation: composer-spin 0.7s linear infinite;
+}
+@keyframes composer-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Recording feedback: live timer + ambient equalizer (RecordingMeter) ─────
+   The BARS are decorative (soluvoice surfaces no mic level); the TIMER is the
+   real signal. */
+.recording-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--danger); /* the meter tints itself "recording" red */
+}
+.recording-time {
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  min-width: 26px;
+}
+.eq-bars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 15px;
+}
+.eq-bar {
+  width: 2.5px;
+  height: 100%;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transform: scaleY(0.35);
+  animation: eq-bounce 0.9s ease-in-out infinite;
+}
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eq-bar {
+    animation: none;
+    transform: scaleY(0.6);
+  }
+}
+
+/* ── Mobile quick-reply host: the .mobile-quick-reply wrapper stays (its height
+   is measured into --quick-reply-h by useBottomBarsMeasure), but when it hosts
+   the composer we strip its legacy input-row layout and let .composer-row own
+   the visuals. The accent top border ("Claude is waiting") moves onto the row. */
+.mobile-quick-reply:has(.composer-row) {
+  display: block;
+  padding: 0;
+  background: transparent;
+  border-top: none;
+  box-shadow: none;
+}
+/* The quick-reply bar sits ABOVE the bottombar, which already owns the
+   home-indicator safe area — so DON'T add --safe-bottom here (it would leave a
+   gap). Just move the accent "Claude is waiting" cue onto the row. */
+.mobile-quick-reply .composer-row {
+  border-top: 1px solid var(--accent-2);
+  box-shadow: 0 -2px 8px color-mix(in srgb, var(--accent-2) 15%, transparent);
+}

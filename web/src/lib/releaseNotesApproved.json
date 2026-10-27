@@ -1,0 +1,53 @@
+{
+  "_why": "SHA-256 of each version's public release notes, exactly as publish.sh renders them (one '- ' bullet per line), recorded only after marketing approves that text. publish.sh refuses notes whose digest isn't recorded here (scripts/release-notes.sh).",
+  "approvals": {
+    "0.0.1216": {
+      "sha256": "d7ecac36fd7f3cbc2ccd262a8858d991f960df4ed19910b4bc0102a8fa5322c5",
+      "approvedBy": "CMO",
+      "date": "2026-10-24",
+      "note": "Recorded after publication: matches the corrected GitHub release page."
+    },
+    "0.0.1217": {
+      "sha256": "f2c195f960b2b5357dd7abf3d6e4edd4551d50f97fd9bd99c15bd414165a15d2",
+      "approvedBy": "CMO",
+      "date": "2026-10-24"
+    },
+    "0.0.1218": {
+      "sha256": "274e96be753914d05dcb47f65fefdb1ed51138aa5af68a269785181db66c36bd",
+      "approvedBy": "Benjamin",
+      "date": "2026-10-25",
+      "note": "Explicit interactive approval: \"ok go ahead and do all needed, approve\", replying to the exact two Voice2Text notes. Version 0.0.1217 was published separately; the approved wording is unchanged."
+    },
+    "0.0.1219": {
+      "sha256": "b6f9031e0c77d1eb9cc6a8e4d98cbe169be77529943d46f2d203285039e99b84",
+      "approvedBy": "CMO",
+      "date": "2026-10-25",
+      "note": "Exact public wording approved by CMO on 2026-10-25 for the cautious-approval reliability release."
+    },
+    "0.0.1220": {
+      "sha256": "823b010bb0dee393acd4fd6124a2a901c4c06dbde90a804d41a9715da12a0393",
+      "approvedBy": "CMO",
+      "date": "2026-10-25"
+    },
+    "0.0.1221": {
+      "sha256": "f176e369a200c30f01038b17db17568454f214809a74abd5ee8a2cc80606eb80",
+      "approvedBy": "CMO",
+      "date": "2026-10-26"
+    },
+    "0.0.1222": {
+      "sha256": "b9ef6c07b6561a4246f7dfb789cc0e8a86d2b6bbaf0767657cb99fbd85171692",
+      "approvedBy": "CMO",
+      "date": "2026-10-26"
+    },
+    "0.0.1223": {
+      "sha256": "38137b6c7e9e337306dcde074055944f9134e87e39ae580de871bb1af1250fe5",
+      "approvedBy": "CMO",
+      "date": "2026-10-26"
+    },
+    "0.0.1224": {
+      "sha256": "ea5ac60357880a98933337fb320945d42fe5484daeffbcf9645f656189bf3b08",
+      "approvedBy": "CMO",
+      "date": "2026-10-26"
+    }
+  }
+}

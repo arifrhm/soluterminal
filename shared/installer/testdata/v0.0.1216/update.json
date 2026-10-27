@@ -1,0 +1,28 @@
+{
+  "version": "0.0.1216",
+  "notes": "- Approve with caution now remembers when you cancel a permission prompt and leaves it for you to answer.\n- Turning auto-approval off during its countdown now stops that approval.\n- Move a running session from the pane menu\u2019s \u201cMove to workspace\u2026\u201d action. Choose an existing workspace in the same Windows or Linux environment. Its conversation and scrollback stay with it, and the destination opens with the moved pane focused.\n- If a pane moves in another window or device, a stale workspace layout now shows a warning and offers to reload. Reloading asks before replacing unsaved layout edits.\n- Workspace moves preserve delete protection, and a failed save leaves the pane in its original workspace.\n- Disconnecting a computer from your account now stops everything it sends straight away and removes it from your account, even if it\u2019s offline.\n- The microphone now closes as soon as you finish dictating. To keep it ready for 2 minutes after you dictate, turn that on in Settings \u203a Devices \u203a Voice.\n- Fixed: SoluTerminal could open to a blank window if you switched apps while it was starting.\n- Security: your sign-in token no longer appears in web addresses the app uses.\n- The anonymous daily check-in now also includes two yes/no answers: whether a Claude Code or Codex pane was started, and whether two agents worked together. Turn it off in Settings \u203a Devices \u203a Privacy.\n- Safer by default: agents in your panes can no longer approve their own requests or turn on auto-approve by themselves. To allow it for a while, use Settings \u203a Devices \u203a Agent permissions.",
+  "source": {"sha":"20ea243e7e9889c470cfb77b69d1e9235bc94324","builtAt":"2026-10-24T09:33:27Z","repo":"source","cutId":"rc_8ec3ae28","cutVersion":"0.0.1216"},
+  "platforms": {
+    "linux-amd64": {
+      "url": "https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1216/solud-linux-amd64",
+      "sha256": "8f1df1cfb6610f085157b6e2d0824a16995a49ba33f15bd093f973bb7e2f4ffa"
+    },
+    "linux-arm64": {
+      "url": "https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1216/solud-linux-arm64",
+      "sha256": "6a1f938ac45ce397d46d9e8dde785ccaf5eebe1f919cc8f799e3105a5327f893"
+    },
+    "darwin-amd64": {
+      "url": "https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1216/solud-darwin-amd64",
+      "sha256": "ea9e81dabc98829def596c3291669de57953cd5656633fa14c479fbeefe9b8cf"
+    },
+    "darwin-arm64": {
+      "url": "https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1216/solud-darwin-arm64",
+      "sha256": "670de6b71bdea3c4a2ad00a261db0ce0ba51522d59cc977d9cc41a501b83939d"
+    },
+    "windows-amd64": {
+      "url": "https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1216/solud-windows-amd64.exe",
+      "sha256": "d0795cffc26f1733179e07fd0e674966ce8e583db62f490565c152baef05d26b"
+    }
+  },
+  "shell": {"version":"0.0.1214","platforms":{"windows-amd64":{"url":"https://github.com/soluterminal/soluterminal-releases/releases/download/v0.0.1214/soluterminal_0.0.1214_x64-setup.exe","sha256":"c0b17a8b4d29df06a03e1a52a9dcddaf66de7fef279d4f17414b4fc1d12fe657"}}}
+}

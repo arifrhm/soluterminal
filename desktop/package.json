@@ -1,0 +1,15 @@
+{
+  "name": "soluterminal-desktop",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Tauri desktop wrapper for soluterminal — opens the local daemon's UI in a native window.",
+  "scripts": {
+    "tauri": "tauri",
+    "prepare-sidecar": "node ./scripts/prepare-sidecar.js",
+    "dev": "npm run prepare-sidecar && tauri dev",
+    "build": "npm run prepare-sidecar && tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.1.0"
+  }
+}

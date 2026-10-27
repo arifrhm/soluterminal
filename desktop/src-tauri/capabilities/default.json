@@ -1,0 +1,46 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability granted to the main window. The wizard uses dialog plugin to show the pair code, opener to launch the cloud URL in the user's browser, and notification for Windows Action Center alerts. The `remote.urls` block is critical: our frontend is served from the local solud daemon (not bundled with Tauri), so capabilities only apply to that remote origin if we list it here — without this, every plugin:* invocation from JS is silently denied by the ACL.",
+  "webviews": [
+    "main"
+  ],
+  "remote": {
+    "urls": [
+      "http://127.0.0.1:*",
+      "http://localhost:*"
+    ]
+  },
+  "permissions": [
+    "core:default",
+    "dialog:default",
+    "dialog:allow-confirm",
+    "dialog:allow-ask",
+    "dialog:allow-message",
+    "notification:default",
+    "opener:default",
+    "core:window:allow-minimize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-close",
+    "core:window:allow-start-dragging",
+    "core:window:allow-is-maximized",
+    "allow-desktop-set-backend-mode",
+    "allow-desktop-set-up-wsl",
+    "allow-desktop-set-launch-mode",
+    "allow-desktop-get-autostart",
+    "allow-desktop-set-autostart",
+    "allow-apply-shell-update",
+    "allow-apply-shell-update-silent",
+    "allow-exit-for-update",
+    "allow-reveal-shell-installer",
+    "allow-global-hotkey-owned",
+    "allow-open-external-window",
+    "allow-open-workspace-window",
+    "allow-browser-pane-ping",
+    "allow-browser-pane-create",
+    "allow-browser-pane-set-bounds",
+    "allow-browser-pane-navigate",
+    "allow-browser-pane-close",
+    "allow-browser-pane-set-visible"
+  ]
+}

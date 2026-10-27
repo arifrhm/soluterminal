@@ -1,0 +1,14 @@
+# Rust build artifacts
+src-tauri/target/
+src-tauri/gen/
+
+# Sidecar binaries — staged at dev/build time by scripts/prepare-sidecar.js
+src-tauri/binaries/
+# Tauri-bundled resources staged by prepare-sidecar.js (Linux solud for WSL backend)
+src-tauri/resources/
+
+# Node
+node_modules/
+
+# Tauri runtime/cache
+.tauri/

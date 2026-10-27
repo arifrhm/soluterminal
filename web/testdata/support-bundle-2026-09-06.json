@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-09-06T08:09:10Z",
+  "filename": "soluterminal-support-2026-09-06-080910.txt",
+  "sections": [
+    {
+      "id": "versions",
+      "title": "Versions and runtime",
+      "description": "Daemon, desktop shell, web bundle, backend, and runtime identity.",
+      "text": "version.backendId: fixture-wsl\nversion.daemon: 0.0.fixture\nversion.goarch: amd64\nversion.goos: linux\nversion.machineName: Fixture workstation\nversion.shellVersion: 0.0.fixture\nversion.webVersion: 0.0.fixture",
+      "bytes": 206,
+      "lines": 7,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "updates",
+      "title": "Update status",
+      "description": "Cached daemon and desktop update health.",
+      "text": "update.available: false\nupdate.current: 0.0.fixture\nupdate.lastSuccessMs: 1788682000000",
+      "bytes": 89,
+      "lines": 3,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "connection",
+      "title": "Connection health",
+      "description": "Relay state and local pane subscriber counts; account identity is omitted.",
+      "text": "connection.bindAddr: 127.0.0.1:8787\nconnection.cloud.configured: true\nconnection.cloud.hasCreds: true\nconnection.cloud.ownerEmail: \nconnection.cloud.relayState: online\nconnection.livePaneSubscribers: 1\nconnection.livePanes: 1",
+      "bytes": 223,
+      "lines": 7,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "system",
+      "title": "System health",
+      "description": "Bounded system sampler summary.",
+      "text": "system.level: ok\nsystem.reason: fixture healthy\nsystem.sampledAt: 2026-09-06T08:09:00Z",
+      "bytes": 89,
+      "lines": 3,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "claude",
+      "title": "Claude status",
+      "description": "CLI probe result without credential paths or tokens.",
+      "text": "claude.authenticated: true\nclaude.checked: true\nclaude.installed: true\nclaude.version: 2.1.fixture",
+      "bytes": 98,
+      "lines": 4,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "sessions",
+      "title": "Session inventory",
+      "description": "Up to 40 panes with operational fields only; private task context is omitted.",
+      "text": "id=pane_fixture status=running kind=native agent=claude provider=anthropic cols=120 rows=36 pid=4242 ageSec=318 dimsUnverified=false",
+      "bytes": 132,
+      "lines": 1,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "logs",
+      "title": "Recent daemon logs",
+      "description": "Newest 300 entries from the bounded in-memory diagnostic ring.",
+      "text": "2026-09-06T08:08:58Z INFO relay connected backend=fixture-wsl\n2026-09-06T08:09:00Z INFO system sample level=ok",
+      "bytes": 116,
+      "lines": 2,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "daemonLog",
+      "title": "Durable daemon log tail",
+      "description": "Newest bounded tail of the daemon-owned solud.log file.",
+      "text": "=== fixture solud boot version=0.0.fixture pid=4242 ===\nINFO fixture daemon ready",
+      "bytes": 79,
+      "lines": 2,
+      "selectedByDefault": true,
+      "empty": false,
+      "truncated": false
+    },
+    {
+      "id": "paneText",
+      "title": "Focused pane tail",
+      "description": "Optional ANSI-stripped tail: at most 40 lines and 16 KiB from the pane selected when collection started.",
+      "text": "$ npm run test\nTests passed in the no-live-data fixture.",
+      "bytes": 56,
+      "lines": 2,
+      "selectedByDefault": false,
+      "empty": false,
+      "truncated": false,
+      "note": "Optional pane content is unchecked until you explicitly include it."
+    }
+  ],
+  "omitted": [
+    "Credential stores and claim tokens",
+    "Browser cookies and session tokens",
+    "Full terminal scrollback (only a bounded tail of one pane you pick can be included)",
+    "Environment variables and .env files",
+    "Workflow/task prompts and agent transcripts",
+    "Screenshots and all other images",
+    "Paired account email"
+  ],
+  "logPaths": [
+    "~/.local/share/soluterminal/solud.log"
+  ]
+}

@@ -1,0 +1,202 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"io"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"strings"
+	"sync/atomic"
+	"testing"
+	"time"
+
+	"soluterminal-shared/machineauth"
+	"soluterminal-shared/updatestatus"
+)
+
+func fleetTestUpdater() *Updater {
+	u := NewUpdater("1.0.0", "", "", nil, nil)
+	u.restartGate = &atomic.Bool{}
+	u.autoApplyWhenIdle = func() bool { return true }
+	u.status.Latest, u.status.Available = "2.0.0", true
+	return u
+}
+
+func TestFleetUpdateStatusReasons(t *testing.T) {
+	for _, tc := range []struct {
+		name, reason string
+		setup        func(*Updater)
+	}{
+		{"ready", "", func(u *Updater) {}},
+		{"paused", "kill-switch", func(u *Updater) { u.ctrlEffective = &UpdateControl{Paused: true} }},
+		{"quarantine", "quarantined", func(u *Updater) { u.ctrlEffective = &UpdateControl{HaltAtOrAbove: "2.0.0"} }},
+		{"floor", "floor", func(u *Updater) { u.ctrlEffective = &UpdateControl{HaltBelow: "3.0.0"} }},
+		{"cohort", "rollout-cohort", func(u *Updater) { u.ctrlEffective = &UpdateControl{RolloutPercent: intPtr(0)} }},
+		{"mandatory-bypasses-cohort", "", func(u *Updater) { u.ctrlEffective = &UpdateControl{RolloutPercent: intPtr(0), MinDaemonVer: "2.0.0"} }},
+		{"hold", "version-hold", func(u *Updater) { u.status.HoldVersion = "2.0.0"; u.status.HoldReason = "private user note" }},
+		{"drain", "drain", func(u *Updater) { u.drainStart = time.Now(); u.drainInflight = 1 }},
+		{"backoff", "drain", func(u *Updater) { u.nextRetryTime = time.Now().Add(time.Minute) }},
+		{"restart", "restart-pending", func(u *Updater) { u.restartGate.Store(true) }},
+		{"swapped", "restart-pending", func(u *Updater) { u.swapped = true }},
+		{"applying", "applying", func(u *Updater) { u.applying = true }},
+		{"busy", "busy", func(u *Updater) {
+			u.busyCheck = func() (bool, string, string) { return true, "private reason", "private pane" }
+		}},
+		{"busy-without-candidate", "", func(u *Updater) {
+			u.status.Available = false
+			u.busyCheck = func() (bool, string, string) { return true, "", "" }
+		}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			u := fleetTestUpdater()
+			tc.setup(u)
+			s := u.fleetUpdateStatus()
+			if s.Reason != tc.reason {
+				t.Fatalf("got %+v; want reason %s", s, tc.reason)
+			}
+			b, _ := json.Marshal(s)
+			if strings.Contains(string(b), "private") {
+				t.Fatalf("leaked private context: %s", b)
+			}
+		})
+	}
+}
+
+func TestFleetUpdateStatusDisabledAndTimes(t *testing.T) {
+	t.Setenv("SOLU_AUTO_UPDATE", "0")
+	u := fleetTestUpdater()
+	u.autoApplyWhenIdle = func() bool { return false }
+	u.status.LastCheckedMs, u.status.LastSuccessMs = 123, 122
+	s := u.fleetUpdateStatus()
+	if s.AutoUpdate || s.DisabledReason != "environment" || s.LastCheckMs != 123 || s.LastSuccessMs != 0 {
+		t.Fatalf("status %+v", s)
+	}
+	u.status.Required = true
+	if s = u.fleetUpdateStatus(); !s.AutoUpdate || s.DisabledReason != "" {
+		t.Fatalf("required policy %+v", s)
+	}
+	u.current = "dev"
+	if s = u.fleetUpdateStatus(); s.AutoUpdate || s.DisabledReason != "dev-build" {
+		t.Fatalf("dev %+v", s)
+	}
+	u.current, u.fleetLastSuccessMs = "1.0.0.42", 100
+	if s = u.fleetUpdateStatus(); s.Channel != "preview" || s.LastSuccessMs != 100 {
+		t.Fatalf("preview %+v", s)
+	}
+	u.fleetPollDisabled = "signature-key-invalid"
+	if s = u.fleetUpdateStatus(); s.AutoUpdate || s.DisabledReason != "signature-key-invalid" {
+		t.Fatalf("key %+v", s)
+	}
+}
+
+func TestFleetUpdateStatusReportsSuppressedCheckFailures(t *testing.T) {
+	disableManifestSignature(t)
+	u := fleetTestUpdater()
+	u.manifestURL = "https://updates.test/update.json?secret=do-not-send"
+	u.httpClient = &http.Client{Transport: &scriptedRT{statuses: []int{500}}}
+	st, err := u.Check(context.Background())
+	if err == nil || st.LastError != "" {
+		t.Fatalf("expected UI-suppressed failure: %v %+v", err, st)
+	}
+	s := u.fleetUpdateStatus()
+	if s.LastCheckError == "" || s.LastCheckMs == 0 || s.LatestVersion != "2.0.0" {
+		t.Fatalf("missing failure/cache %+v", s)
+	}
+	b, _ := json.Marshal(s)
+	if strings.Contains(string(b), "secret") || strings.Contains(string(b), "https") {
+		t.Fatalf("leak %s", b)
+	}
+}
+
+func TestFleetUpdateStatusControlFailureAndRecovery(t *testing.T) {
+	disableManifestSignature(t)
+	u := fleetTestUpdater()
+	u.manifestURL = "https://updates.test/update.json"
+	u.httpClient = &http.Client{Transport: &scriptedRT{
+		statuses: []int{200, 500, 200, 404},
+		body:     []byte(`{"version":"2.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://updates.test/solud","sha256":"abc"}}}`),
+	}}
+	if _, err := u.Check(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	s := u.fleetUpdateStatus()
+	if s.LastCheckError != "control" || s.Reason != "kill-switch" {
+		t.Fatalf("control failure %+v", s)
+	}
+	if _, err := u.Check(context.Background()); err != nil {
+		t.Fatal(err)
+	}
+	s = u.fleetUpdateStatus()
+	if s.LastCheckError != "" || s.Reason != "" || s.LastSuccessMs != 0 {
+		t.Fatalf("recovery %+v", s)
+	}
+}
+
+func TestFleetUpdateStatusPollRefusal(t *testing.T) {
+	t.Setenv("SOLU_UPDATE_MANIFEST_PUBKEY", "invalid-test-key")
+	u := fleetTestUpdater()
+	u.StartBackgroundPoll(context.Background())
+	s := u.fleetUpdateStatus()
+	if s.AutoUpdate || s.DisabledReason != "signature-key-invalid" || s.LastCheckMs != 0 {
+		t.Fatalf("poll refusal %+v", s)
+	}
+}
+
+func TestFleetStatusReporterCadence(t *testing.T) {
+	now := time.Now()
+	s := updatestatus.Status{Channel: "stable"}
+	r := fleetStatusReporter{}
+	if !r.due(s, now) {
+		t.Fatal("initial report missing")
+	}
+	r.last, r.lastAttempt, r.lastDelivered = s, now, true
+	s.LastCheckMs = 123
+	if r.due(s, now.Add(time.Minute)) {
+		t.Fatal("timestamp-only poll triggered report")
+	}
+	s.Reason = "busy"
+	if r.due(s, now.Add(time.Second)) || !r.due(s, now.Add(time.Minute)) {
+		t.Fatal("transition cadence")
+	}
+	r.lastDelivered = false
+	if r.due(s, now.Add(time.Minute)) || !r.due(s, now.Add(5*time.Minute)) {
+		t.Fatal("failed delivery retry cadence")
+	}
+	r.lastDelivered = true
+	if !r.due(r.last, now.Add(5*time.Minute)) {
+		t.Fatal("heartbeat missing")
+	}
+}
+
+func TestFleetStatusPostSignedAndSanitized(t *testing.T) {
+	const token = "test-fleet-token"
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		b, _ := io.ReadAll(r.Body)
+		if r.URL.Path != "/api/internal/update-status" {
+			t.Error(r.URL.Path)
+		}
+		if r.Header.Get("Authorization") != "Bearer "+token {
+			t.Error("missing auth")
+		}
+		// Match the signing contract using the request timestamp.
+		if result, err := machineauth.VerifyHeaders(r.Header, token, b, time.Now()); err != nil || result.Legacy {
+			t.Errorf("invalid signature: %v", err)
+		}
+		if strings.Contains(string(b), "secret") {
+			t.Errorf("leaked %s", b)
+		}
+		w.WriteHeader(204)
+	}))
+	defer server.Close()
+	if !postFleetStatus(context.Background(), server.URL, token, updatestatus.Status{Channel: "stable", LastCheckError: "secret"}) {
+		t.Fatal("delivery failed")
+	}
+	for _, err := range []error{errors.New("signature secret"), &url.Error{Op: "Get", URL: "https://secret", Err: context.DeadlineExceeded}, errors.New("manifest secret")} {
+		if strings.Contains(fleetCheckError(err), "secret") {
+			t.Fatal("error leak")
+		}
+	}
+}

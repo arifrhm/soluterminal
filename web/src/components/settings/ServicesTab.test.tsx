@@ -1,0 +1,11 @@
+import {act,fireEvent,render,screen,waitFor} from '@testing-library/react';
+import {beforeEach,expect,it,vi} from 'vitest';
+const mocks=vi.hoisted(()=>({scope:{prefix:'/m/a',backendPrefix:'',key:'a'},listeners:new Set<()=>void>(),get:vi.fn(),put:vi.fn()}));
+vi.mock('../../api',()=>({api:{getWorkflowSettings:mocks.get,setWorkflowSettings:mocks.put},currentRoutingScope:()=>mocks.scope,onRoutingScopeChange:(fn:()=>void)=>{mocks.listeners.add(fn);return()=>mocks.listeners.delete(fn)}}));
+vi.mock('./ModelGatewaySection',()=>({ModelGatewaySection:({update}:{update:(fn:(x:object)=>object)=>Promise<object>})=><button onClick={()=>void update(x=>({...x,localOpenAI:{model:'new'}})).catch(()=>{})}>Save gateway</button>}));
+vi.mock('./ResourceLimitsSection',()=>({ResourceLimitsSection:()=>null}));
+vi.mock('./ReleaseTrainSection',()=>({ReleaseTrainSection:()=>null}));
+import {ServicesTab} from './ServicesTab';
+beforeEach(()=>{mocks.scope={prefix:'/m/a',backendPrefix:'',key:'a'};mocks.listeners.clear();mocks.get.mockReset().mockResolvedValue({});mocks.put.mockReset().mockResolvedValue({})});
+it('pins a shared settings save to the loaded machine and revision',async()=>{render(<ServicesTab/>);fireEvent.click(await screen.findByText('Save gateway'));await waitFor(()=>expect(mocks.put).toHaveBeenCalled());expect(mocks.put.mock.calls[0]).toEqual([{localOpenAI:{model:'new'}},{},mocks.scope])});
+it('refuses a pending save after switching machines',async()=>{render(<ServicesTab/>);await screen.findByText('Save gateway');let finish:(x:object)=>void=()=>{};mocks.get.mockImplementationOnce(()=>new Promise(resolve=>{finish=resolve}));fireEvent.click(screen.getByText('Save gateway'));await waitFor(()=>expect(mocks.get).toHaveBeenCalledTimes(2));act(()=>{mocks.scope={prefix:'/m/b',backendPrefix:'',key:'b'};mocks.listeners.forEach(fn=>fn())});await act(async()=>{finish({});await Promise.resolve()});expect(mocks.put).not.toHaveBeenCalled()});

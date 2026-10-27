@@ -1,0 +1,20 @@
+[
+  {
+    "kind": "event",
+    "seqs": [
+      1
+    ]
+  },
+  {
+    "kind": "tool-group",
+    "seqs": [
+      2
+    ]
+  },
+  {
+    "kind": "event",
+    "seqs": [
+      4
+    ]
+  }
+]

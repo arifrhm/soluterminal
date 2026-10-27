@@ -1,0 +1,54 @@
+{
+  "scenario": "quality-escalation",
+  "policy": "auto_compatible",
+  "outcome": "escalate:frontier/xhigh",
+  "cursor": 0,
+  "plane": "quality",
+  "trigger": "repair_round",
+  "evidence": "semantic repair round",
+  "effectiveEffort": "xhigh",
+  "maxSteps": 4,
+  "profileVersion": "snapshot:standard:executor",
+  "policySource": "standard/executor",
+  "from": {
+    "runtime": "codex-headless",
+    "model": "premium",
+    "effort": "high"
+  },
+  "to": {
+    "runtime": "codex-headless",
+    "model": "frontier",
+    "effort": "xhigh"
+  },
+  "candidates": [
+    {
+      "index": 0,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "premium",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "escalated_from",
+      "detail": "the weaker pre-escalation binding",
+      "provider": "openai",
+      "role": "executor",
+      "tier": "premium",
+      "nativeEffort": "high"
+    },
+    {
+      "index": 1,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "frontier",
+        "effort": "xhigh"
+      },
+      "eligible": true,
+      "reasonCode": "selected",
+      "provider": "openai",
+      "role": "executor",
+      "tier": "frontier",
+      "nativeEffort": "xhigh"
+    }
+  ]
+}

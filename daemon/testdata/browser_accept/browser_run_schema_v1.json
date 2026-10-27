@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "binding": {},
+  "sandbox": {},
+  "flows": [
+    {
+      "id": "flow-1",
+      "outcome": "fail",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Click Save",
+          "tool": "mcp__solubrowse__pane_click_text",
+          "ok": true,
+          "consoleErrorsSinceAction": [],
+          "screenshotArtifactId": "shots/flow-1-1.png"
+        }
+      ],
+      "oracles": {
+        "dom": {
+          "state": "fail",
+          "detail": "The saved value did not appear"
+        },
+        "console": {
+          "state": "pass",
+          "detail": "No new console errors"
+        },
+        "network": {
+          "state": "pass",
+          "detail": "The save request returned 200"
+        },
+        "visual": {
+          "state": "fail",
+          "detail": "The stale value remained visible"
+        }
+      }
+    }
+  ],
+  "driverFailures": [
+    "console_oracle: recorder reported an incomplete interval"
+  ],
+  "appDefects": [
+    {
+      "id": "DEF-1",
+      "flowId": "flow-1",
+      "summary": "Saved value remained stale after a successful request",
+      "evidenceRefs": [
+        "shots/flow-1-1.png"
+      ]
+    }
+  ],
+  "skipped": [
+    "delete-settings: risky action was not exercised because policy blocked it"
+  ],
+  "driverRestarts": 0,
+  "daemonSweep": {}
+}

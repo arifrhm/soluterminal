@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "binding": {},
+  "sandbox": {},
+  "flows": [
+    {
+      "id": "inbox-loads-audit-vs-operational",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Open {preview-host}/preview/pv_4ff96dd95373d2e3c1458bd0a8/ at 1440x1000 and read the rendered page",
+          "tool": "mcp__solubrowse__pane_reload",
+          "ok": false,
+          "why": "URL rendered the soluterminal workspace shell (WORKSPACES/TODOS/FILES/LOCALHOST PORTS/SCHEDULES/AGENTS panel, 'No sessions in this workspace', '0 running' agents) instead of the target Needs-You-inbox app; no inbox UI ever appeared to select a task card from",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Target app markup never rendered; only the soluterminal shell DOM was present"},
+        "console": {"state": "na", "detail": "No console errors observed on the shell, but the app under test never loaded so this is not evidence of app health"},
+        "network": {"state": "unverified", "detail": "Only an internal ipc.localhost/pane_selection_signal call observed; no app API calls occurred"},
+        "visual": {"state": "unverified", "detail": "Screenshot shows the soluterminal shell, not the inbox; could not be persisted before sandbox teardown"}
+      }
+    },
+    {
+      "id": "multi-node-lineage-task-local-counters",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to reach the lineage view from the inbox",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "Inbox was never reachable (see inbox-loads-audit-vs-operational); sandbox subsequently became unavailable (unknown mode 'solu-accept-a5a0bee4')",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "lineage-invalid-id-negative",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open lineage view and edit URL with malformed identifiers",
+          "tool": "mcp__solubrowse__get_pane_url",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "fast-path-fallback-single-event",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open task detail events/timeline tab",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "incremental-plan-and-manifest",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open task detail reconciliation/plan tab",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "successor-mint-single-bundle",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open predecessor task detail in needs_merge state",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "reconciled-candidate-fresh-gates",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open reconciled-candidate task detail gates/checks panel (observe-only; approval control would not be clicked per risk policy)",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "evidence-row-needs-you-inbox-passed",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open verification/evidence view and locate the needs-you-inbox row",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "auto-recovering-conflict-header",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open Needs You inbox with the auto-recovering-conflict scenario",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "inbox-filter-negative-input",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open Needs You inbox and use the filter/search input",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "responsive-and-theme-rendering",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open Needs You inbox, switch theme, and resize viewport",
+          "tool": "mcp__solubrowse__pane_set_viewport",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    },
+    {
+      "id": "statistics-separate-counters",
+      "outcome": "driver_error",
+      "steps": [
+        {
+          "n": 1,
+          "action": "Attempt to open statistics view and read recovery section counters",
+          "tool": "mcp__solubrowse__get_pane_ax",
+          "ok": false,
+          "why": "App never rendered at the supplied URL; sandbox became unavailable before this flow could be attempted",
+          "consoleErrorsSinceAction": []
+        }
+      ],
+      "oracles": {
+        "dom": {"state": "unverified", "detail": "Never reached"},
+        "console": {"state": "unverified", "detail": "Never reached"},
+        "network": {"state": "unverified", "detail": "Never reached"},
+        "visual": {"state": "unverified", "detail": "Never reached"}
+      }
+    }
+  ],
+  "driverFailures": [
+    "app_not_served: the supplied preview URL {preview-host}/preview/pv_4ff96dd95373d2e3c1458bd0a8/ (viewport 1440x1000, hard reload) rendered the soluterminal workspace/IDE shell (sidebar sections WORKSPACES/TODOS/FILES/LOCALHOST PORTS/SCHEDULES/AGENTS, body text 'No sessions in this workspace', 'Start with your default shell...', header shows '0 running' agent sessions, no localhost ports listed) instead of the target reconciliation task-recovery web app described in the acceptance criteria (Needs You inbox, lineage view, statistics view, evidence/verification view). No app UI, DOM, console, or network activity from the target application was ever observed because the target app was never served at this URL.",
+    "sandbox_teardown: mid-drive, after a single click on the shell's LOCALHOST PORTS disclosure control (pane_click_ax ref 24, which reported nav_in_progress), the supplied sandbox binding (window=main-8, mode=solu-accept-a5a0bee4, pane_index=0) became entirely unavailable. It no longer appears in mcp__solubrowse__list_panes, and every subsequent call against it (get_pane_url, pane_wait_nav) returned the error \"unknown mode 'solu-accept-a5a0bee4'\". The sandbox could not be recovered for the remainder of the run, so no further evidence (including a persisted screenshot of the shell state) could be captured."
+  ],
+  "appDefects": [],
+  "skipped": [
+    "inbox-loads-audit-vs-operational: not exercised beyond initial load — the supplied URL served the soluterminal shell, not the target app, then the sandbox became unavailable",
+    "multi-node-lineage-task-local-counters: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "lineage-invalid-id-negative: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "fast-path-fallback-single-event: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "incremental-plan-and-manifest: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "successor-mint-single-bundle: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "reconciled-candidate-fresh-gates: not exercised — target app never reachable at the supplied URL before sandbox teardown; risky approval action was in any case policy-blocked as observe-only",
+    "evidence-row-needs-you-inbox-passed: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "auto-recovering-conflict-header: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "inbox-filter-negative-input: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "responsive-and-theme-rendering: not exercised — target app never reachable at the supplied URL before sandbox teardown",
+    "statistics-separate-counters: not exercised — target app never reachable at the supplied URL before sandbox teardown"
+  ],
+  "driverRestarts": 0,
+  "daemonSweep": {}
+}

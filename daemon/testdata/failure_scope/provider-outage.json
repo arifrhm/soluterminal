@@ -1,0 +1,78 @@
+{
+  "scenario": "provider-outage",
+  "policy": "auto_compatible",
+  "outcome": "exhausted",
+  "cursor": 0,
+  "plane": "availability",
+  "failureScopeKind": "vendor",
+  "failureScopeIdentity": "openai",
+  "recoveryCondition": "new_scope_evidence",
+  "chainFailureScopeKind": "vendor",
+  "skipped": [
+    {
+      "index": 1,
+      "binding": {
+        "runtime": "codex-alt",
+        "model": "premium",
+        "effort": "high"
+      },
+      "reason": "incompatible:scope_vendor"
+    },
+    {
+      "index": 2,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "reason": "incompatible:scope_vendor"
+    }
+  ],
+  "candidates": [
+    {
+      "index": 0,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "premium",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "failed_head",
+      "detail": "the route that failed",
+      "provider": "openai",
+      "accountMasked": "s…@example.com",
+      "tier": "premium",
+      "nativeEffort": "high"
+    },
+    {
+      "index": 1,
+      "binding": {
+        "runtime": "codex-alt",
+        "model": "premium",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "scope_vendor",
+      "detail": "incompatible:scope_vendor",
+      "provider": "openai",
+      "accountMasked": "s…@example.com",
+      "tier": "premium",
+      "nativeEffort": "high"
+    },
+    {
+      "index": 2,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "gpt-6-astra",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "scope_vendor",
+      "detail": "incompatible:scope_vendor",
+      "provider": "openai",
+      "accountMasked": "s…@example.com",
+      "tier": "frontier",
+      "nativeEffort": "high"
+    }
+  ]
+}

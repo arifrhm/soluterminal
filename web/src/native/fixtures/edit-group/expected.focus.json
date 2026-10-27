@@ -1,0 +1,16 @@
+[
+  {
+    "kind": "event",
+    "seqs": [
+      1
+    ]
+  },
+  {
+    "kind": "edit-group",
+    "seqs": [
+      2,
+      4,
+      6
+    ]
+  }
+]

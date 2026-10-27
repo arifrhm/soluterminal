@@ -1,0 +1,3 @@
+package main
+
+const capacityEnvelope = `{"type":"error","message":"Selected model is at capacity. Please try a different model."}`

@@ -1,0 +1,944 @@
+{
+  "task": {
+    "id": "wft_fallback_auto-hop",
+    "title": "Compatible fallback used automatically",
+    "prompt": "test",
+    "repoPath": "/repo/fallback-consent",
+    "requestedTier": "standard",
+    "resolvedTier": "standard",
+    "status": "awaiting_approval",
+    "stage": "human_approval",
+    "repairCount": 0,
+    "landRepairCount": 0,
+    "budgets": {
+      "stageTimeoutSec": 0,
+      "maxRepairLoops": 0,
+      "landRepairLoops": 0,
+      "maxInvocations": 0,
+      "maxRefuters": 0,
+      "maxArtifactRetries": 0
+    },
+    "fallbackChains": {
+      "executor": [
+        {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        {
+          "runtime": "codex-alt",
+          "model": "premium",
+          "effort": "high"
+        }
+      ]
+    },
+    "chainCursors": {
+      "executor": 1
+    },
+    "chainReasons": {
+      "executor": "quota"
+    },
+    "fallbackPolicyPlane": 1,
+    "roleFallbackCounts": {
+      "executor": 1
+    },
+    "chainPolicy": {
+      "executor": {
+        "value": "auto_compatible",
+        "source": "settings-default",
+        "scope": "settings"
+      }
+    },
+    "chainDecisionId": {
+      "executor": ""
+    },
+    "chainFallbackFrom": {
+      "executor": {
+        "runtime": "codex-headless",
+        "model": "premium",
+        "effort": "high"
+      }
+    },
+    "chainDegraded": {
+      "executor": false
+    },
+    "fallbackEngagements": 1,
+    "stages": null,
+    "invocations": [
+      {
+        "id": "wfi_fallback_auto-hop",
+        "stage": "implement",
+        "role": "executor",
+        "provider": "fake",
+        "model": "premium",
+        "effort": "high",
+        "runtime": "codex-alt",
+        "chainIndex": 1,
+        "fallbackFrom": {
+          "runtime": "codex-headless",
+          "model": "premium",
+          "effort": "high"
+        },
+        "fallbackReason": "quota",
+        "fallbackPolicy": {
+          "value": "auto_compatible",
+          "source": "settings-default",
+          "scope": "settings"
+        },
+        "executionMode": "",
+        "billingMode": "subscription",
+        "startedAt": "2026-08-26T00:00:00Z",
+        "endedAt": "2026-08-26T00:00:00Z",
+        "outcome": "ok",
+        "retry": 0,
+        "tokensIn": null,
+        "tokensOut": null,
+        "estimatedCostUsd": null
+      }
+    ],
+    "artifacts": null,
+    "lastResumedAt": "0001-01-01T00:00:00Z",
+    "lastAppliedEventSeq": 3,
+    "createdAt": "2026-08-26T00:00:00Z",
+    "updatedAt": "2026-08-26T00:00:00Z",
+    "disposition": "active",
+    "decision": {
+      "kind": "merge_decision",
+      "title": "Compatible fallback used automatically",
+      "outcomeSought": "Review the candidate and its current acceptance evidence before deciding whether it should merge.",
+      "whatHappened": "The workflow is waiting at a human authority boundary.",
+      "needToAct": true,
+      "recommendedAction": {
+        "label": "Review merge decision",
+        "apiPath": "/api/workflow/tasks/wft_fallback_auto-hop/approve",
+        "consequence": "Approval starts the guarded landing transaction; rejection preserves the audit and stops the task."
+      },
+      "furtherMergeDecision": false,
+      "taskId": "wft_fallback_auto-hop",
+      "lineage": [],
+      "recoveryAttempts": null
+    },
+    "queueState": "awaiting_approval",
+    "effectiveLimits": {
+      "idleSec": 0,
+      "hardSec": 0,
+      "source": "legacy"
+    },
+    "stops": [
+      {
+        "plane": "approval",
+        "code": "approval_unevaluated",
+        "authorityClass": "configurable",
+        "retry": "manual",
+        "reversibility": "reversible"
+      }
+    ],
+    "verificationOutcome": "nothing_ran",
+    "verificationOutcomeReason": "no verification commands are configured for this repository (.solu/workflow.json)",
+    "triageEligible": false,
+    "previewEligibility": {
+      "eligible": false,
+      "reason": "Previews are not enabled on this daemon."
+    },
+    "effectiveFallbackPolicy": {
+      "plane": "policy",
+      "roles": [
+        {
+          "role": "executor",
+          "value": "auto_compatible",
+          "source": "settings-default",
+          "scope": "settings"
+        }
+      ]
+    },
+    "health": {
+      "verdict": "needs_action",
+      "reason": "decision_required",
+      "headline": "Needs you — decision required",
+      "since": "2026-08-26T00:00:00Z",
+      "checkedAt": "2026-08-26T00:00:00Z",
+      "command": "human_approval",
+      "lastActivityAt": "2026-08-26T00:00:00Z",
+      "lastActivityKind": "invocation_event",
+      "silenceSec": 0,
+      "nextAction": {
+        "kind": "human",
+        "text": "Open the decision and choose the recommended action"
+      },
+      "evidence": [
+        "workflow inbox has an unresolved decision"
+      ]
+    },
+    "autonomyWait": {
+      "taskId": "wft_fallback_auto-hop",
+      "title": "Compatible fallback used automatically",
+      "class": "policy_mismatch",
+      "reason": "no automatic approval authority applies: level Repository policy and this repository has no preauthorize block",
+      "nextAction": "Decide now, or adjust the approval level, floors, or gate policy so it covers this repository, tier, and deliverable."
+    }
+  },
+  "tasks": [
+    {
+      "startedAt": "2026-08-26T00:00:00Z",
+      "invocationCount": 1,
+      "repairCount": 0,
+      "health": {
+        "verdict": "needs_action",
+        "reason": "decision_required",
+        "headline": "Needs you — decision required",
+        "since": "2026-08-26T00:00:00Z",
+        "checkedAt": "2026-08-26T00:00:00Z",
+        "command": "human_approval",
+        "lastActivityAt": "2026-08-26T00:00:00Z",
+        "lastActivityKind": "invocation_event",
+        "silenceSec": 0,
+        "nextAction": {
+          "kind": "human",
+          "text": "Open the decision and choose the recommended action"
+        },
+        "evidence": [
+          "workflow inbox has an unresolved decision"
+        ]
+      },
+      "id": "wft_fallback_auto-hop",
+      "title": "Compatible fallback used automatically",
+      "status": "awaiting_approval",
+      "stage": "human_approval",
+      "requestedTier": "standard",
+      "resolvedTier": "standard",
+      "repoPath": "/repo/fallback-consent",
+      "updatedAt": "2026-08-26T00:00:00Z",
+      "createdAt": "2026-08-26T00:00:00Z",
+      "disposition": "active",
+      "decision": {
+        "kind": "merge_decision",
+        "title": "Compatible fallback used automatically",
+        "outcomeSought": "Review the candidate and its current acceptance evidence before deciding whether it should merge.",
+        "whatHappened": "The workflow is waiting at a human authority boundary.",
+        "needToAct": true,
+        "recommendedAction": {
+          "label": "Review merge decision",
+          "apiPath": "/api/workflow/tasks/wft_fallback_auto-hop/approve",
+          "consequence": "Approval starts the guarded landing transaction; rejection preserves the audit and stops the task."
+        },
+        "furtherMergeDecision": false,
+        "taskId": "wft_fallback_auto-hop",
+        "lineage": [],
+        "recoveryAttempts": null
+      },
+      "queueState": "awaiting_approval",
+      "autonomyWait": {
+        "taskId": "wft_fallback_auto-hop",
+        "title": "Compatible fallback used automatically",
+        "class": "policy_mismatch",
+        "reason": "no automatic approval authority applies: level Repository policy and this repository has no preauthorize block",
+        "nextAction": "Decide now, or adjust the approval level, floors, or gate policy so it covers this repository, tier, and deliverable."
+      },
+      "stops": [
+        {
+          "plane": "approval",
+          "code": "approval_unevaluated",
+          "authorityClass": "configurable",
+          "retry": "manual",
+          "reversibility": "reversible"
+        }
+      ]
+    }
+  ],
+  "inbox": {
+    "decide": [
+      {
+        "taskId": "wft_fallback_auto-hop",
+        "title": "Compatible fallback used automatically",
+        "status": "awaiting_approval",
+        "stage": "human_approval",
+        "disposition": "needs_decision",
+        "queueState": "awaiting_approval",
+        "decision": {
+          "kind": "merge_decision",
+          "title": "Compatible fallback used automatically",
+          "outcomeSought": "Review the candidate and its current acceptance evidence before deciding whether it should merge.",
+          "whatHappened": "The workflow is waiting at a human authority boundary.",
+          "needToAct": true,
+          "recommendedAction": {
+            "label": "Review merge decision",
+            "apiPath": "/api/workflow/tasks/wft_fallback_auto-hop/approve",
+            "consequence": "Approval starts the guarded landing transaction; rejection preserves the audit and stops the task."
+          },
+          "furtherMergeDecision": false,
+          "taskId": "wft_fallback_auto-hop",
+          "lineage": [],
+          "recoveryAttempts": null
+        },
+        "lineage": [],
+        "updatedAt": "2026-08-26T00:00:00Z"
+      }
+    ],
+    "recovering": [],
+    "waiting": [],
+    "history": [],
+    "counts": {
+      "decide": 1,
+      "fallbackConsent": 0
+    },
+    "rootBlockers": [],
+    "pulse": {
+      "checkedAt": "2026-08-26T00:00:00Z",
+      "counts": {
+        "progressing": 0,
+        "waiting": 0,
+        "slow": 0,
+        "recovering": 0,
+        "stuck": 0,
+        "needsAction": 1
+      },
+      "machine": {
+        "running": 0,
+        "cap": 10,
+        "heavyRunning": 0,
+        "heavyCap": 2,
+        "heavyCapEff": 2,
+        "heavyQueued": 0,
+        "pressureElevated": false,
+        "cpuAdmissionSource": "unknown",
+        "cpuAdmissionReason": "cpu availability unknown",
+        "overdueGrants": 0,
+        "reapedGrants": 0
+      },
+      "allOk": false,
+      "attention": [
+        {
+          "taskId": "wft_fallback_auto-hop",
+          "title": "Compatible fallback used automatically",
+          "verdict": "needs_action",
+          "reason": "decision_required",
+          "headline": "Needs you — decision required"
+        }
+      ]
+    }
+  },
+  "settings": {
+    "defaultRoleBindings": {},
+    "narrator": {
+      "enabled": true,
+      "stalenessMinutes": 18
+    },
+    "triage": {
+      "enabled": true,
+      "maxTurns": 30,
+      "maxAutoRunsPerTask": 3,
+      "autoApply": {
+        "enabled": false,
+        "maxAutoResumesPerTask": 2,
+        "maxActionsPer10Min": 3,
+        "classes": {
+          "transientInfra": true,
+          "quotaParkedResume": false,
+          "reland": false,
+          "specSpawnFailure": false,
+          "contentSafetyRetry": true
+        }
+      }
+    },
+    "releaseTrain": {
+      "enabled": false,
+      "minFunctionalLandings": 6,
+      "maxUnreleasedAgeHours": 12,
+      "quietRequired": true,
+      "notifyVetoMinutes": 10,
+      "cutLockWaitMinutes": 45
+    },
+    "approvalAutopilot": {
+      "level": 1,
+      "vetoMinutes": 30,
+      "maxPolicyApprovalsPerHour": 6
+    },
+    "proposalAutopilot": {
+      "enabled": false,
+      "vetoMinutes": 30,
+      "maxAcceptsPerHour": 4
+    },
+    "janitor": {
+      "enabled": true,
+      "autoResolve": true,
+      "autoRepoint": true,
+      "proposedCancels": true,
+      "cancelVetoMinutes": 30
+    },
+    "delegation": {
+      "maxWaitMinutes": 10,
+      "suppressInformational": false
+    },
+    "fallbackPolicy": {
+      "enabled": true,
+      "default": "auto_compatible",
+      "autoCostRatioMax": 1.5,
+      "breaker": true
+    },
+    "throughputGuardian": {
+      "mode": "shadow"
+    }
+  },
+  "health": {
+    "runtimes": [
+      {
+        "id": "codex-alt",
+        "provider": "fake",
+        "signedIn": null,
+        "identity": {
+          "email": "",
+          "plan": ""
+        },
+        "quota": null,
+        "lastProbeAtEpoch": 0,
+        "probeSource": "",
+        "lastInvocation": null,
+        "status": "healthy",
+        "installed": null,
+        "credentialState": "ok"
+      },
+      {
+        "id": "codex-headless",
+        "provider": "fake",
+        "signedIn": null,
+        "identity": {
+          "email": "",
+          "plan": ""
+        },
+        "quota": [],
+        "lastProbeAtEpoch": 0,
+        "probeSource": "cache",
+        "lastInvocation": null,
+        "status": "unknown",
+        "installed": null,
+        "breaker": {
+          "state": "closed",
+          "failures": 0
+        },
+        "credentialState": "unknown"
+      }
+    ],
+    "resolution": [
+      {
+        "role": "acceptance_author",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      },
+      {
+        "role": "acceptance_verifier",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "architect",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      },
+      {
+        "role": "browser_driver",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "sonnet"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "challenger",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "codex-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": true,
+            "health": "unknown",
+            "installed": null,
+            "available": true
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "codex-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "classifier",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "executor",
+        "chain": [
+          {
+            "runtime": "codex-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": true,
+            "health": "unknown",
+            "installed": null,
+            "available": true
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "codex-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "codex-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "judge",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "narrator",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "refuter",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "haiku"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "haiku"
+          }
+        ]
+      },
+      {
+        "role": "reviewer",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "engine",
+        "sourceDetail": "engine-default",
+        "effective": {
+          "runtime": "claude-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:post_repair",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:regression_and_test_gaps",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "reviewer:spec_compliance",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "opus"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "opus"
+          }
+        ]
+      },
+      {
+        "role": "scout",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-fallback-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          },
+          {
+            "runtime": "claude-headless",
+            "model": "sonnet"
+          }
+        ]
+      },
+      {
+        "role": "scout:review_evidence",
+        "chain": [
+          {
+            "runtime": "muse-headless",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "muse-headless"
+        },
+        "lineup": [
+          {
+            "runtime": "muse-headless"
+          }
+        ]
+      },
+      {
+        "role": "triage",
+        "chain": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable",
+            "effort": "xhigh",
+            "effortSource": "workflow_default",
+            "effortSupported": false,
+            "health": "unknown",
+            "installed": null,
+            "available": false
+          }
+        ],
+        "source": "lineup",
+        "sourceDetail": "lineup-exact",
+        "effective": {
+          "runtime": "claude-headless",
+          "model": "fable"
+        },
+        "lineup": [
+          {
+            "runtime": "claude-headless",
+            "model": "fable"
+          }
+        ]
+      }
+    ],
+    "diskLow": false,
+    "diskFreeMB": 0,
+    "diskFloorMB": 10240,
+    "hostDiskLow": false,
+    "hostDiskFreeMB": 0,
+    "hostDiskFloorMB": 0,
+    "diskBlockingLayer": "none",
+    "workflowEffort": {
+      "default": "xhigh",
+      "source": "shipped"
+    }
+  }
+}

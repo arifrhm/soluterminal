@@ -1,0 +1,197 @@
+/* Status-bar panes/ports chips and their popovers (PanesChip / PortsChip in
+   StatusBar.tsx, PanesPopover / PortsPopover). The chip recipe is cloned from
+   .statusbar-version in styles.css: transparent pill, dim at rest, elevated
+   on hover. Popover panels reuse .version-popover / .vp-section from there. */
+
+.statusbar-panes,
+.statusbar-ports,
+.statusbar-tasks,
+.statusbar-reports,
+.statusbar-system {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 1px 6px;
+  color: var(--fg-dim);
+  font: inherit;
+  font-size: inherit;
+  /* Counts tick as panes and servers come and go — tabular figures keep the
+     rest of the bar from shifting sideways on every change. */
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.statusbar-panes:hover,
+.statusbar-ports:hover,
+.statusbar-tasks:hover,
+.statusbar-reports:hover {
+  background: var(--bg-elev);
+  color: var(--fg);
+}
+.statusbar-system:hover { background: var(--bg-elev); color: var(--fg); }
+.statusbar-system.warn { color: var(--warn); }
+.statusbar-system.critical { color: var(--danger); }
+.statusbar-system.unknown { color: var(--fg-dim); }
+
+.statusbar-release {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 1px 6px;
+  color: var(--fg-dim);
+  font: inherit;
+  font-size: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.statusbar-release:hover {
+  background: var(--bg-elev);
+  color: var(--fg);
+}
+.statusbar-release.warn { color: var(--warn); }
+.statusbar-release-glyph { flex: 0 0 auto; }
+
+.release-popover .release-delta { line-height: 1.5; }
+.release-train-row { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.release-train-failure { display: grid; min-width: 0; gap: 3px; }
+.release-train-state-line { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-width: 0; }
+.release-train-evidence { overflow-wrap: anywhere; color: var(--fg-dim); }
+.release-scope-verdict { color: var(--fg-dim); }
+.release-next {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.release-sequence {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  line-height: 1.45;
+  user-select: text;
+}
+.release-sequence code {
+  color: var(--fg);
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0 3px;
+  user-select: text;
+}
+.release-info {
+  margin-top: 10px;
+  color: var(--fg-dim);
+  font-size: 10px;
+}
+.release-forecast { display: grid; gap: 4px; }
+.release-forecast-eta { color: var(--fg); font-size: 11px; line-height: 1.45; }
+.release-forecast-eta time { font-variant-numeric: tabular-nums; font-weight: 600; }
+.release-forecast[data-state="eligible"] .release-forecast-eta { color: var(--ok); }
+.release-forecast[data-state="off"] .release-forecast-eta,
+.release-forecast[data-state="unavailable"] .release-forecast-eta { color: var(--fg-dim); }
+.release-forecast-reasons { margin: 0; padding-left: 16px; color: var(--fg-dim); font-size: 10px; line-height: 1.45; }
+.release-forecast-meta { color: var(--fg-dim); font-size: 10px; }
+.release-verdict-safe { color: var(--ok); }
+.release-scope { margin: 10px 0; border: 1px solid var(--border); border-radius: 6px; }
+.release-scope summary { display: flex; align-items: center; gap: 7px; padding: 8px 9px; color: var(--fg-dim); font-size: 11px; cursor: pointer; }
+.release-scope-body { display: grid; gap: 10px; padding: 0 9px 9px; }
+.release-scope-meta { display: flex; flex-wrap: wrap; gap: 5px 10px; color: var(--fg-dim); font-size: 10px; }
+.release-scope-meta code, .release-scope-row code { color: var(--fg); user-select: text; }
+.release-scope-badge { margin-left: auto; padding: 1px 6px; font-size: 9px; border: 1px solid var(--border); border-radius: 8px; }
+.release-scope-badge.is-ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 45%, var(--border)); }
+.release-scope-badge.is-warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, var(--border)); }
+.release-scope-badge.is-inferred { color: var(--fg-dim); }
+.release-scope-group { display: grid; gap: 5px; font-size: 11px; }
+.release-scope-group > strong { color: var(--fg-dim); font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+.release-scope-row { display: grid; gap: 3px; padding: 6px; background: var(--bg-1); border-radius: 4px; }
+.release-scope-row-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: var(--fg-dim); font-size: 10px; }
+.release-scope-warning, .release-scope-unavailable { padding: 7px; color: var(--warn); font-size: 11px; background: color-mix(in srgb, var(--warn) 8%, transparent); border-radius: 4px; }
+.release-scope-delta { color: var(--fg-dim); font-size: 10px; }
+.statusbar-tasks.awaiting {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+  border-color: color-mix(in srgb, var(--warn) 38%, transparent);
+  font-weight: 600;
+}
+.statusbar-tasks.awaiting:hover {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 22%, transparent);
+}
+
+/* Inbox chip tints follow the statusbar-dot palette: warn when an item needs
+   a decision, accent when items are merely unread. (The panes chip used to
+   share these for its "N need you" flip; that moved to the attention bell.) */
+.statusbar-reports.choice {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+  border-color: color-mix(in srgb, var(--warn) 38%, transparent);
+  font-weight: 600;
+}
+.statusbar-reports.choice:hover {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 22%, transparent);
+}
+.statusbar-reports.awaiting {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  font-weight: 600;
+}
+.statusbar-reports.awaiting:hover {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+/* One-shot arrival pulse on a needs-you count INCREASE (mirrors the agents
+   chip's). currentColor, so the ring matches whichever tint is active. */
+.statusbar-chip-pulse {
+  animation: statusbar-chip-arrive 0.6s ease-out 1;
+}
+@keyframes statusbar-chip-arrive {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent); }
+  100% { box-shadow: 0 0 0 7px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .statusbar-chip-pulse { animation: none; }
+}
+
+/* Panes popover */
+.pp-counts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+.pp-allclear { color: var(--ok); }
+.pp-close-exited {
+  margin-top: 6px;
+  width: 100%;
+  padding: 4px 8px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--fg-dim);
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.pp-close-exited:hover:not(:disabled) {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+}
+.pp-close-exited:disabled { opacity: 0.6; cursor: default; }
+
+/* Ports popover: the hosted PortPanel caps its own list height
+   (.port-list-scroll); just give the filter toolbar a little air. */
+.ports-popover .port-toolbar { margin-bottom: 4px; }

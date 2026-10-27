@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "criteriaVersion": "sha256:71f851faf3ad556f069955aacf4c4a1fe763e6bcffd97d3d1e0712ff09d04860",
+  "source": {
+    "taskId": "wft_4d6e5e6b",
+    "promptDigest": "sha256:f793b0868faef6dbd340f8f21b6236ebfe3f18979dc20948c4667bab1e554661",
+    "specArtifactId": "art_cc85c6a7"
+  },
+  "flows": [
+    {
+      "id": "guardian-recommendation-has-no-accept",
+      "title": "Guardian recommendations expose no Accept, Approve or Execute control and are absent from autopilot",
+      "steps": [
+        "1. Select any fixture task with a guardian recommendation and open its Recommendations / proposals section.",
+        "2. Inspect the recommendation's action bar, its overflow menu and any keyboard shortcut hints.",
+        "3. Open the proposal autopilot or scheduled-proposals view if the UI provides one.",
+        "4. Select a fixture task with an ordinary executable proposal and inspect its action bar for comparison.",
+        "5. Do not click any accept or execute control at any point; observe only."
+      ],
+      "expected": [
+        "No Accept, Approve, Run or Execute control is rendered anywhere for the guardian recommendation and the item is labelled informational or read-only.",
+        "The autopilot or scheduled-proposals view does not list the guardian recommendation.",
+        "The ordinary executable proposal still renders its Accept control, so the omission is specific to guardian recommendations."
+      ],
+      "negative": true,
+      "risk": "auth"
+    }
+  ]
+}

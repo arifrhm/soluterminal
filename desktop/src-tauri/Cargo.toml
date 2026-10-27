@@ -1,0 +1,49 @@
+[package]
+name = "soluterminal-desktop"
+version = "0.0.1"
+description = "soluterminal desktop wrapper"
+authors = ["SoluTerminal"]
+edition = "2021"
+# MSRV tracks what Tauri 2 requires; bump if Tauri bumps.
+rust-version = "1.77"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "soluterminal_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "devtools", "unstable"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.13", default-features = false, features = ["blocking"] }
+dirs = "5"
+# Verifies the signed update.json before the cloud-mode installer update trusts
+# any URL or digest in it (src/shell_update_manifest.rs).
+ed25519-dalek = { version = "=2.1.1", default-features = false, features = ["std"] }
+base64 = "0.22"
+
+[dev-dependencies]
+# Mock runtime for capability tests (src/capability_tests.rs).
+tauri = { version = "2", features = ["test"] }
+
+# Desktop-only: refocus the running shell instead of starting a second one.
+# Pinned: 2.5.x requires tauri 2.12; 2.4.2 matches the locked tauri 2.10.
+[target.'cfg(any(target_os = "macos", windows, target_os = "linux"))'.dependencies]
+tauri-plugin-single-instance = "=2.4.2"
+
+# (Windows Job Object for orphan-cleanup is implemented via direct
+# Win32 FFI — no external crate needed. See src/daemon.rs `mod job`.)
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

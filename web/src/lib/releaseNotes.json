@@ -1,0 +1,155 @@
+{
+  "0.0.1224": [
+    "Security: in the desktop app with both WSL and Windows on, a page shown in a preview can no longer act as SoluTerminal itself, completing the fix from 0.0.1223. When SoluTerminal asks you to restart it, quit it from its tray icon and open it again.",
+    "In the desktop app with both WSL and Windows on, a site you were signed in to inside a preview may ask you to sign in once more.",
+    "Panes can now have a short @handle and a “Working on” line, shown in the pane’s header. Set them by right-clicking the pane (“Handle and working on…”) or clicking the chip in its header; agents can use a pane’s @handle wherever they’d use its number."
+  ],
+  "0.0.1223": [
+    "Security: a page shown in a preview or browser tile can no longer act as SoluTerminal itself. In the desktop app with both WSL and Windows on, previews get this in a later release.",
+    "With “Only devices I approve” on, voice dictation no longer sends your terminal’s on-screen text to our service.",
+    "Encrypted connections from approved browsers now notice a frozen connection and reconnect.",
+    "A quick click on the mic now shows how to dictate (hold the button, or tap Alt+S on a keyboard) instead of using up one of your voice uses.",
+    "With “Only devices I approve” on, a dev-server preview opened from another device now explains why it can’t load instead of showing an error code.",
+    "Fixed: going back to a pane after using vim (or a similar program) could type stray characters, such as 12;2$y, into the shell.",
+    "Fixed: opening or closing a tile could make the other panes go blank."
+  ],
+  "0.0.1222": [
+    "New installs now start with “Only devices I approve” on, and your computer tells you when a new phone or browser asks to connect. Existing computers keep their current setting.",
+    "When a pane can’t be reopened, it now says why (its folder is gone, its conversation is open in another pane, or its history is gone) and offers a way forward: Reopen here, Go to that pane, or Close pane.",
+    "Fixed: if you switched windows just after you stopped dictating, while your words were still being turned into text, the text could be held back instead of typed in. It now goes into the pane you were dictating into.",
+    "Fixed: after you answered an agent’s question yourself, auto-approve could wait up to 2 minutes, wrongly thinking the pane had unsent text. A message you’d started typing before a menu appeared now correctly keeps auto-approve waiting."
+  ],
+  "0.0.1221": [
+    "Fixed: after you answered a permission in a Claude Code pane, the pane could still look like it was waiting for you, and auto-approve could send a keypress when nothing needed approving.",
+    "Fixed: Approve with caution now checks the permission prompt currently on screen, so screen redraws are less likely to leave a safe request waiting.",
+    "Approve with caution now handles commands and secrets that wrap onto several lines, and leaves the decision to you when the full action isn’t visible on screen.",
+    "Fixed: after we updated our servers, opening your sessions from a phone or browser could stop working for several minutes; it now reconnects within about half a minute.",
+    "Fixed: after you restored a workspace or renamed a pane, the ↳ card and Started by agents could show the wrong starter, and an agent couldn’t close the panes it had started."
+  ],
+  "0.0.1220": [
+    "New (beta): end-to-end encryption for browsers you’ve approved on a computer. Turn it on in that browser’s Settings › Devices › Remote devices; the relay then sees only how much data passes.",
+    "Panes an agent starts now show who started them and why: click the ↳ button in the pane’s header. A new Started by agents section in the sidebar shows what each one is doing, and Close finished workers tidies up the ones that are done.",
+    "Agents can now close only the panes they started, unless you ask them to close another one.",
+    "Messages one agent sends to another now start with who sent them, such as [from #1 Claude].",
+    "If a message gets stuck in a pane’s input box, the pane now offers Send or Clear so you can finish or discard it.",
+    "A Claude Code pane waiting at its first “Do you trust this folder?” question now shows the needs-you flag instead of looking idle.",
+    "Approving a new browser now also asks you to confirm, on that browser, that its code matches the one on your computer."
+  ],
+  "0.0.1219": [
+    "Approve with caution: cancelling an automatic approval is more reliable, and switching it off and on again clears any approvals that were still pending.",
+    "Fixed: a delayed automatic approval could press Enter after you had already answered the prompt yourself."
+  ],
+  "0.0.1218": [
+    "Long dictation now continues beyond two minutes and keeps your language choice. Interrupted recordings can be retried or downloaded.",
+    "Voice history keeps recovered text when you discard retained audio. Dictation shows your remaining daily allowance and stops for review as it runs out."
+  ],
+  "0.0.1217": [
+    "The sidebar’s Localhost ports section is now called Services: it lists the web apps running in this workspace and opens each one in a preview at its exact address.",
+    "Fixed: a message one agent sent to another pane could get stuck in that pane’s input box.",
+    "Fixed: SoluTerminal could open to a blank window if you switched apps while it was starting.",
+    "Approve with caution: if you cancel an automatic approval during its countdown, that prompt now waits for your answer instead of being approved again.",
+    "Fixed: turning off Approve with caution during its countdown now stops the pending approval."
+  ],
+  "0.0.1216": [
+    "Approve with caution: if you cancel an automatic approval during its countdown, that prompt now waits for your answer instead of being approved again.",
+    "Fixed: turning off Approve with caution during its countdown now stops the pending approval.",
+    "Move a running session from the pane menu’s “Move to workspace…” action. Choose an existing workspace in the same Windows or Linux environment. Its conversation and scrollback stay with it, and the destination opens with the moved pane focused.",
+    "If a pane moves in another window or device, a stale workspace layout now shows a warning and offers to reload. Reloading asks before replacing unsaved layout edits.",
+    "Workspace moves preserve delete protection, and a failed save leaves the pane in its original workspace.",
+    "Disconnecting a computer from your account now stops everything it sends straight away and removes it from your account, even if it’s offline.",
+    "The microphone now closes as soon as you finish dictating. To keep it ready for 2 minutes after you dictate, turn that on in Settings › Devices › Voice.",
+    "Security: your sign-in token no longer appears in web addresses the app uses.",
+    "The anonymous daily check-in now also includes two yes/no answers: whether a Claude Code or Codex pane was started, and whether two agents worked together. Turn it off in Settings › Devices › Privacy.",
+    "Safer by default: agents in your panes can no longer approve their own requests or turn on auto-approve by themselves. To allow it for a while, use Settings › Devices › Agent permissions.",
+    "New: you can let only the phones and browsers you approve open this computer’s sessions (Settings › Devices › Remote devices). It’s off unless you turn it on."
+  ],
+  "0.0.1214": [
+    "Easier first run: SoluTerminal opens straight into Windows PowerShell, with no Linux (WSL) prompt before the window. You can add Linux later from the setup checklist.",
+    "The setup checklist now covers Claude Code and Codex: it can install either one for you and tells you when to sign in.",
+    "New Start Claude Code and Start Codex buttons. If an agent isn’t installed yet, SoluTerminal offers to install it instead of showing an error.",
+    "The “?” button opens a short Help menu: Getting started, Help, Keyboard shortcuts and Send feedback.",
+    "The sign-in screen matches the website, and the question about using SoluTerminal outside its own panes now explains exactly what it changes.",
+    "Voice input keeps your recording and retries if the service is busy, instead of losing it.",
+    "If the microphone is blocked, SoluTerminal now tells you where to allow it in Windows Settings.",
+    "Fixed: opening a new session on a brand-new PC could leave the window blank.",
+    "Fixed: hovering over the command palette could select the wrong command.",
+    "Fixed: the System page warned “Disk almost full” on large disks with plenty of space."
+  ],
+  "0.0.1213": [
+    "A new app icon.",
+    "Updates are now checked against SoluTerminal’s release signature before they install, so the app only installs genuine releases.",
+    "Reopening or reloading a pane no longer repeats its last lines.",
+    "Sign-in emails from the app now contain just your code.",
+    "If an update check fails, the app says ‘Couldn’t check for updates’ instead of showing technical details."
+  ],
+  "0.0.1212": [
+    "Signing in is quicker: enter your email and press Continue. If your account has a password, the password box appears straight away; otherwise SoluTerminal emails you a code. New accounts are created the same way.",
+    "On a computer you have used before, sign-in remembers you and greets you with Welcome back. Not you? takes you back to the email step.",
+    "New installs follow your computer’s light or dark setting on first launch. If you have already picked a theme, it stays as it is.",
+    "In the light theme, panes no longer flash black when the app opens or reconnects.",
+    "Text that was hard to read in the light theme, such as the shortcut recorder hint and some status labels, now has proper contrast.",
+    "Output from very fast bursts, such as long builds or logs, is no longer lost from a pane’s history. This applies to panes started after the update."
+  ],
+  "0.0.1211": [
+    "Agents in different panes can work together properly. Claude Code or Codex can ask the agent in another pane something and get just its answer back, without guessing how long to wait or reading raw screen output.",
+    "Agents now see the same pane numbers you do (#1, #2, …), which workspace each pane is in, what each pane is doing, and which pane is their own, so \"ask Codex in pane 2\" means what you mean.",
+    "Reading another agent's pane returns that agent's latest reply, taken from its own conversation log, instead of the whole screen with old sessions in it.",
+    "An agent can open a new Claude Code or Codex pane and give it a first task; SoluTerminal waits until the new agent is ready before sending it.",
+    "Codex no longer asks permission for SoluTerminal tools that only read, such as listing panes or reading a reply, and neither does Claude Code in SoluTerminal's own panes. Tools that type, open or close panes still ask.",
+    "Answering another agent's approval menu now works for Codex's menus too.",
+    "Codex panes that SoluTerminal starts get SoluTerminal's tools, connected to this SoluTerminal, even when Claude Code and Codex integration is off.",
+    "A new agent pane opened in a folder you've used before no longer shows the previous session's last reply as its own.",
+    "Turning off Claude Code and Codex integration only removes this SoluTerminal's own entries, never another copy's.",
+    "Your sidebar layout now syncs between the desktop app and your browser when you are signed in. It pauses while View as personal is on.",
+    "New, optional: get product-update emails. The box at sign-up starts unticked, and you can change it any time in Settings > Devices. Sign-in codes and security notices are sent either way.",
+    "Download desktop app links now open the SoluTerminal download page, with the checksum and install steps."
+  ],
+  "0.0.1209": [
+    "Stopping new Linux and WSL workers also stops their detached child processes, so cancelled work cannot keep writing after its parent exits.",
+    "Tasks show when cancellation is waiting for confirmed shutdown and retain their working files until cleanup finishes.",
+    "Cancellation cleanup can recover after a daemon restart. Older runs without complete shutdown evidence remain visibly pending."
+  ],
+  "0.0.1208": [
+    "SoluTerminal now asks before adding its tools to Claude Code and Codex on this computer. Turn it on or off any time in Settings > Devices > Claude Code and Codex, which lists exactly which files it changes.",
+    "When it is off, SoluTerminal's own panes still get its tools and session tracking; Claude Code and Codex sessions you start elsewhere are left alone.",
+    "Turning it off, or uninstalling SoluTerminal, removes everything it added to Claude Code and Codex, including its hooks, and keeps a backup of each changed file.",
+    "Pressing Esc while dictating now stops and keeps your words. Alt+C still throws the recording away.",
+    "The mic can stay ready for up to 2 minutes after you dictate, and a soft tick tells you the moment it is listening. Both are in Settings > Devices > Voice.",
+    "A silent recording no longer types a stray \"Thank you.\" or similar phrase.",
+    "Shinoque can now use the open conversation to get names right when it tidies your dictation on your Claude plan, and it tidies short messages too."
+  ],
+  "0.0.1207": [
+    "Product and tool names come out right more often: every dictation now tells the speech service to expect names like SoluTerminal, Shinoque, Claude Code, Codex and kubectl.",
+    "Add your own names and terms under Settings > Devices > Voice > Words to recognise. They are sent with your recording, never your terminal text.",
+    "Team members can switch on View as personal (account menu or Settings) to see SoluTerminal exactly as a free account does. A Personal view label shows while it is on, and your own sidebar arrangement stays untouched.",
+    "Shinoque can now tidy its dictations with your Claude plan, using cleanup written for everyday messages and notes rather than terminal commands."
+  ],
+  "0.0.1205": [
+    "Short dictations keep their first word: the mic stays ready for 30 seconds after you dictate, and every recording starts with a moment of audio from just before you pressed. Turn the mic option off in Settings > Devices > Voice.",
+    "Voice history explains each dictation: what was heard, whether cleanup changed it, and when the mic was slow to start.",
+    "Dictations from the message box now appear in voice history too.",
+    "Switching windows while dictating in the message box sends what you said for transcription instead of sometimes throwing it away.",
+    "In the message box, slide left (not right) while holding to cancel a dictation."
+  ],
+  "0.0.1203": [
+    "Voice cleanup can run on your own Claude plan: with Claude Code signed in on this computer, dictation is tidied by Claude Haiku on your login, your terminal text goes only to Anthropic, and it does not use your daily voice allowance. Turn it off in Settings > Devices > Voice.",
+    "Voice history shows who cleaned each dictation.",
+    "Updating the desktop app no longer hides your WSL sessions: the app stays connected to WSL while its background service finishes updating.",
+    "If WSL is unavailable when the app starts, it keeps checking and offers to reconnect when WSL is back.",
+    "When the desktop app update cannot start its installer, it says why and offers to open the installer, instead of sending you to a download page."
+  ],
+  "0.0.1201": [
+    "After you sign in, SoluTerminal asks once whether to connect this PC, which turns on voice, smart approvals and phone access.",
+    "Voice shows how many dictations you have left today, ignores silence, and stops at 2 minutes.",
+    "Voice no longer sends anything into a plain shell on its own, and keeps code words like /healthz exact.",
+    "Approve with caution now works on a free account, and tells you why when it leaves a prompt to you.",
+    "New privacy switches in Settings: usage statistics (off by default) and crash reports.",
+    "Feedback tells you up front when you need to sign in, before you type.",
+    "A simpler first run: a shorter welcome that says what leaves this computer, and a setup checklist that only flags what needs doing.",
+    "A cleaner sidebar: Todos, Files and Localhost ports start hidden (bring them back in Settings > Sidebar), Schedules are now Automations and Background sessions are now Detached sessions.",
+    "The browser tile opens your dev server, or a start page listing the ones running.",
+    "One clear banner when you type on another device, with Type here to switch back.",
+    "Tidier Settings and status bar: plain words, your account and sign-out under Devices, a wider sidebar, and a chime instead of a spoken alert.",
+    "Alt+B, Alt+D, Alt+T and Alt+U reach your shell again while a terminal has focus."
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "scenario": "quality-availability-refused",
+  "policy": "auto_compatible",
+  "outcome": "quality_availability_failure",
+  "cursor": 0,
+  "plane": "quality",
+  "failureScopeKind": "account",
+  "failureScopeIdentity": "shared@example.com",
+  "trigger": "repair_round",
+  "evidence": "semantic repair round",
+  "maxSteps": 4,
+  "profileVersion": "snapshot:standard:executor",
+  "policySource": "standard/executor",
+  "skipReason": "quality_availability_failure",
+  "from": {
+    "runtime": "codex-headless",
+    "model": "premium",
+    "effort": "high"
+  },
+  "to": {
+    "runtime": ""
+  },
+  "candidates": [
+    {
+      "index": 0,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "premium",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "quality_availability_failure",
+      "detail": "quality escalation refused",
+      "role": "executor"
+    }
+  ]
+}

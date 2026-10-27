@@ -1,0 +1,190 @@
+{
+  "scenario": "gateway-outage",
+  "policy": "auto_compatible",
+  "outcome": "parked",
+  "cursor": 0,
+  "plane": "availability",
+  "failureScopeKind": "gateway",
+  "failureScopeIdentity": "openrouter",
+  "recoveryCondition": "new_scope_evidence",
+  "candidates": [
+    {
+      "index": 0,
+      "binding": {
+        "runtime": "openrouter-headless",
+        "model": "meta/muse-spark-1.2",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "failed_head",
+      "detail": "the route that failed",
+      "provider": "openrouter",
+      "tier": "standard"
+    },
+    {
+      "index": 1,
+      "binding": {
+        "runtime": "codex-headless",
+        "model": "gpt-5.6-sol",
+        "effort": "high"
+      },
+      "eligible": false,
+      "reasonCode": "effort_unknown,cost_unknown",
+      "provider": "openai",
+      "accountMasked": "s…@example.com",
+      "tier": "premium",
+      "nativeEffort": "high"
+    }
+  ],
+  "decision": {
+    "id": "wfd_00000000",
+    "stage": "implement",
+    "role": "executor",
+    "baseRole": "executor",
+    "fromIndex": 0,
+    "toIndex": 1,
+    "from": {
+      "runtime": "openrouter-headless",
+      "model": "meta/muse-spark-1.2",
+      "effort": "high"
+    },
+    "to": {
+      "runtime": "codex-headless",
+      "model": "gpt-5.6-sol",
+      "effort": "high"
+    },
+    "reason": "infrastructure",
+    "error": "failure",
+    "facts": {
+      "reason": "infrastructure",
+      "failureKind": "infrastructure",
+      "from": {
+        "runtime": "openrouter-headless",
+        "model": "meta/muse-spark-1.2",
+        "effort": "high"
+      },
+      "to": {
+        "runtime": "codex-headless",
+        "model": "gpt-5.6-sol",
+        "effort": "high"
+      },
+      "fromProvider": "openrouter",
+      "toProvider": "openai",
+      "crossProvider": true,
+      "fromTier": "standard",
+      "toTier": "premium",
+      "tierKnown": true,
+      "tierDelta": "higher",
+      "belowFloor": false,
+      "fromEffortIntent": "unknown",
+      "toEffortIntent": "thorough",
+      "effortKnown": false,
+      "effortReduced": false,
+      "fromPermission": "edit",
+      "toPermission": "edit",
+      "permissionEqual": true,
+      "requiredCapabilities": [
+        "structured_output",
+        "sandbox"
+      ],
+      "costSource": "unknown",
+      "costRatioMax": 1.5,
+      "costKnown": false,
+      "costWithinBound": false,
+      "spentUsd": 0,
+      "projectedOverCeiling": false,
+      "credentialState": "ok",
+      "toAccountClass": "subscription",
+      "toBillingIdentity": "s…@example.com",
+      "breakerState": "closed",
+      "stageRisk": "normal",
+      "resolvedTier": "standard",
+      "chainSource": "task-chain-exact",
+      "priorEngagements": 0,
+      "priorAttempts": 0,
+      "compatible": false,
+      "incompatible": [
+        "effort_unknown",
+        "cost_unknown"
+      ],
+      "plane": "availability",
+      "failureScope": {
+        "version": 1,
+        "kind": "gateway",
+        "identity": "openrouter",
+        "runtime": "openrouter-headless",
+        "provider": "openrouter",
+        "source": "failure_kind",
+        "evidence": "infrastructure"
+      },
+      "recoveryCondition": "new_scope_evidence",
+      "fromAccess": {
+        "provider": "openrouter",
+        "vendor": "meta",
+        "gateway": "openrouter",
+        "runtime": "openrouter-headless",
+        "accessPath": "gateway"
+      },
+      "toAccess": {
+        "provider": "openai",
+        "vendor": "openai",
+        "account": "s…@example.com",
+        "billing": "s…@example.com · pro",
+        "runtime": "codex-headless",
+        "accessPath": "native"
+      }
+    },
+    "policy": {
+      "value": "auto_compatible",
+      "source": "settings-default",
+      "scope": "settings"
+    },
+    "consequence": {
+      "ifAccepted": "runs codex-headless/gpt-5.6-sol on openai (subscription, premium tier, thorough effort) with unknown cost",
+      "ifDeclined": "task fails as infrastructure",
+      "declinedPath": "fail_infra"
+    },
+    "state": "proposed",
+    "proposedAt": "2026-08-26T00:00:00Z",
+    "attempt": 1,
+    "plane": "availability",
+    "failureScope": {
+      "version": 1,
+      "kind": "gateway",
+      "identity": "openrouter",
+      "runtime": "openrouter-headless",
+      "provider": "openrouter",
+      "source": "failure_kind",
+      "evidence": "infrastructure"
+    },
+    "recoveryCondition": "new_scope_evidence",
+    "candidates": [
+      {
+        "index": 0,
+        "binding": {
+          "runtime": "openrouter-headless",
+          "model": "meta/muse-spark-1.2",
+          "effort": "high"
+        },
+        "eligible": false,
+        "reasonCode": "failed_head",
+        "detail": "the route that failed",
+        "provider": "openrouter",
+        "tier": "standard"
+      },
+      {
+        "index": 1,
+        "binding": {
+          "runtime": "codex-headless",
+          "model": "gpt-5.6-sol",
+          "effort": "high"
+        },
+        "eligible": true,
+        "provider": "openai",
+        "accountMasked": "s…@example.com",
+        "tier": "premium",
+        "nativeEffort": "high"
+      }
+    ]
+  }
+}
