@@ -45,16 +45,25 @@ they fail.
 
 ## Hosted cloud
 
-This build connects to no hosted cloud or relay. The daemon starts without
-`--relay` (so its phone pairing reports that the cloud is not configured),
-and the shell always runs on this computer and refuses to switch to cloud
-hosting. To build
-against a cloud you run, set `SOLU_CLOUD_URL` (an origin such as
+This build is set up for SoluTerminal's hosted cloud, which the optional free
+account uses, like the official app: `src-tauri/hosted-cloud.env` names it,
+and the daemon's defaults are in `daemon/hosted_cloud_defaults.go`.
+
+To build against a cloud you run, set `SOLU_CLOUD_URL` (an origin such as
 `https://cloud.example.com`; the relay is `wss://<host>/relay`) and,
 optionally, `SOLU_CLOUD_APP_URL` (the address opened in a browser for pairing)
 when compiling. Also add the origin to `remote.urls` in
 `src-tauri/capabilities/*.json` and to the CSP in `src-tauri/tauri.conf.json`;
 the build warns when they are missing.
+
+For a build with no hosted cloud, set `SOLU_CLOUD_URL=` (empty) in the
+environment both for `scripts/build-sidecar-binaries.sh --dev` and when
+compiling the shell. The script then builds the daemon with
+`-ldflags "-X main.hostedCloud=off"` (use the same flag for a daemon you build
+yourself), so it has no hosted cloud for accounts or pairing. The shell starts
+it without `--relay` (so its phone pairing reports that the cloud is not
+configured), always runs on this computer and refuses to switch to cloud
+hosting.
 
 See [update verification](../docs/UPDATE_SIGNING.md). Signed update manifests,
 Windows publisher signing and reproducible builds are separate properties;

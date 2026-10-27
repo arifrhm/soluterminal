@@ -2,13 +2,12 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "browser-popout",
   "description": "Narrow capability for pop-out browser shell windows. They only need to host and control their own native child webview; pairing, notifications, opener, and custom titlebar controls stay main-window only.",
-  "webviews": [
-    "browser_*"
-  ],
+  "webviews": ["browser_*"],
   "remote": {
     "urls": [
       "http://127.0.0.1:*",
-      "http://localhost:*"
+      "http://localhost:*",
+      "https://soluterminal-cloud.onrender.com"
     ]
   },
   "permissions": [

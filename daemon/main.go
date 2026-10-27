@@ -7,6 +7,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"io/fs"
 	"log"
 	"mime"
@@ -126,6 +127,25 @@ func jevBridgeEndpointForListener(addr net.Addr) (string, error) {
 // unknownSubcommandRE matches a bare word that reads like a subcommand.
 var unknownSubcommandRE = regexp.MustCompile(`^[a-z][a-z0-9]*(-[a-z0-9]+)*$`)
 
+// isVersionCommand reports whether args selects the version subcommand or flag.
+func isVersionCommand(args []string) bool {
+	if len(args) < 2 {
+		return false
+	}
+	switch args[1] {
+	case "version", "--version", "-version", "-v":
+		return true
+	default:
+		return false
+	}
+}
+
+// runVersionCommand prints the daemon version to out and returns exit code 0.
+func runVersionCommand(out io.Writer) int {
+	fmt.Fprintln(out, version)
+	return 0
+}
+
 func main() {
 	if len(os.Args) >= 2 && os.Args[1] == capabilityCommand {
 		os.Exit(runCapabilityCommand(os.Args[2:], os.Stdout))
@@ -136,6 +156,9 @@ func main() {
 	// Offline diagnostics must run before logging or daemon initialization.
 	if len(os.Args) >= 2 && os.Args[1] == "support-bundle" {
 		os.Exit(runSupportBundleCLI(os.Args[2:], os.Stdout, os.Stderr))
+	}
+	if isVersionCommand(os.Args) {
+		os.Exit(runVersionCommand(os.Stdout))
 	}
 	// Configure logging before subcommand dispatch so agent / router
 	// inherit the same LOG_FORMAT / LOG_LEVEL env knobs without each

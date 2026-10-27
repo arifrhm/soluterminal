@@ -1,0 +1,68 @@
+/* Minimal default styling for <VoiceButton>. Apps are expected to
+   override — these just make the button usable out of the box. */
+
+.soluvoice-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  /* Hold-to-talk: never let the browser treat the press as a scroll
+     or text-selection gesture. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.soluvoice-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.soluvoice-btn.state-recording {
+  background: rgba(220, 60, 60, 0.18);
+  border-color: rgba(220, 60, 60, 0.7);
+  animation: soluvoice-pulse 1.2s ease-in-out infinite;
+}
+
+.soluvoice-btn.state-transcribing {
+  border-color: rgba(128, 128, 128, 0.6);
+}
+
+@keyframes soluvoice-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 60, 60, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(220, 60, 60, 0);
+  }
+}
+
+.soluvoice-cleanup-dot {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.soluvoice-cleanup-dot.cleanup-ok {
+  background: #3fb950;
+}
+.soluvoice-cleanup-dot.cleanup-disabled {
+  background: #8b949e;
+}
+.soluvoice-cleanup-dot.cleanup-failed {
+  background: #f85149;
+}
+.soluvoice-cleanup-dot.cleanup-skipped {
+  background: #d29922;
+}

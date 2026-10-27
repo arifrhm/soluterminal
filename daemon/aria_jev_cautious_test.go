@@ -99,12 +99,13 @@ func TestNonTeamCautiousWithoutAccountExplainsSignIn(t *testing.T) {
 }
 
 // A build without a runtime key store has no Credentials screen, so the reason
-// names the environment variable instead of pointing there.
+// names the environment variable instead of pointing there, and still offers
+// the free account, which works without a key store.
 func TestJevCautiousCredentialReasonMatchesKeyStore(t *testing.T) {
 	saved := runtimeSecretStore
 	t.Cleanup(func() { runtimeSecretStore = saved })
 	runtimeSecretStore = nil
-	if r := jevCautiousReason("credential_fallback"); !strings.Contains(r, jevTypesafeSecretEnv) || strings.Contains(r, "Credentials") {
+	if r := jevCautiousReason("credential_fallback"); !strings.Contains(r, jevTypesafeSecretEnv) || !strings.Contains(r, "Sign in (free)") || strings.Contains(r, "Credentials") {
 		t.Fatalf("without a key store: %q", r)
 	}
 	runtimeSecretStore = func(string) secretResolver { return envSecrets{} }

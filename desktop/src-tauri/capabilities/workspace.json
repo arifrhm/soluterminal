@@ -2,13 +2,12 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "workspace-window",
   "description": "Full app capability for secondary workspace windows (multi-monitor). A workspace window runs the entire soluterminal frontend — terminal panes, browser pop-outs, in-pane browsers, custom titlebar, dialogs/notifications — so it mirrors the main window's permission set. The `remote.urls` block is load-bearing: the frontend is served from the local solud daemon (not bundled with Tauri), so without listing those origins every plugin:* / custom-command invoke() from this window is silently denied by the ACL.",
-  "webviews": [
-    "workspace_*"
-  ],
+  "webviews": ["workspace_*"],
   "remote": {
     "urls": [
       "http://127.0.0.1:*",
-      "http://localhost:*"
+      "http://localhost:*",
+      "https://soluterminal-cloud.onrender.com"
     ]
   },
   "permissions": [

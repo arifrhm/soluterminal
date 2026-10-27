@@ -1,0 +1,37 @@
+{
+  "name": "soluvoice",
+  "version": "0.1.6",
+  "description": "Hold-to-talk voice dictation for React apps: MediaRecorder capture, slide-to-cancel, push-to-talk, Whisper transcription via your own endpoint.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soluterminal/soluterminal.git",
+    "directory": "web/vendor/soluvoice"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist",
+    "src",
+    "tsconfig.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && cp src/styles.css dist/styles.css",
+    "prepare": "npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18 || ^19"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "typescript": "^5.5.0"
+  }
+}

@@ -23,7 +23,7 @@ keep them running when you close the window, and stay in charge of what they can
   too. In the Windows app, Windows PowerShell and Linux (WSL) panes sit side by side.
 
 The official Windows app can also connect to an optional free account for phone-browser access, push alerts,
-voice input and smart approvals. That hosted service isn't part of this repository.
+voice input and smart approvals. The app's side of that is in this repository; the hosted service itself isn't.
 
 ## What's in this repository
 - `daemon/`: the local background service that owns every session, including pane-to-pane communication.
@@ -31,9 +31,10 @@ voice input and smart approvals. That hosted service isn't part of this reposito
 - `shared/`: shared libraries and the wire protocol.
 - `desktop/`: the Windows desktop shell ([desktop guide](desktop/README.md)).
 
-Not included: the hosted service (relay, accounts, push alerts), voice dictation and our release scripts.
-Builds from this repository run on your computer only and don't connect to our hosted service unless you
-configure it.
+Not included: the hosted service itself (relay, accounts, push alerts), some internal tools and our release
+scripts. Builds from this repository are set up for our hosted service, like the official app; the
+[desktop guide](desktop/README.md#hosted-cloud) shows how to build without it. Builds you make yourself report
+version dev and send no check-in.
 
 ## Build from source
 Needs Node 20 or later and Go 1.26 (the version in `daemon/go.mod`). From the top of the repository:
@@ -57,9 +58,9 @@ restarting the daemon.
 ## Security
 - Updates for the official app are signed, and the app checks the signature before installing.
 - From version 0.0.1222, our CI rebuilds the background service that each update installs from our full source
-  (which includes the hosted-service and voice code that this repository leaves out) and checks it's byte-for-byte
+  (which includes internal tools that this repository leaves out) and checks it's byte-for-byte
   identical to what we published ([details](https://soluterminal.com/security/?utm_source=github&utm_campaign=oss-launch)).
-  Builds from this repository leave out the hosted-service and voice code, so they won't match release binaries.
+  Builds from this repository leave those tools out, so they won't match release binaries yet.
 - What's on by default and the known limits: [soluterminal.com/security](https://soluterminal.com/security/?utm_source=github&utm_campaign=oss-launch).
 - Found a vulnerability? Report it privately through GitHub's "Report a vulnerability" or email
   security@soluterminal.com. See [SECURITY.md](SECURITY.md).

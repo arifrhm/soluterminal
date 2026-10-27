@@ -67,9 +67,8 @@ fn main() {
 // SOLU_CLOUD_URL in the environment wins, even when empty (SOLU_CLOUD_URL=
 // builds a shell with no cloud), and then only the environment is read: a
 // staging or self-hosted origin never picks up the product's app address.
-// Otherwise hosted-cloud.env next to this file supplies the private
-// product's values; the public source export leaves that file out, so a
-// public build has no cloud unless the builder configures one. (Its
+// Otherwise hosted-cloud.env next to this file supplies the product's
+// values. (Its
 // rerun-if-changed is printed only when it exists: a file created later
 // needs a clean build.)
 fn hosted_cloud() {

@@ -109,9 +109,9 @@ func jevCautiousReason(outcome string) string {
 		return "Your Jev key didn't answer, so this one is yours to answer."
 	case "credential_fallback":
 		if runtimeSecretStore == nil {
-			// No key store in this build: the key comes only from the
-			// daemon's environment.
-			return "Smart approvals need a TypeSafe key: start the daemon with TYPESAFE_API_KEY set."
+			// No key store in this build: an own key comes only from the
+			// daemon's environment, but the free account works the same.
+			return "Sign in (free) to use smart approvals, or set TYPESAFE_API_KEY for your own key."
 		}
 		return "Smart approvals need a free account, or your own Jev key in Credentials."
 	case "disabled_fallback":

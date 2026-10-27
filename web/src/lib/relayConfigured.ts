@@ -3,9 +3,9 @@ import { isTauri } from '../voice';
 
 // Whether this computer's daemon has a cloud relay at all (the desktop shell
 // passes --relay only when the build has a hosted cloud configured; see
-// daemon/relay_supervisor.go `configured`). Benjamin's 2026-10-25 decision: a
-// build connects to no hosted relay or cloud unless its builder configures
-// one. Without one, the Cloud hosting switch and phone pairing aren't offered.
+// daemon/relay_supervisor.go `configured`). A build with an empty
+// SOLU_CLOUD_URL has none, and then the Cloud hosting switch and phone pairing
+// aren't offered.
 //
 // Read from GET /api/cloud/status in the desktop shell: once per page here,
 // and on every phone-access status poll (cloudPair.ts). null until known, on a

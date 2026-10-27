@@ -47,9 +47,16 @@ if [[ "$DEV" == 1 ]]; then
   OUT_DIR="${WIN_OUT_DIR:-$ROOT}"
   mkdir -p "$OUT_DIR"
   echo "==> development sidecars (version dev, unsigned updates off) → $OUT_DIR"
+  # SOLU_CLOUD_URL set and empty builds a shell with no hosted cloud; the
+  # daemon then drops its hosted defaults too.
+  DEV_LDFLAGS=""
+  if [[ -v SOLU_CLOUD_URL && -z "$SOLU_CLOUD_URL" ]]; then
+    DEV_LDFLAGS="-X main.hostedCloud=off"
+    echo "==> no hosted cloud (SOLU_CLOUD_URL is empty)"
+  fi
   build_dev() { # GOOS GOARCH output
     echo "==> building $3 ($1-$2)"
-    (cd "$ROOT/daemon" && GOOS="$1" GOARCH="$2" CGO_ENABLED=0 "$GO_BIN" build -trimpath -o "$OUT_DIR/$3" .)
+    (cd "$ROOT/daemon" && GOOS="$1" GOARCH="$2" CGO_ENABLED=0 "$GO_BIN" build -trimpath -ldflags "$DEV_LDFLAGS" -o "$OUT_DIR/$3" .)
   }
   build_dev windows amd64 solud.exe
   build_dev linux amd64 solud-linux

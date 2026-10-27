@@ -17,7 +17,9 @@
     "capture:update-deferred": "node tools/capture-update-deferred.mjs --dist dist --out ../docs/evidence/update-deferred",
     "capture:update-rollback": "node tools/capture-update-rollback.mjs --dist dist --out ../docs/evidence/update-rollback",
     "capture:support-bundle": "node tools/capture-support-bundle.mjs --dist dist --out ../docs/screenshots",
-    "capture:credentials-keys": "node tools/capture-credentials-keys.mjs --dist dist --out ../docs/screenshots"
+    "capture:credentials-keys": "node tools/capture-credentials-keys.mjs --dist dist --out ../docs/screenshots",
+    "vendor:soluvoice": "python3 tools/repack-soluvoice.py",
+    "vendor:soluvoice:check": "python3 tools/repack-soluvoice.py --check"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
@@ -29,6 +31,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-resizable-panels": "^2.1.7",
+    "soluvoice": "file:vendor/soluvoice-0.1.6.tgz",
     "zustand": "^5.0.2"
   },
   "devDependencies": {

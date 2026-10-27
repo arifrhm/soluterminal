@@ -12,7 +12,7 @@
   "app": {
     "windows": [],
     "security": {
-      "csp": "default-src 'self' http://127.0.0.1:* http://localhost:*; object-src 'none'; base-uri 'self'; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:* ws://127.0.0.1:* http://localhost:* ws://localhost:* https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: http://127.0.0.1:* http://localhost:* https:; font-src 'self' data:; media-src 'self' data: blob: http://127.0.0.1:* http://localhost:*; worker-src 'self' blob:; frame-src 'self' http://127.0.0.1:* http://localhost:* https:;"
+      "csp": "default-src 'self' http://127.0.0.1:* http://localhost:* https://soluterminal-cloud.onrender.com; object-src 'none'; base-uri 'self'; script-src 'self' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline'; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:* ws://127.0.0.1:* http://localhost:* ws://localhost:* https://soluterminal-cloud.onrender.com wss://soluterminal-cloud.onrender.com https://*.supabase.co wss://*.supabase.co; img-src 'self' data: blob: http://127.0.0.1:* http://localhost:* https:; font-src 'self' data:; media-src 'self' data: blob: http://127.0.0.1:* http://localhost:*; worker-src 'self' blob:; frame-src 'self' http://127.0.0.1:* http://localhost:* https:;"
     }
   },
   "bundle": {

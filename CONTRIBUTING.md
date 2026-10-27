@@ -16,6 +16,12 @@ Thanks for helping. Issues and pull requests are welcome.
 - Add or update tests for behaviour you change, and make sure CI passes.
 - The build steps are in the [README](README.md#build-from-source).
 
+## How changes land
+
+This repository is exported from our main source tree, so we don't merge pull requests here directly. When we
+accept yours, we apply the same change in the main tree with you as co-author, it appears here in the next
+export, and we close your pull request with a link to that commit.
+
 ## Licence of contributions
 
 SoluTerminal is licensed under the Apache License, Version 2.0. By submitting a

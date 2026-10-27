@@ -380,10 +380,10 @@ mod tests {
         let go = include_str!("../../../daemon/updater.go");
         assert!(go.contains(&format!("defaultUpdateManifestPubKey = \"{key}\"")));
         // The cloud and the release tooling are not part of the public source
-        // export, so read them at run time. The product tree (marked by
-        // hosted-cloud.env, which the export also leaves out) must have both.
+        // export, so read them at run time. The product tree (marked by its
+        // cloud/ directory, which the export leaves out) must have both.
         let root = concat!(env!("CARGO_MANIFEST_DIR"), "/../..");
-        let product_tree = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("hosted-cloud.env").is_file();
+        let product_tree = std::path::Path::new(root).join("cloud").is_dir();
         for (rel, needle) in [
             ("cloud/release_provenance.go", format!("defaultUpdateManifestPubKey = \"{key}\"")),
             ("scripts/release-ldflags.sh", format!("SOLU_DEFAULT_UPDATE_MANIFEST_PUBKEY=\"{key}\"")),

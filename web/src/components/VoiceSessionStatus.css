@@ -1,0 +1,56 @@
+.voice-session-status {
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--bg-elev);
+  color: var(--fg);
+  font-size: var(--text-small);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--bg) 70%, transparent);
+  max-height: 45dvh;
+  overflow-y: auto;
+}
+.voice-session-status time {
+  font-variant-numeric: tabular-nums;
+}
+.voice-session-status p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+.voice-session-status small {
+  color: var(--fg-dim);
+}
+.voice-session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+.voice-session-actions button {
+  font: inherit;
+  color: inherit;
+  background: var(--bg-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  min-height: 36px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.voice-session-actions button:hover {
+  background: var(--bg-3);
+}
+.voice-session-actions button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.voice-session-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.voice-global-status {
+  position: fixed;
+  bottom: calc(var(--footer-h) + var(--bottombar-h) + var(--keybar-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-popover, 100);
+  width: min(34rem, calc(100vw - 24px));
+}
