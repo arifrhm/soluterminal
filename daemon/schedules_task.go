@@ -284,6 +284,7 @@ func (s *ScheduleStore) runTaskProcessWithTimeout(schedID, bin, cwd, prompt, per
 	case timedOut:
 		run.Status = "error"
 		run.Detail = fmt.Sprintf("timed out after %s — killed", timeout)
+		run.Summary = "failed: task timed out"
 	case werr == nil:
 		run.Status = "fired"
 		run.Detail = fmt.Sprintf("%s · finished in %s", permission, dur)
@@ -295,6 +296,11 @@ func (s *ScheduleStore) runTaskProcessWithTimeout(schedID, bin, cwd, prompt, per
 			code = ee.ExitCode()
 		}
 		run.Detail = fmt.Sprintf("%s · exit %d in %s", permission, code, dur)
+		if line := lastErrorLine(out.buf); line != "" {
+			run.Summary = "failed: " + line
+		} else {
+			run.Summary = "failed"
+		}
 	}
 	s.recordRun(schedID, run)
 	log.Printf("scheduler: task %s finished: %s", schedID, run.Detail)
@@ -355,4 +361,25 @@ func taskOutputPreview(out []byte) string {
 		}
 	}
 	return strings.TrimSpace(string(cut)) + "…"
+}
+
+// lastErrorLine returns the last non-empty line of output, trimmed of whitespace
+// and capped so an error summary never overflows UI notification boundaries.
+func lastErrorLine(out []byte) string {
+	text := strings.TrimSpace(string(out))
+	if text == "" {
+		return ""
+	}
+	lines := strings.Split(text, "\n")
+	for i := len(lines) - 1; i >= 0; i-- {
+		line := strings.TrimSpace(lines[i])
+		if line != "" {
+			runes := []rune(line)
+			if len(runes) > taskPreviewMaxRunes {
+				return strings.TrimSpace(string(runes[:taskPreviewMaxRunes])) + "…"
+			}
+			return line
+		}
+	}
+	return ""
 }

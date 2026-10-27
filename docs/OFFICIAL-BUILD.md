@@ -98,10 +98,51 @@ The `soluterminal-X.Y.Z-official` artifact (kept 90 days) holds:
   anon key), `BUILDINFO-desktop.txt` (Rust, Tauri CLI, runner image) and
   `SOURCE.txt` (repository, ref, commit, workflow, run).
 
-## Verifying a build and signing the manifest
+## Publishing a release, end to end
 
-The maintainers sign the update manifest on their own machine, outside this
-repository. That step only signs files whose fingerprints it has checked:
+A public release takes five steps. Only the fourth needs the update key, and it
+runs on a maintainer's machine, never in CI.
+
+1. **Export.** The release's source is exported to this repository as one
+   commit whose message ends with a `Private-Source: <commit>` trailer naming
+   the maintainers' source commit it came from. Its files must be exactly what
+   the export produces from that commit; step 4 checks this.
+2. **Tag.** A repository admin tags that export commit `vX.Y.Z` (the `version`
+   in `desktop/src-tauri/tauri.conf.json`) and pushes the tag. Only a pushed
+   tag produces a release candidate.
+3. **Build.** `official-build.yml` runs on the tag and uploads
+   `soluterminal-X.Y.Z-official` with its attestations (above).
+4. **Verify, sign and publish.** The maintainers run their signing step
+   (`publish-official.sh --run-id <run> --version X.Y.Z --source-sha <commit>`,
+   first with `--dry-run`). It checks the run before signing anything:
+   - the run is `official-build.yml` here, triggered by pushing `vX.Y.Z`, and
+     succeeded; the tag points at the run's commit, whose `Private-Source`
+     trailer names the source being released, and whose files are exactly the
+     export of that source;
+   - the artifact holds exactly the five daemons, the installer and
+     `SHA256SUMS`; every file matches it and carries an attestation from that
+     very run on a GitHub-hosted runner;
+   - every daemon is the public flavour, carries the product's cloud address
+     and anon key, the update manifest public key and the web bundle built for
+     this version from this commit;
+   - the release notes for the version are the approved ones, the version is
+     newer than every release already in `soluterminal/soluterminal-releases`,
+     and the maintainers' own CI passed on the source commit.
+
+   Any failure stops it with a reason, before anything is signed or uploaded.
+   It then writes `update.json` from the verified files only, with
+   `"flavor": "public"` and a signed `source` object naming the source commit
+   and this run (`officialBuild`: repository, workflow, run id, commit, tag),
+   signs it with the offline update key, and publishes a release in
+   `soluterminal/soluterminal-releases` holding the files exactly as built,
+   `update.json`, `update.json.sig`, and the signed `install.sh`. The release is
+   created as a draft, filled, then made live and `latest` in one step.
+5. **Verify the release.** The signing step re-downloads what is live and
+   checks that `releases/latest` is the new tag, that `update.json` and
+   `install.sh` verify against the public key, and that every file matches the
+   signed manifest. Anyone can repeat the checks, as below.
+
+### Checking a build or a release yourself
 
 1. **Find and download the tag's run.**
 
@@ -134,16 +175,15 @@ repository. That step only signs files whose fingerprints it has checked:
    diff <(grep solud- official/SHA256SUMS) /tmp/solud-check/SHA256SUMS
    ```
 
-4. **Sign.** Build `update.json` from the verified `SHA256SUMS`: the version,
-   each daemon's URL and SHA-256 and the installer's `shell` block. Sign it
-   with the update key, which stays offline, and publish the files exactly as
-   downloaded, with `update.json` and `update.json.sig`. Every official daemon
-   and shell embeds the matching public key and refuses an unsigned or
-   wrongly signed manifest (see `docs/UPDATE_SIGNING.md`).
+4. **Check the published release against the build.** Download `update.json`
+   and `update.json.sig` from the release, check the signature with the public
+   key every official daemon embeds (`docs/UPDATE_SIGNING.md`), and compare
+   each `platforms` and `shell` SHA-256 with `SHA256SUMS` from the run. Its
+   `source.officialBuild.runId` names the run, and `flavor` is `public`.
 
 A digest mismatch, a failed attestation or a run that is not the tag's stops
-the release. Never re-sign files that were rebuilt or changed after
-verification.
+the release. Files that were rebuilt or changed after verification are never
+signed.
 
 ## Limits
 

@@ -404,7 +404,13 @@ func (s *ScheduleStore) recordRun(id string, run ScheduleRun) {
 	if pusher != nil {
 		switch {
 		case run.Status == "error" || (run.Status == "skipped" && wasOneTime):
-			go pusher.FireSchedule(id, name, "schedule-error", run.Detail)
+			// A failed task run's Summary says why ("failed: <last error
+			// line>"); lead with it and keep the detail for exit and time.
+			body := run.Detail
+			if run.Status == "error" && run.Summary != "" {
+				body = run.Summary + " (" + run.Detail + ")"
+			}
+			go pusher.FireSchedule(id, name, "schedule-error", body)
 		case run.Status == "fired" && notifyOnRun:
 			// Task runs carry the report's opening lines in Summary — push
 			// THAT, so the notification is the digest, not just "it ran".

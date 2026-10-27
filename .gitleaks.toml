@@ -84,6 +84,9 @@ regexes = [
   # Claude Code's public OAuth client ID (PKCE public client, ships inside
   # the claude CLI; daemon/claudecreds_oauth.go). Not a credential.
   '''^9d1c250a-e61b-44d9-88ed-5944d1962f5e$''',
+  # RFC 6455 section 1.3's sample Sec-WebSocket-Key: base64 of "the sample
+  # nonce", printed in the WebSocket spec (cloud/auth_test.go).
+  '''^dGhlIHNhbXBsZSBub25jZQ(==)?$''',
   # Ed25519 PUBLIC key that verifies update manifests
   # (daemon/updater.go defaultUpdateManifestPubKey). Public by design; the
   # private half never lives in this repository.
