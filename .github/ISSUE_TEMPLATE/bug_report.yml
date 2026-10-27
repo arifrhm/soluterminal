@@ -1,0 +1,44 @@
+name: Bug report
+description: Something in SoluTerminal isn't working
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Please don't paste API keys, tokens, emails or private code. Screenshots: check them for names and paths first."
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+  - type: input
+    id: version
+    attributes:
+      label: SoluTerminal version (Settings › About)
+  - type: dropdown
+    id: pane
+    attributes:
+      label: Which kind of pane?
+      multiple: true
+      options: [Claude Code, Codex, PowerShell, WSL, Other]
+  - type: dropdown
+    id: help
+    attributes:
+      label: Did soluterminal.com/help/fix-a-problem/ help?
+      options: ["Didn't try it", "Tried it, didn't help", "Partly"]
