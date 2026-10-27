@@ -970,3 +970,85 @@ func TestRecordRunPushBodyPrefersSummary(t *testing.T) {
 		t.Errorf("no-summary push body = %q, want the detail fallback", got["sched:"+noSummary.ID])
 	}
 }
+
+func TestLastErrorLine(t *testing.T) {
+	cases := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{"empty", "", ""},
+		{"only whitespace", "   \n\t  \n  ", ""},
+		{"single line", "error: command failed", "error: command failed"},
+		{"multiple lines with trailing newlines", "step 1\nstep 2\nerror: out of memory\n\n\n", "error: out of memory"},
+		{"trims spaces around line", "line 1\n   error: permission denied   \n", "error: permission denied"},
+		{"runaway long line truncated", strings.Repeat("x", 300), strings.Repeat("x", taskPreviewMaxRunes) + "…"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			got := lastErrorLine([]byte(tc.in))
+			if got != tc.want {
+				t.Errorf("lastErrorLine(%q) = %q, want %q", tc.in, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestTaskProcessRunSummaryOnFailure(t *testing.T) {
+	bin := t.TempDir()
+	fakeFail := filepath.Join(bin, "claude-fail")
+	script := "#!/bin/sh\n" +
+		"echo \"info: starting test suite\"\n" +
+		"echo \"error: build compilation failed on step 3\"\n" +
+		"exit 1\n"
+	if err := os.WriteFile(fakeFail, []byte(script), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	work := t.TempDir()
+	s := newTestScheduleStore(t)
+	enabled := false
+	sched, err := s.Create(ScheduleInput{
+		Kind: "task", Cron: "0 9 * * *", Prompt: "test fail", Cwd: work, Permission: "plan", Enabled: &enabled,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	s.runTaskProcessWithTimeout(sched.ID, fakeFail, work, "test fail", "plan", "", 5*time.Second)
+
+	got, ok := s.Get(sched.ID)
+	if !ok || len(got.Runs) == 0 {
+		t.Fatalf("expected recorded run for %s", sched.ID)
+	}
+	run := got.Runs[0]
+	if run.Status != "error" {
+		t.Errorf("run.Status = %q, want error", run.Status)
+	}
+	wantSummary := "failed: error: build compilation failed on step 3"
+	if run.Summary != wantSummary {
+		t.Errorf("run.Summary = %q, want %q", run.Summary, wantSummary)
+	}
+
+	// Test case where failure produces zero output
+	fakeSilentFail := filepath.Join(bin, "claude-silent-fail")
+	if err := os.WriteFile(fakeSilentFail, []byte("#!/bin/sh\nexit 2\n"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	schedSilent, err := s.Create(ScheduleInput{
+		Kind: "task", Cron: "0 9 * * *", Prompt: "silent fail", Cwd: work, Permission: "plan", Enabled: &enabled,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	s.runTaskProcessWithTimeout(schedSilent.ID, fakeSilentFail, work, "silent fail", "plan", "", 5*time.Second)
+
+	gotSilent, ok := s.Get(schedSilent.ID)
+	if !ok || len(gotSilent.Runs) == 0 {
+		t.Fatalf("expected recorded run for %s", schedSilent.ID)
+	}
+	if gotSilent.Runs[0].Summary != "failed" {
+		t.Errorf("run.Summary = %q, want failed", gotSilent.Runs[0].Summary)
+	}
+}
