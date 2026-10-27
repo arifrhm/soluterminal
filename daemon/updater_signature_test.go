@@ -34,7 +34,7 @@ func TestFetchManifestVerifiesSignatureWhenPublicKeyConfigured(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	body := []byte(`{"version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	sig := ed25519.Sign(priv, body)
 
 	t.Setenv("SOLU_UPDATE_MANIFEST_PUBKEY", base64.StdEncoding.EncodeToString(pub))
@@ -59,7 +59,7 @@ func TestFetchManifestRejectsBadSignature(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	body := []byte(`{"version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 
 	t.Setenv("SOLU_UPDATE_MANIFEST_PUBKEY", base64.StdEncoding.EncodeToString(pub))
 	u := NewUpdater("0.0.1", "", "", nil, nil)
@@ -80,7 +80,7 @@ func TestFetchManifestAllowsUnsignedManifestWhenNoPublicKeyConfigured(t *testing
 	defaultUpdateManifestPubKey = ""
 	defer func() { defaultUpdateManifestPubKey = old }()
 
-	body := []byte(`{"version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u := NewUpdater("0.0.1", "", "", nil, nil)
 	u.manifestURL = "https://updates.example.test/update.json"
 	u.httpClient = &http.Client{Transport: staticRoundTripper{

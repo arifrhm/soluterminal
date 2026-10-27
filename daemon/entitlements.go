@@ -34,10 +34,12 @@ import (
 //     override and rollback.
 //  2. The last verdict the cloud gave this machine (paired: machine token) or
 //     the signed-in account (unpaired: the web forwards its Supabase token).
-//  3. Pre-existing installs that already hold saved provider accounts keep the
-//     features until the cloud answers, so an update never strands a running
-//     auto-switch pool.
-//  4. Otherwise off.
+//     A later answer takes effect at once, without a restart.
+//  3. Otherwise off. Nothing found on the machine grants anything: only a
+//     positive team verdict from the cloud, cached or fresh, turns the team
+//     features on (Benjamin, 2026-10-27: team machines only, the same rule as
+//     the update channel in update_channel.go). Team machines already hold a
+//     cached positive verdict.
 
 const (
 	entitlementsFile         = "entitlements.json"
@@ -89,10 +91,6 @@ type teamEntitlements struct {
 	record     entitlementRecord
 	refreshing bool
 
-	legacyOnce sync.Once
-	legacyFn   func() bool
-	legacy     bool
-
 	cloud       func() (base, token string)
 	accountBase func() string
 	client      *http.Client
@@ -101,11 +99,10 @@ type teamEntitlements struct {
 	onChange func()
 }
 
-func newTeamEntitlements(dataDir string, cloud func() (string, string), legacy func() bool) *teamEntitlements {
+func newTeamEntitlements(dataDir string, cloud func() (string, string)) *teamEntitlements {
 	e := &teamEntitlements{
-		path:     filepath.Join(dataDir, entitlementsFile),
-		legacyFn: legacy,
-		cloud:    cloud,
+		path:  filepath.Join(dataDir, entitlementsFile),
+		cloud: cloud,
 		accountBase: func() string {
 			if v := strings.TrimRight(strings.TrimSpace(os.Getenv("SOLU_CLOUD_URL")), "/"); v != "" {
 				return v
@@ -200,8 +197,8 @@ func (e *teamEntitlements) tierVerdict() (tier string, smartApprovals bool, sour
 	return tier, rec.SmartApprovals && tier != tierNone, source
 }
 
-// cachedTier is the last cloud verdict's tier, ignoring env overrides and the
-// legacy existing-install grant ("none" when the cloud never answered).
+// cachedTier is the last cloud verdict's tier, ignoring env overrides ("none"
+// when the cloud never answered).
 func (e *teamEntitlements) cachedTier() string {
 	if e == nil {
 		return tierNone
@@ -229,20 +226,11 @@ func (e *teamEntitlements) verdict() (bool, string) {
 	if !rec.CheckedAt.IsZero() {
 		return rec.Team && rec.normalizedTier() == tierTeam, rec.Source
 	}
-	e.legacyOnce.Do(func() {
-		if e.legacyFn != nil {
-			e.legacy = e.legacyFn()
-		}
-	})
-	if e.legacy {
-		return true, "existing-install"
-	}
 	return false, "none"
 }
 
 // operatorVerdict reports whether operator-only features are on and why. It
-// follows the same order as verdict(); the legacy existing-install grant
-// covers both flags because those installs predate the split.
+// follows the same order as verdict().
 func (e *teamEntitlements) operatorVerdict() (bool, string) {
 	if e == nil {
 		return true, "unconfigured"
@@ -629,11 +617,6 @@ func teamFeaturesFromCache() bool {
 	team, _ := cachedTeamVerdict()
 	return team
 }
-
-// savedProviderAccounts reports saved provider accounts on this install
-// (installs that were already using account switching before the beta gate
-// existed; see verdict step 3). nil in a build without saved accounts.
-var savedProviderAccounts func(a *apiServer) bool
 
 // voiceBuiltIn reports that this build has voice (voice_server.go); a build
 // without it never offers voice.

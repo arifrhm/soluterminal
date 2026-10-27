@@ -250,7 +250,7 @@ func TestGoTracebackLinesDropsOtherLogLines(t *testing.T) {
 }
 
 func TestFeedbackStatusExplainsWhyUnavailable(t *testing.T) {
-	a := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), func() (string, string) { return "", "" }, nil)}
+	a := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), func() (string, string) { return "", "" })}
 	rec := httptest.NewRecorder()
 	a.handleFeedbackStatus(rec, httptest.NewRequest(http.MethodGet, "/api/feedback/status", nil))
 	var got map[string]any

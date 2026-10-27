@@ -88,7 +88,7 @@ func TestCheckLocalFloorRequiresOnlyWhenAvailable(t *testing.T) {
 
 	// Case 1: update available + local floor armed → Required, with the
 	// downgrade explanation.
-	manifest := []byte(`{"version":"0.0.930","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	manifest := []byte(`{"flavor":"public","version":"0.0.930","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u := NewUpdater("0.0.916", "", "", nil, nil)
 	u.homeDir = t.TempDir()
 	u.localFloor = "0.0.932"
@@ -113,7 +113,7 @@ func TestCheckLocalFloorRequiresOnlyWhenAvailable(t *testing.T) {
 	// Case 2: NO update available (manifest at our own version) → the local
 	// floor must stay silent; blocking a user who has nothing to click is
 	// worse than staying downgraded until a release appears.
-	same := []byte(`{"version":"0.0.916","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	same := []byte(`{"flavor":"public","version":"0.0.916","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u2 := NewUpdater("0.0.916", "", "", nil, nil)
 	u2.homeDir = t.TempDir()
 	u2.localFloor = "0.0.932"

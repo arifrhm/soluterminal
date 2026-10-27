@@ -162,6 +162,7 @@ func TestCheckShellAvailableWhenShellCurrentEmptyAndPlatformPresent(t *testing.T
 	defer func() { defaultUpdateManifestPubKey = old }()
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{
@@ -202,6 +203,7 @@ func TestCheckTracksLastSuccessSeparatelyFromLastChecked(t *testing.T) {
 	defer func() { defaultUpdateManifestPubKey = old }()
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.2",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}
 	}`)
@@ -253,6 +255,7 @@ func TestCheckShellUnavailableWhenPlatformMissing(t *testing.T) {
 	defer func() { defaultUpdateManifestPubKey = old }()
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{
@@ -287,6 +290,7 @@ func TestCheckShellUnavailableWhenAlreadyAtLatest(t *testing.T) {
 	defer func() { defaultUpdateManifestPubKey = old }()
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{

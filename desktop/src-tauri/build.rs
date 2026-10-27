@@ -52,8 +52,39 @@ fn main() {
             );
         }
     }
+    shell_flavor();
     hosted_cloud();
     tauri_build::build();
+}
+
+// The shell's update flavour (src/shell_update_manifest.rs): "public" or
+// "team". Its installer updater only accepts a manifest signed for this
+// flavour, from that flavour's releases repo. Order:
+//
+//   SOLU_BUILD_FLAVOR   team|public, when the builder sets it;
+//   binaries/shell-flavor.txt
+//                       written by scripts/prepare-sidecar.js from the daemon
+//                       it bundles, so an installer's shell always matches
+//                       its daemon (prepare-sidecar refuses a mismatch with
+//                       SOLU_BUILD_FLAVOR);
+//   otherwise           public, the safe default (a public shell never
+//                       fetches the team installer).
+fn shell_flavor() {
+    const STAGED: &str = "binaries/shell-flavor.txt";
+    println!("cargo:rerun-if-env-changed=SOLU_BUILD_FLAVOR");
+    println!("cargo:rerun-if-changed={STAGED}");
+    let flavor = match std::env::var("SOLU_BUILD_FLAVOR") {
+        Ok(v) if !v.is_empty() => v,
+        _ => std::fs::read_to_string(STAGED)
+            .map(|s| s.trim().to_string())
+            .unwrap_or_default(),
+    };
+    let flavor = match flavor.as_str() {
+        "" | "public" => "public",
+        "team" => "team",
+        other => panic!("build.rs: SOLU_BUILD_FLAVOR must be team or public, not {other:?}"),
+    };
+    println!("cargo:rustc-env=SOLU_SHELL_FLAVOR={flavor}");
 }
 
 // The hosted cloud (account UI + relay) this shell talks to is a build-time

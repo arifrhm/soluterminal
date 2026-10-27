@@ -71,7 +71,7 @@ func (u *Updater) controlURL() string {
 	if v := strings.TrimSpace(os.Getenv("SOLU_UPDATE_CONTROL_URL")); v != "" {
 		return v
 	}
-	base := u.manifestURL
+	base := u.manifestURLNow()
 	if i := strings.Index(base, "/releases/"); i >= 0 {
 		return base[:i] + "/releases/download/control/update-control.json"
 	}

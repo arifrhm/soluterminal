@@ -81,6 +81,7 @@ func TestUpdaterUsesShellInfoFallback(t *testing.T) {
 	}
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{
@@ -135,6 +136,7 @@ func TestUpdaterAdoptsNewerShellInfoOverStaleFlag(t *testing.T) {
 	}
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{
@@ -186,6 +188,7 @@ func TestStatusReflectsFreshlyInstalledShellWithoutCheck(t *testing.T) {
 	}
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{
@@ -246,6 +249,7 @@ func TestCheckFiresEventWhenInstallerBadgeClears(t *testing.T) {
 	}
 
 	body := []byte(`{
+		"flavor":"public",
 		"version":"0.0.1",
 		"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}},
 		"shell":{

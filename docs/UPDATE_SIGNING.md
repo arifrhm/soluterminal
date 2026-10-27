@@ -8,6 +8,11 @@ with an embedded Ed25519 verification key also require a valid signature over
 the manifest bytes. Older builds without that key use HTTPS and hashes; the
 existence of signature-checking code does not prove an installed build enforces it.
 
+Each manifest also names the build it is for (`"flavor"`, inside the signed
+bytes). The updater accepts only a manifest whose flavour matches the build
+the install follows, so changing the field breaks the signature and a
+manifest for another build is refused.
+
 Before distributing a release, establish the exact binary/source revision,
 embedded key, signed manifest and negative signature-verification results.
 Keep signing keys outside the repository and export. The private release

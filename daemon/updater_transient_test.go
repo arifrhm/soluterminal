@@ -68,7 +68,7 @@ func TestRetryableStatus(t *testing.T) {
 func TestCheckSuppressesTransientFailures(t *testing.T) {
 	disableManifestSignature(t)
 
-	manifest := []byte(`{"version":"9.9.9","platforms":{"` + platformKeyCurrent() +
+	manifest := []byte(`{"flavor":"public","version":"9.9.9","platforms":{"` + platformKeyCurrent() +
 		`":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	rt := &scriptedRT{statuses: []int{500, 500, 500, 200}, body: manifest}
 

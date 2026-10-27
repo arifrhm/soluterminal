@@ -37,17 +37,9 @@ func fakeEntitlementsCloud(t *testing.T, teamBearers map[string]bool, status int
 func TestEntitlementsVerdictOrder(t *testing.T) {
 	t.Setenv("SOLU_TEAM_FEATURES", "")
 	dir := t.TempDir()
-	legacy := false
-	e := newTeamEntitlements(dir, nil, func() bool { return legacy })
+	e := newTeamEntitlements(dir, nil)
 	if team, src := e.verdict(); team || src != "none" {
 		t.Fatalf("fresh install = %t/%s, want off", team, src)
-	}
-
-	legacyDir := t.TempDir()
-	legacy = true
-	e = newTeamEntitlements(legacyDir, nil, func() bool { return legacy })
-	if team, src := e.verdict(); !team || src != "existing-install" {
-		t.Fatalf("existing install = %t/%s, want on", team, src)
 	}
 
 	t.Setenv("SOLU_TEAM_FEATURES", "0")
@@ -55,7 +47,7 @@ func TestEntitlementsVerdictOrder(t *testing.T) {
 		t.Fatalf("env off = %t/%s", team, src)
 	}
 	t.Setenv("SOLU_TEAM_FEATURES", "1")
-	fresh := newTeamEntitlements(t.TempDir(), nil, nil)
+	fresh := newTeamEntitlements(t.TempDir(), nil)
 	if team, _ := fresh.verdict(); !team {
 		t.Fatal("env on must enable a fresh install")
 	}
@@ -66,19 +58,19 @@ func TestEntitlementsMachineVerdictPersistsAndOverridesLegacy(t *testing.T) {
 	cloud := fakeEntitlementsCloud(t, map[string]bool{"team-machine": true}, http.StatusOK)
 	dir := t.TempDir()
 	creds := func() (string, string) { return cloud.URL, "stranger-machine" }
-	e := newTeamEntitlements(dir, creds, func() bool { return true })
+	e := newTeamEntitlements(dir, creds)
 	e.refresh(context.Background(), "")
 	if team, src := e.verdict(); team || src != "machine" {
 		t.Fatalf("cloud said stranger: got %t/%s", team, src)
 	}
 
 	creds = func() (string, string) { return cloud.URL, "team-machine" }
-	e = newTeamEntitlements(dir, creds, nil)
+	e = newTeamEntitlements(dir, creds)
 	if team, _ := e.verdict(); team {
 		t.Fatal("persisted stranger verdict must load on restart")
 	}
 	e.refresh(context.Background(), "")
-	reloaded := newTeamEntitlements(dir, nil, nil)
+	reloaded := newTeamEntitlements(dir, nil)
 	if team, src := reloaded.verdict(); !team || src != "machine" {
 		t.Fatalf("persisted team verdict = %t/%s", team, src)
 	}
@@ -91,9 +83,12 @@ func TestEntitlementsMachineVerdictPersistsAndOverridesLegacy(t *testing.T) {
 func TestEntitlementsOldCloudKeepsVerdict(t *testing.T) {
 	t.Setenv("SOLU_TEAM_FEATURES", "")
 	cloud := fakeEntitlementsCloud(t, nil, http.StatusNotFound)
-	e := newTeamEntitlements(t.TempDir(), func() (string, string) { return cloud.URL, "tok" }, func() bool { return true })
+	dir := t.TempDir()
+	cached := newTeamEntitlements(dir, nil)
+	cached.store(entitlementRecord{Team: true, Tier: tierTeam, Source: "machine", CheckedAt: time.Now()})
+	e := newTeamEntitlements(dir, func() (string, string) { return cloud.URL, "tok" })
 	e.refresh(context.Background(), "")
-	if team, src := e.verdict(); !team || src != "existing-install" {
+	if team, src := e.verdict(); !team || src != "machine" {
 		t.Fatalf("404 from an older cloud must not change the verdict: %t/%s", team, src)
 	}
 }
@@ -109,7 +104,7 @@ func TestEntitlementsAccountTokenWhenUnpaired(t *testing.T) {
 	cloud := fakeEntitlementsCloud(t, map[string]bool{member: true}, http.StatusOK)
 	t.Setenv("SOLU_CLOUD_URL", cloud.URL)
 	a := &apiServer{}
-	a.entitlements = newTeamEntitlements(t.TempDir(), a.cloudCreds, nil)
+	a.entitlements = newTeamEntitlements(t.TempDir(), a.cloudCreds)
 
 	gate := a.teamFeatureGate(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusNoContent)
@@ -180,7 +175,7 @@ func TestJevCloudEntitledFromCache(t *testing.T) {
 	if allowed, known := jevCloudEntitledFromCache(); allowed || known {
 		t.Fatalf("no cache: allowed=%t known=%t, want unknown", allowed, known)
 	}
-	e := newTeamEntitlements(t.TempDir(), nil, nil)
+	e := newTeamEntitlements(t.TempDir(), nil)
 	jevEntitlementsRef.Store(e)
 	if _, known := jevCloudEntitledFromCache(); known {
 		t.Fatal("no cloud verdict yet must be unknown")

@@ -19,7 +19,7 @@ func teamPlanAPIServer(t *testing.T) *apiServer {
 	t.Setenv("SOLU_OPERATOR_FEATURES", "")
 	dir := t.TempDir()
 	writeEntitlementsFile(t, dir, entitlementRecord{Team: true, Operator: boolPtr(false), Tier: tierTeam, Source: "machine", CheckedAt: time.Now()})
-	return &apiServer{entitlements: newTeamEntitlements(dir, nil, nil)}
+	return &apiServer{entitlements: newTeamEntitlements(dir, nil)}
 }
 
 func operatorAPIServer(t *testing.T) *apiServer {
@@ -28,7 +28,7 @@ func operatorAPIServer(t *testing.T) *apiServer {
 	t.Setenv("SOLU_OPERATOR_FEATURES", "")
 	dir := t.TempDir()
 	writeEntitlementsFile(t, dir, entitlementRecord{Team: true, Operator: boolPtr(true), Tier: tierTeam, Source: "machine", CheckedAt: time.Now()})
-	a := &apiServer{entitlements: newTeamEntitlements(dir, nil, nil)}
+	a := &apiServer{entitlements: newTeamEntitlements(dir, nil)}
 	a.view = newPersonalView(dir)
 	return a
 }
@@ -61,7 +61,7 @@ func TestOperatorFlagBackCompat(t *testing.T) {
 func TestOperatorEnvOverrides(t *testing.T) {
 	dir := t.TempDir()
 	writeEntitlementsFile(t, dir, entitlementRecord{Team: false, Tier: tierAccount, Source: "account", CheckedAt: time.Now()})
-	e := newTeamEntitlements(dir, nil, nil)
+	e := newTeamEntitlements(dir, nil)
 
 	t.Setenv("SOLU_OPERATOR_FEATURES", "")
 	t.Setenv("SOLU_TEAM_FEATURES", "1")

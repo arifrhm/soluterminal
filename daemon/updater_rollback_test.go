@@ -42,6 +42,7 @@ func rollbackFixture(t *testing.T, current, target string, candidate []byte) (*U
 	hash := sha256.Sum256(candidate)
 	manifest, _ := json.Marshal(Manifest{
 		Version: target,
+		Flavor:  "public",
 		Platforms: map[string]ManifestPlatform{
 			platformKeyCurrent(): {URL: "https://cdn.test/solud", SHA256: hex.EncodeToString(hash[:])},
 		},
@@ -124,7 +125,7 @@ func TestPinnedRollbackManifestVersionCoherence(t *testing.T) {
 	pub, priv, _ := ed25519.GenerateKey(nil)
 	t.Setenv("SOLU_UPDATE_MANIFEST_PUBKEY", base64.StdEncoding.EncodeToString(pub))
 	base := "https://updates.test/releases/download/v1.0.0/"
-	body := []byte(`{"version":"1.0.1","platforms":{"` + platformKeyCurrent() + `":{"url":"https://cdn.test/solud","sha256":"00"}}}`)
+	body := []byte(`{"flavor":"public","version":"1.0.1","platforms":{"` + platformKeyCurrent() + `":{"url":"https://cdn.test/solud","sha256":"00"}}}`)
 	rt[base+"update.json"] = body
 	rt[base+"update.json.sig"] = []byte(base64.StdEncoding.EncodeToString(ed25519.Sign(priv, body)))
 	if _, err := u.fetchPinnedManifest(context.Background(), "1.0.0"); err == nil || !strings.Contains(err.Error(), "requested version") {
@@ -262,7 +263,7 @@ func TestHeldReleaseCheckExpiryAndOperatorFloorPrecedence(t *testing.T) {
 	current, latest := "1.0.0", "2.0.0"
 	candidate := []byte("next")
 	digest := sha256.Sum256(candidate)
-	manifest := []byte(`{"version":"2.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://cdn.test/solud","sha256":"` + hex.EncodeToString(digest[:]) + `"}}}`)
+	manifest := []byte(`{"flavor":"public","version":"2.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://cdn.test/solud","sha256":"` + hex.EncodeToString(digest[:]) + `"}}}`)
 	base := "https://updates.test/releases/download/v2.0.0/"
 	controlURL := "https://updates.test/releases/download/control/update-control.json"
 	newUpdater := func(t *testing.T, store *updateRollbackStore, control []byte) *Updater {

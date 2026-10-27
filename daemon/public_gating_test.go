@@ -74,7 +74,7 @@ func TestBootTeamVerdict(t *testing.T) {
 func publicAPIServer(t *testing.T) *apiServer {
 	t.Helper()
 	t.Setenv("SOLU_TEAM_FEATURES", "")
-	return &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil, func() bool { return false })}
+	return &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil)}
 }
 
 func mcpToolNames(t *testing.T, resp rpcResp) []string {
@@ -157,13 +157,13 @@ func TestTeamCloudLLMAllowed(t *testing.T) {
 	prev := jevEntitlementsRef.Load()
 	t.Cleanup(func() { jevEntitlementsRef.Store(prev) })
 
-	jevEntitlementsRef.Store(newTeamEntitlements(t.TempDir(), nil, func() bool { return false }))
+	jevEntitlementsRef.Store(newTeamEntitlements(t.TempDir(), nil))
 	if teamCloudLLMAllowed() {
 		t.Fatal("a public install must not call the team-only cloud LLM")
 	}
 	teamDir := t.TempDir()
 	writeEntitlementsFile(t, teamDir, entitlementRecord{Team: true, Tier: tierTeam, Source: "machine", CheckedAt: time.Now()})
-	jevEntitlementsRef.Store(newTeamEntitlements(teamDir, nil, nil))
+	jevEntitlementsRef.Store(newTeamEntitlements(teamDir, nil))
 	if !teamCloudLLMAllowed() {
 		t.Fatal("a team install keeps the cloud LLM")
 	}

@@ -36,7 +36,7 @@ func oneOf(s string, values ...string) string {
 // Sanitize uses allowlists, not best-effort removal of tokens from free text.
 // Unknown future fields are ignored by JSON decoding on older clouds.
 func (s Status) Sanitize() Status {
-	s.DisabledReason = oneOf(s.DisabledReason, "dev-build", "environment", "preference", "signature-key-invalid", "signature-key-missing")
+	s.DisabledReason = oneOf(s.DisabledReason, "dev-build", "environment", "preference", "signature-key-invalid", "signature-key-missing", "no-releases-repo")
 	s.Channel = oneOf(s.Channel, "stable", "preview")
 	s.LastCheckError = oneOf(s.LastCheckError, "network", "signature", "manifest", "control", "check-failed")
 	s.Reason = oneOf(s.Reason, "kill-switch", "quarantined", "floor", "rollout-cohort", "version-hold", "drain", "restart-pending", "busy", "applying")

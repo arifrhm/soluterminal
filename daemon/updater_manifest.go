@@ -78,7 +78,7 @@ func validReleaseVersion(v string) bool { return releaseVersionRe.MatchString(v)
 // Custom/direct manifest URLs (SOLU_UPDATE_MANIFEST_URL pointing at a local
 // server, tests) keep the original single-fetch path.
 func (u *Updater) fetchManifest(ctx context.Context) (*Manifest, error) {
-	if strings.Contains(u.manifestURL, "/releases/latest/download/") {
+	if strings.Contains(u.manifestURLNow(), "/releases/latest/download/") {
 		return u.fetchManifestResolveThenPin(ctx)
 	}
 	return u.fetchManifestDirect(ctx)
@@ -87,11 +87,12 @@ func (u *Updater) fetchManifest(ctx context.Context) (*Manifest, error) {
 // fetchManifestDirect is the single-fetch path for custom/direct manifest
 // URLs: one GET, signature check against the URL's own .sig, parse.
 func (u *Updater) fetchManifestDirect(ctx context.Context) (*Manifest, error) {
-	body, err := u.fetchUpdateAsset(ctx, u.manifestURL, false)
+	manifestURL := u.manifestURLNow()
+	body, err := u.fetchUpdateAsset(ctx, manifestURL, false)
 	if err != nil {
 		return nil, err
 	}
-	if err := u.verifyManifestSignature(ctx, body); err != nil {
+	if err := u.verifySignatureAt(ctx, detachedSigURL(manifestURL), body); err != nil {
 		return nil, err
 	}
 	var m Manifest
@@ -100,6 +101,9 @@ func (u *Updater) fetchManifestDirect(ctx context.Context) (*Manifest, error) {
 	}
 	if m.Version == "" || len(m.Platforms) == 0 {
 		return nil, errors.New("manifest missing version or platforms")
+	}
+	if err := checkManifestFlavor(&m, u.channelSnapshot(), u.current); err != nil {
+		return nil, err
 	}
 	return &m, nil
 }
@@ -111,7 +115,7 @@ func (u *Updater) fetchManifestResolveThenPin(ctx context.Context) (*Manifest, e
 	// Step 1: resolve the version. These bytes are NOT signature-verified
 	// and are never trusted for anything beyond the version string, which
 	// is strictly validated before it touches a URL.
-	resolveBody, err := u.fetchUpdateAsset(ctx, u.manifestURL, false)
+	resolveBody, err := u.fetchUpdateAsset(ctx, u.manifestURLNow(), false)
 	if err != nil {
 		return nil, err
 	}
@@ -168,11 +172,12 @@ func (u *Updater) fetchPinnedManifest(ctx context.Context, version string) (*Man
 	if !validReleaseVersion(version) {
 		return nil, fmt.Errorf("manifest version %q is not a valid release version", version)
 	}
-	i := strings.Index(u.manifestURL, "/releases/")
+	manifestURL := u.manifestURLNow()
+	i := strings.Index(manifestURL, "/releases/")
 	if i < 0 {
 		return nil, errors.New("rollback requires a release manifest URL")
 	}
-	base := u.manifestURL[:i] + "/releases/download/v" + version + "/"
+	base := manifestURL[:i] + "/releases/download/v" + version + "/"
 	body, err := u.fetchUpdateAsset(ctx, base+"update.json", true)
 	if err != nil {
 		return nil, err
@@ -189,6 +194,12 @@ func (u *Updater) fetchPinnedManifest(ctx context.Context, version string) (*Man
 	}
 	if m.Version != version {
 		return nil, fmt.Errorf("pinned manifest version %q does not match requested version %q", m.Version, version)
+	}
+	// Both the latest-alias path and a user-selected rollback land here, so
+	// neither can install the other flavour's build, nor a release published
+	// before flavours (a full-tree build).
+	if err := checkManifestFlavor(&m, u.channelSnapshot(), u.current); err != nil {
+		return nil, err
 	}
 	return &m, nil
 }
@@ -220,8 +231,12 @@ func (u *Updater) fetchUpdateAsset(ctx context.Context, assetURL string, notFoun
 	return body, nil
 }
 
-func (u *Updater) verifyManifestSignature(ctx context.Context, body []byte) error {
-	return u.verifySignatureAt(ctx, detachedSigURL(u.manifestURL), body)
+// manifestURLNow is the current channel's manifest URL. syncChannel can
+// change it, so fetches read it under the lock.
+func (u *Updater) manifestURLNow() string {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	return u.manifestURL
 }
 
 // detachedSigURL returns the URL of the detached signature for raw: ".sig"

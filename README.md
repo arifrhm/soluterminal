@@ -50,10 +50,15 @@ Windows. It also compiles for macOS, untested there. The desktop shell builds se
 [desktop guide](desktop/README.md).
 
 ## Optional configuration
-Smart approvals ("Approve with caution") can use an AI check on a pane's permission prompt. In a build from this
-repository that needs your own `TYPESAFE_API_KEY` in the daemon's environment. Each check sends that prompt's
-visible text to TypeSafe and is billed to your key. Without a key, every prompt is left for you. Change the key by
-restarting the daemon.
+Smart approvals ("Approve with caution") can use an AI check on a pane's permission prompt. A build from this
+repository gets it in either of two ways:
+- connect the daemon to a free account for the hosted allowance: pair once with
+  `solud --claim --relay wss://soluterminal-cloud.onrender.com/relay`, then always start it with that `--relay`.
+  Each check sends the prompt's visible text to our hosted service;
+- or set your own `TYPESAFE_API_KEY` in the daemon's environment. Each check sends the prompt's visible text to
+  TypeSafe and is billed to your key. Change the key by restarting the daemon.
+
+With neither, every prompt is left for you.
 
 ## Security
 - Updates for the official app are signed, and the app checks the signature before installing.

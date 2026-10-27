@@ -117,7 +117,7 @@ func TestFleetUpdateStatusControlFailureAndRecovery(t *testing.T) {
 	u.manifestURL = "https://updates.test/update.json"
 	u.httpClient = &http.Client{Transport: &scriptedRT{
 		statuses: []int{200, 500, 200, 404},
-		body:     []byte(`{"version":"2.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://updates.test/solud","sha256":"abc"}}}`),
+		body:     []byte(`{"flavor":"public","version":"2.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://updates.test/solud","sha256":"abc"}}}`),
 	}}
 	if _, err := u.Check(context.Background()); err != nil {
 		t.Fatal(err)

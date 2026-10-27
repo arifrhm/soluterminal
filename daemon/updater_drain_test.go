@@ -1070,7 +1070,7 @@ func TestWorkflowUpdateLosslessAutomaticRetry(t *testing.T) {
 func TestCheckNewManifestVersionResetsQuietBackoff(t *testing.T) {
 	disableManifestSignature(t)
 	const manifestURL = "https://updates.example.test/new-version.json"
-	body := []byte(`{"version":"3.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://updates.example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"3.0.0","platforms":{"` + platformKeyCurrent() + `":{"url":"https://updates.example.test/solud","sha256":"abc"}}}`)
 	u := NewUpdater("1.0.0", "", "", nil, nil)
 	u.manifestURL = manifestURL
 	u.httpClient = &http.Client{Transport: staticRoundTripper{manifestURL: body}}

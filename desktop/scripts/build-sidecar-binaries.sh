@@ -73,9 +73,10 @@ if [[ "$DEV" == 1 ]]; then
   exit 0
 fi
 
-if [[ ! -f "$ROOT/scripts/release-ldflags.sh" ]]; then
-  echo "error: scripts/release-ldflags.sh is not in this checkout (a source export has no release" >&2
-  echo "       tooling). Run with --dev for unsigned development sidecars." >&2
+if [[ ! -f "$ROOT/scripts/release-ldflags.sh" || ! -d "$ROOT/scripts/fix-agent" ]]; then
+  echo "error: release sidecars from this script need the private release tooling, which this" >&2
+  echo "       checkout does not have. Run with --dev for unsigned development sidecars; the" >&2
+  echo "       official build stages its own (scripts/official-build.sh, docs/OFFICIAL-BUILD.md)." >&2
   exit 1
 fi
 . "$ROOT/scripts/release-ldflags.sh"
@@ -170,6 +171,7 @@ MANIFEST="$WIN_OUT_DIR/.soluterminal-shell-sidecars.sha256"
   printf 'webdist_version %s\n' "$WEBDIST_VERSION"
   printf 'webdist_source %s\n' "$WEBDIST_SOURCE"
   printf 'update_manifest_pubkey %s\n' "$(solu_effective_update_manifest_pubkey)"
+  printf 'flavor %s\n' "$(solu_build_flavor "$ROOT/daemon")"
   (cd "$WIN_OUT_DIR" && sha256sum solud.exe solud-linux solud-linux-arm64)
 } >"$MANIFEST"
 

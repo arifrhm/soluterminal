@@ -65,3 +65,48 @@ func TestLegacyFallback(t *testing.T) {
 		t.Fatal("a custom URL must not fall back")
 	}
 }
+
+func TestNormalizeFlavorIsTeamOnlyWhenExactlyTeam(t *testing.T) {
+	if got := NormalizeFlavor("team"); got != FlavorTeam {
+		t.Fatalf("NormalizeFlavor(team) = %q", got)
+	}
+	for _, in := range []string{"", "public", "Team", "TEAM", "teams", "dev", "local", "release", "preview"} {
+		if got := NormalizeFlavor(in); got != FlavorPublic {
+			t.Fatalf("NormalizeFlavor(%q) = %q, want public", in, got)
+		}
+	}
+}
+
+func TestFlavorReposNeverOverlap(t *testing.T) {
+	if RepoForFlavor(FlavorPublic) != Repo {
+		t.Fatalf("public repo = %q, want %q", RepoForFlavor(FlavorPublic), Repo)
+	}
+	if RepoForFlavor(FlavorTeam) != TeamRepo {
+		t.Fatalf("team repo = %q, want %q", RepoForFlavor(FlavorTeam), TeamRepo)
+	}
+	if TeamRepo == "" {
+		// The public source export has no team repo: a team build from it
+		// has nothing to read.
+		if len(ReposForFlavor(FlavorTeam)) != 0 {
+			t.Fatalf("no team repo, yet team repos = %v", ReposForFlavor(FlavorTeam))
+		}
+		return
+	}
+	if !repoRE.MatchString(TeamRepo) {
+		t.Fatalf("team repo %q is not <owner>/<name>", TeamRepo)
+	}
+	for _, public := range Repos() {
+		if strings.EqualFold(public, TeamRepo) {
+			t.Fatalf("team repo %q is also a public repo", TeamRepo)
+		}
+		for _, team := range ReposForFlavor(FlavorTeam) {
+			if strings.EqualFold(public, team) {
+				t.Fatalf("repo %q accepted by both flavours", team)
+			}
+		}
+	}
+	// A team URL never falls back to another repo.
+	if _, ok := LegacyFallback(DownloadPrefix(TeamRepo) + "v1.2.3/update.json"); ok {
+		t.Fatal("a team-repo URL fell back to the legacy public repo")
+	}
+}

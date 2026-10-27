@@ -2,13 +2,12 @@ package main
 
 // The hosted services this daemon uses when nothing else is configured.
 //
-// Benjamin's 2026-10-25 decision: a public build connects to no hosted cloud
-// or relay unless its user configures one. These are empty there:
-// entitlements, install check-in and the account proxy stay off unless
-// SOLU_CLOUD_URL is set (or the machine is paired), and the ARIA responder
-// needs an agent gateway URL. The product build's values live in
-// hosted_cloud_defaults.go, which the public source export omits; a builder
-// can also set them with -ldflags "-X main.defaultCloudHTTPBase=https://…".
+// The product's values are set in hosted_cloud_defaults.go (public since
+// 2026-10-27; -ldflags "-X main.hostedCloud=off" leaves them empty) and, for
+// the internal ARIA gateway, hosted_aria_defaults.go (private). Empty values
+// keep entitlements, install check-in and the account proxy off unless
+// SOLU_CLOUD_URL is set or the machine is paired; a builder can also set
+// them with -ldflags "-X main.defaultCloudHTTPBase=https://…".
 var (
 	// defaultCloudHTTPBase is the hosted cloud's API origin.
 	defaultCloudHTTPBase string

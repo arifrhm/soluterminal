@@ -233,6 +233,9 @@ func (u *Updater) applyCandidate(ctx context.Context, exitFn func(int), force, r
 	}
 	var platform ManifestPlatform
 	var candidateVersion string
+	// candidateChannel is the channel whose manifest named the candidate; a
+	// check that switches channels during the download cancels the swap.
+	candidateChannel := u.channel
 	if local != nil {
 		candidateVersion = local.version
 		if candidateVersion == "" || candidateVersion == "dev" {
@@ -408,6 +411,12 @@ func (u *Updater) applyCandidate(ctx context.Context, exitFn func(int), force, r
 	}
 
 	u.mu.Lock()
+	if local == nil && u.channel != candidateChannel {
+		now := u.channel
+		u.mu.Unlock()
+		_ = os.Remove(newPath)
+		return fmt.Errorf("update channel changed to %s while downloading; not installing the %s release", now, candidateChannel)
+	}
 	fromVersion := u.current
 	toVersion := candidateVersion
 	required := local == nil && u.status.Required

@@ -74,7 +74,7 @@ func TestCheckSetsRequiredFromControl(t *testing.T) {
 
 	// Manifest advertises the SAME version (no update available) — Required
 	// must still flip: it reflects the floor, not update availability.
-	manifest := []byte(`{"version":"0.0.700","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	manifest := []byte(`{"flavor":"public","version":"0.0.700","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	control := []byte(`{"schema":1,"min_daemon_version":"0.0.800","message":"critical session fix"}`)
 
 	bus := newUIBus()
@@ -126,7 +126,7 @@ func TestCheckNotRequiredWithoutControl(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	t.Setenv("USERPROFILE", t.TempDir())
 
-	manifest := []byte(`{"version":"0.0.900","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	manifest := []byte(`{"flavor":"public","version":"0.0.900","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u := NewUpdater("0.0.700", "", "", nil, nil)
 	u.homeDir = t.TempDir()
 	u.manifestURL = "https://updates.example.test/update.json"
@@ -154,7 +154,7 @@ func TestShellRequiredClearsOnStatusAfterInstall(t *testing.T) {
 	}
 	infoPath := filepath.Join(dir, ".solu", "shell-info.json")
 
-	manifest := []byte(`{"version":"0.0.700","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	manifest := []byte(`{"flavor":"public","version":"0.0.700","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	control := []byte(`{"schema":1,"min_shell_version":"0.0.800"}`)
 
 	u := NewUpdater("0.0.700", "0.0.700", "windows-amd64", nil, nil)

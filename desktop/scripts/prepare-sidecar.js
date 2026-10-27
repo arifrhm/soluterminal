@@ -131,6 +131,23 @@ function assertVersionStamp(p, label) {
   console.log(`✓ ${label} carries release version ${expected}`);
 }
 
+// Update flavour (daemon/update_flavor.go). A team daemon carries the marker
+// "solu-build-flavor=team"; no public daemon does. The shell is built with
+// the same flavour as the daemons it bundles: build.rs reads
+// binaries/shell-flavor.txt, written below, unless SOLU_BUILD_FLAVOR is set,
+// and an explicit SOLU_BUILD_FLAVOR that disagrees with the sidecars stops
+// the build. A shell of the other flavour would fetch the other build's
+// installer in cloud mode.
+function binaryFlavor(p) {
+  return fs.readFileSync(p).includes(Buffer.from('solu-build-flavor=team', 'utf8')) ? 'team' : 'public';
+}
+const flavorsSeen = new Set();
+function noteFlavor(p, label) {
+  const flavor = binaryFlavor(p);
+  flavorsSeen.add(flavor);
+  console.log(`  ${label}: ${flavor} build`);
+}
+
 // 1. Stage host-native binary for Tauri externalBin.
 const hostSrcName = IS_WINDOWS ? 'solud.exe' : 'solud';
 const hostSrc = path.join(repoRoot, hostSrcName);
@@ -177,6 +194,7 @@ if (fs.existsSync(hostSrc)) {
 // binary), assert it actually carries this release's version stamp before
 // we let Tauri bundle it.
 if (RELEASE) assertVersionStamp(hostDst, `host sidecar (${hostDstName})`);
+noteFlavor(hostDst, `host sidecar (${hostDstName})`);
 
 // 2. Stage the Linux binary for the WSL backend (Windows) OR a 0-byte
 // placeholder (Linux/macOS). Tauri's bundle.resources entry is declared
@@ -218,6 +236,7 @@ for (const a of LINUX_ARCHES) {
     // Assert the raw ELF carries the version BEFORE gzipping (the .gz won't
     // match a plain substring search). Same dev-build guard as the host sidecar.
     if (RELEASE) assertVersionStamp(src, `WSL Linux daemon (${a.src})`);
+    noteFlavor(src, `WSL Linux daemon (${a.src})`);
     const zlib = require('node:zlib');
     fs.writeFileSync(dst, zlib.gzipSync(fs.readFileSync(src)));
     console.log(`→ wsl resource ready: ${dst} (gzip of ${src})`);
@@ -241,3 +260,23 @@ if (IS_WINDOWS) {
   }
   console.log('✓ sidecar completeness guard passed (solud.exe + amd64/arm64 solud-linux .gz)');
 }
+
+// ── Flavour guard ──────────────────────────────────────────────────────
+// Every bundled daemon must be one flavour, and the shell takes it.
+if (flavorsSeen.size > 1) {
+  console.error('error: the bundled daemons mix team and public builds; rebuild them together.');
+  process.exit(1);
+}
+const daemonFlavor = flavorsSeen.size === 1 ? [...flavorsSeen][0] : 'public';
+const requested = process.env.SOLU_BUILD_FLAVOR || '';
+if (requested && !['team', 'public'].includes(requested)) {
+  console.error(`error: SOLU_BUILD_FLAVOR must be team or public, not "${requested}".`);
+  process.exit(1);
+}
+if (requested && requested !== daemonFlavor) {
+  console.error(`error: SOLU_BUILD_FLAVOR=${requested}, but the bundled daemons are ${daemonFlavor} builds.`);
+  console.error('The shell and its daemons must be the same flavour; rebuild the sidecars or fix SOLU_BUILD_FLAVOR.');
+  process.exit(1);
+}
+fs.writeFileSync(path.join(binariesDir, 'shell-flavor.txt'), `${daemonFlavor}\n`);
+console.log(`✓ shell flavour: ${daemonFlavor} (matches the bundled daemons)`);

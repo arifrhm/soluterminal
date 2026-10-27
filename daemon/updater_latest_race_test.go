@@ -61,7 +61,7 @@ const (
 )
 
 func raceManifestBody(version string) []byte {
-	return []byte(`{"version":"` + version + `","platforms":{"` + platformKeyCurrent() +
+	return []byte(`{"flavor":"public","version":"` + version + `","platforms":{"` + platformKeyCurrent() +
 		`":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 }
 

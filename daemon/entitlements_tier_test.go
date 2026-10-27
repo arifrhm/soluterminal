@@ -53,7 +53,7 @@ func TestDaemonEntitlementsTierFromCloud(t *testing.T) {
 			cloud := tierCloud(t, tc.body)
 			a := &apiServer{}
 			dir := t.TempDir()
-			a.entitlements = newTeamEntitlements(dir, func() (string, string) { return cloud.URL, "machine" }, nil)
+			a.entitlements = newTeamEntitlements(dir, func() (string, string) { return cloud.URL, "machine" })
 			a.entitlements.refresh(context.Background(), "")
 			got := entitlementsResponse(t, a)
 			if got["tier"] != tc.tier || got["team"] != tc.team || got["account"] != tc.account {
@@ -78,7 +78,7 @@ func TestDaemonEntitlementsTierFromCloud(t *testing.T) {
 				t.Fatalf("team gate verdict = %v, want %v", team, tc.team)
 			}
 			// The tier survives a restart.
-			reloaded := newTeamEntitlements(dir, nil, nil)
+			reloaded := newTeamEntitlements(dir, nil)
 			if tier := reloaded.cachedTier(); tier != tc.tier {
 				t.Fatalf("persisted tier = %q, want %q", tier, tc.tier)
 			}
@@ -94,31 +94,29 @@ func TestDaemonEntitlementsLegacyFileAndNoVerdict(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, entitlementsFile), []byte(old), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	a := &apiServer{entitlements: newTeamEntitlements(dir, nil, nil)}
+	a := &apiServer{entitlements: newTeamEntitlements(dir, nil)}
 	got := entitlementsResponse(t, a)
 	if got["tier"] != "account" || got["team"] != false || got["account"] != true {
 		t.Fatalf("legacy non-team record = %v", got)
 	}
 
 	// No verdict at all: no account.
-	fresh := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil, nil)}
+	fresh := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil)}
 	got = entitlementsResponse(t, fresh)
 	if got["tier"] != "none" || got["account"] != false || got["remoteAccess"] != false || got["source"] != "none" {
 		t.Fatalf("fresh install = %v", got)
 	}
 
-	// Pre-gate installs with saved accounts keep team until the cloud answers.
-	legacy := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil, func() bool { return true })}
-	got = entitlementsResponse(t, legacy)
-	if got["tier"] != "team" || got["source"] != "existing-install" {
-		t.Fatalf("existing install = %v", got)
+	// Nothing on the machine grants team before the cloud answers.
+	if fresh.entitlements.cachedTier() != tierNone {
+		t.Fatal("fresh install has a cached tier")
 	}
 }
 
 func TestDaemonEntitlementsEnvOverrideKeepsAccount(t *testing.T) {
 	cloud := tierCloud(t, `{"tier":"team","team":true,"account":true}`)
 	a := &apiServer{}
-	a.entitlements = newTeamEntitlements(t.TempDir(), func() (string, string) { return cloud.URL, "machine" }, nil)
+	a.entitlements = newTeamEntitlements(t.TempDir(), func() (string, string) { return cloud.URL, "machine" })
 	t.Setenv("SOLU_TEAM_FEATURES", "")
 	a.entitlements.refresh(context.Background(), "")
 
@@ -128,7 +126,7 @@ func TestDaemonEntitlementsEnvOverrideKeepsAccount(t *testing.T) {
 		t.Fatalf("env off on a team install = %v", got)
 	}
 	t.Setenv("SOLU_TEAM_FEATURES", "1")
-	fresh := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil, nil)}
+	fresh := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil)}
 	if got := entitlementsResponse(t, fresh); got["tier"] != "team" {
 		t.Fatalf("env on = %v", got)
 	}

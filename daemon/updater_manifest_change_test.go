@@ -18,9 +18,9 @@ func TestCheckFiresOnManifestChangeOnlyOnChange(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
 	t.Setenv("USERPROFILE", t.TempDir())
 
-	versionA := []byte(`{"version":"0.0.900","source":{"sha":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
-	versionB := []byte(`{"version":"0.0.901","source":{"sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
-	versionBRecut := []byte(`{"version":"0.0.901","source":{"sha":"cccccccccccccccccccccccccccccccccccccccc"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	versionA := []byte(`{"flavor":"public","version":"0.0.900","source":{"sha":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	versionB := []byte(`{"flavor":"public","version":"0.0.901","source":{"sha":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	versionBRecut := []byte(`{"flavor":"public","version":"0.0.901","source":{"sha":"cccccccccccccccccccccccccccccccccccccccc"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 
 	u := NewUpdater("0.0.899", "", "", nil, nil)
 	u.homeDir = t.TempDir()

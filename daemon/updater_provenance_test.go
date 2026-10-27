@@ -26,7 +26,7 @@ func TestUpdaterSignedSourceProvenanceAndStatus(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	body := []byte(`{"version":"9.9.9","source":{"sha":"0123456789abcdef","builtAt":"2026-08-10T08:00:00Z","repo":"source","cutId":"rc_12345678","cutVersion":"9.9.9","waivers":[{"taskId":"wft_1","reason":"unrelated"}]},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","source":{"sha":"0123456789abcdef","builtAt":"2026-08-10T08:00:00Z","repo":"source","cutId":"rc_12345678","cutVersion":"9.9.9","waivers":[{"taskId":"wft_1","reason":"unrelated"}]},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u := provenanceUpdater(t, body, ed25519.Sign(priv, body), pub)
 	if _, _, note, ok := u.LatestManifestSource(); ok || note == "" {
 		t.Fatalf("source before a successful check = ok %v note %q, want a stated reason", ok, note)
@@ -46,7 +46,7 @@ func TestUpdaterSignedSourceProvenanceAndStatus(t *testing.T) {
 
 func TestUpdaterLegacyManifestProvenanceBackwardCompatible(t *testing.T) {
 	pub, priv, _ := ed25519.GenerateKey(nil)
-	body := []byte(`{"version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	u := provenanceUpdater(t, body, ed25519.Sign(priv, body), pub)
 	status, err := u.Check(context.Background())
 	if err != nil {
@@ -88,7 +88,7 @@ func TestLatestManifestSourceAnnotatesDegradedCachedManifest(t *testing.T) {
 
 func TestUpdaterSourceProvenanceTamperFailsSignature(t *testing.T) {
 	pub, priv, _ := ed25519.GenerateKey(nil)
-	body := []byte(`{"version":"9.9.9","source":{"sha":"good"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
+	body := []byte(`{"flavor":"public","version":"9.9.9","source":{"sha":"good"},"platforms":{"linux-amd64":{"url":"https://example.test/solud","sha256":"abc"}}}`)
 	tampered := []byte(strings.Replace(string(body), `"good"`, `"evil"`, 1))
 	u := provenanceUpdater(t, tampered, ed25519.Sign(priv, body), pub)
 	if _, err := u.Check(context.Background()); err == nil || !strings.Contains(err.Error(), "signature verification failed") {

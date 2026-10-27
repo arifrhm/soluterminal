@@ -199,9 +199,9 @@ func TestCheckinSettingsEndpointIsLocalOnly(t *testing.T) {
 
 func TestCheckinSignedInSignal(t *testing.T) {
 	t.Setenv("SOLU_TEAM_FEATURES", "")
-	a := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil, func() bool { return true })}
+	a := &apiServer{entitlements: newTeamEntitlements(t.TempDir(), nil)}
 	if a.checkinSignedIn() {
-		t.Fatal("an unpaired install with no cloud verdict is not signed in (legacy grant does not count)")
+		t.Fatal("an unpaired install with no cloud verdict is not signed in")
 	}
 	a.cloudToken = "machine-token"
 	if !a.checkinSignedIn() {

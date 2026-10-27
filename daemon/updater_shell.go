@@ -110,6 +110,9 @@ func (u *Updater) ApplyShell(ctx context.Context, dataDir string, forceDowngrade
 	}
 	u.recomputeShellLocked()
 	targetVersion := u.manifest.Shell.Version
+	// The installer belongs to the channel whose manifest named it. A check
+	// that switches channels while it downloads must not let it launch.
+	shellChannel := u.channel
 	if u.rollback != nil {
 		if hold, active := u.rollback.ActiveHold(time.Now()); active && hold.Version == targetVersion {
 			u.status.ShellLaunch = nil
@@ -229,6 +232,12 @@ func (u *Updater) ApplyShell(ctx context.Context, dataDir string, forceDowngrade
 	}
 
 	u.mu.Lock()
+	if u.channel != shellChannel {
+		u.status.ShellLaunch = nil
+		u.mu.Unlock()
+		_ = os.Remove(dstPath)
+		return "", fmt.Errorf("update channel changed to %s while the installer downloaded; not launching the %s installer", u.channelSnapshot(), shellChannel)
+	}
 	u.setShellLaunchLocked(ShellLaunchState{State: "launching", StagedPath: displayPath})
 	u.mu.Unlock()
 	result, launchErr := u.launchShell(displayPath, shellPlatform, lg)

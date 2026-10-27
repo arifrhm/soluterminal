@@ -11,6 +11,16 @@
 //
 // The repo names come from shared/releases, the same files the daemon, the
 // cloud and the release scripts read.
+//
+// Flavours (daemon/update_flavor.go): this shell is a "public" or "team"
+// build (SOLU_SHELL_FLAVOR, set by build.rs from the daemons it bundles). It
+// reads only its own flavour's releases repo, and the signed manifest must
+// name its flavour ("flavor"), so a public shell never installs the team
+// installer and a team shell never installs the public one. A manifest with
+// no flavour (published before flavours) is refused too. Accounts move an
+// install between flavours through the daemon, whose updater follows the
+// account; this cloud-mode path, which runs without a local daemon, keeps
+// the shell's own flavour.
 
 use base64::Engine as _;
 use ed25519_dalek::{Signature, Verifier, VerifyingKey};
@@ -31,12 +41,32 @@ pub(crate) const UPDATE_MANIFEST_PUBKEY: &str = match option_env!("SOLU_UPDATE_M
     _ => DEFAULT_UPDATE_MANIFEST_PUBKEY,
 };
 
-/// "<owner>/<name>" of the releases repo, then its previous home.
+/// "<owner>/<name>" of the public releases repo, then its previous home.
 pub(crate) fn release_repos() -> [&'static str; 2] {
     [
         include_str!("../../../shared/releases/repo.txt").trim(),
         include_str!("../../../shared/releases/legacy-repo.txt").trim(),
     ]
+}
+
+/// "<owner>/<name>" of the team build's releases repo ("" when this source
+/// tree has none).
+pub(crate) fn team_release_repo() -> &'static str {
+    include_str!("../../../shared/releases/team-repo.txt").trim()
+}
+
+/// This shell's flavour: "team" or "public" (build.rs).
+pub(crate) const SHELL_FLAVOR: &str = env!("SOLU_SHELL_FLAVOR");
+
+/// The repos a shell of `flavor` reads, current owner first: the team repo
+/// alone for "team" (none when this tree has no team repo), the public repo
+/// and its previous home for anything else.
+pub(crate) fn release_repos_for(flavor: &str) -> Vec<&'static str> {
+    if flavor == "team" {
+        let team = team_release_repo();
+        return if team.is_empty() { Vec::new() } else { vec![team] };
+    }
+    release_repos().to_vec()
 }
 
 /// The installer a verified manifest points at.
@@ -62,6 +92,8 @@ struct ManifestShell {
 #[derive(serde::Deserialize)]
 struct Manifest {
     version: String,
+    #[serde(default)]
+    flavor: Option<String>,
     shell: Option<ManifestShell>,
 }
 
@@ -140,19 +172,23 @@ fn installer_url_allowed(url: &str, repos: &[&str], shell_version: &str) -> bool
 
 /// Checks the signature over `body`, then returns the windows-amd64 installer
 /// it names. `expected_version` is the version the latest alias resolved to;
-/// the pinned manifest must agree with it.
+/// the pinned manifest must agree with it, and must be signed for `flavor`.
 pub(crate) fn verify_shell_manifest(
     body: &[u8],
     sig_text: &str,
     pubkey_b64: &str,
     expected_version: &str,
     repos: &[&str],
+    flavor: &str,
 ) -> Result<VerifiedShellAsset, String> {
     verify_signature(body, sig_text, pubkey_b64)?;
     let manifest: Manifest =
         serde_json::from_slice(body).map_err(|_| "update manifest is not valid".to_string())?;
     if manifest.version != expected_version {
         return Err("update manifest does not match the latest release".to_string());
+    }
+    if manifest.flavor.as_deref() != Some(flavor) {
+        return Err(format!("update manifest is not for the {flavor} build"));
     }
     let shell = manifest
         .shell
@@ -227,7 +263,10 @@ try {{
 pub(crate) fn fetch_verified_shell_asset(ps: &str) -> Result<VerifiedShellAsset, String> {
     use std::process::Command;
 
-    let repos = release_repos();
+    let repos = release_repos_for(SHELL_FLAVOR);
+    if repos.is_empty() {
+        return Err("this build has no releases repo for its flavour".to_string());
+    }
     let out = Command::new(ps)
         .args([
             "-NoProfile",
@@ -260,7 +299,7 @@ pub(crate) fn fetch_verified_shell_asset(ps: &str) -> Result<VerifiedShellAsset,
         .map_err(|e| format!("could not read the update manifest: {e}"))?;
     let sig = std::fs::read_to_string(field("signature=")?)
         .map_err(|e| format!("could not read the update signature: {e}"))?;
-    verify_shell_manifest(&body, &sig, UPDATE_MANIFEST_PUBKEY, &version, &repos)
+    verify_shell_manifest(&body, &sig, UPDATE_MANIFEST_PUBKEY, &version, &repos, SHELL_FLAVOR)
 }
 
 #[cfg(test)]
@@ -283,8 +322,13 @@ mod tests {
     }
 
     fn manifest(url: &str) -> Vec<u8> {
+        flavored_manifest(Some("public"), url)
+    }
+
+    fn flavored_manifest(flavor: Option<&str>, url: &str) -> Vec<u8> {
+        let field = flavor.map(|f| format!(r#""flavor":"{f}","#)).unwrap_or_default();
         format!(
-            r#"{{"version":"0.0.1213","platforms":{{}},"shell":{{"version":"0.0.1213","platforms":{{"windows-amd64":{{"url":"{url}","sha256":"{SHA}"}}}}}}}}"#
+            r#"{{{field}"version":"0.0.1213","platforms":{{}},"shell":{{"version":"0.0.1213","platforms":{{"windows-amd64":{{"url":"{url}","sha256":"{SHA}"}}}}}}}}"#
         )
         .into_bytes()
     }
@@ -294,7 +338,7 @@ mod tests {
     }
 
     fn check(body: &[u8], sig: &str, pubkey: &str) -> Result<VerifiedShellAsset, String> {
-        verify_shell_manifest(body, sig, pubkey, "0.0.1213", &release_repos())
+        verify_shell_manifest(body, sig, pubkey, "0.0.1213", &release_repos(), "public")
     }
 
     #[test]
@@ -361,7 +405,7 @@ mod tests {
         }
         let body = String::from_utf8(manifest(&url(repo))).unwrap().replace(SHA, &"A".repeat(64)).into_bytes();
         assert!(check(&body, &sign(&k, &body), &pubkey(&k)).unwrap_err().contains("digest"));
-        let body = br#"{"version":"0.0.1213","platforms":{}}"#;
+        let body = br#"{"flavor":"public","version":"0.0.1213","platforms":{}}"#;
         assert!(check(body, &sign(&k, body), &pubkey(&k)).unwrap_err().contains("no versioned"));
     }
 
@@ -369,7 +413,7 @@ mod tests {
     fn rejects_a_pinned_manifest_for_another_version() {
         let k = key();
         let body = manifest(&url(release_repos()[0]));
-        let err = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1214", &release_repos())
+        let err = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1214", &release_repos(), "public")
             .unwrap_err();
         assert!(err.contains("does not match"), "{err}");
     }
@@ -396,6 +440,73 @@ mod tests {
         // The public source copy has no previous home: legacy equals current.
         let [current, legacy] = release_repos();
         assert!(current.contains('/') && legacy.contains('/'));
+    }
+
+    #[test]
+    fn accepts_only_a_manifest_signed_for_its_own_flavour() {
+        let k = key();
+        let team_repos: Vec<&str> = if team_release_repo().is_empty() {
+            vec!["example-owner/team-releases"]
+        } else {
+            release_repos_for("team")
+        };
+        for (shell, repos) in [("public", release_repos().to_vec()), ("team", team_repos)] {
+            let url = url(repos[0]);
+            for manifest_flavor in [Some("public"), Some("team"), None, Some("Team"), Some("migration")] {
+                let body = flavored_manifest(manifest_flavor, &url);
+                let got = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1213", &repos, shell);
+                if manifest_flavor == Some(shell) {
+                    assert_eq!(got.expect("own flavour").url, url);
+                } else {
+                    let err = got.expect_err("another flavour's installer was accepted");
+                    assert!(err.contains("not for the"), "{shell} shell, manifest {manifest_flavor:?}: {err}");
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn a_relabelled_flavour_fails_the_signature() {
+        let k = key();
+        let url = url(release_repos()[0]);
+        let signed = flavored_manifest(Some("team"), &url);
+        let relabelled = String::from_utf8(signed.clone())
+            .unwrap()
+            .replace(r#""flavor":"team""#, r#""flavor":"public""#)
+            .into_bytes();
+        assert_ne!(signed, relabelled);
+        let err = check(&relabelled, &sign(&k, &signed), &pubkey(&k)).unwrap_err();
+        assert_eq!(err, "update signature verification failed");
+    }
+
+    #[test]
+    fn each_flavour_reads_only_its_own_repo() {
+        let public = release_repos_for("public");
+        let team = release_repos_for("team");
+        assert_eq!(public, release_repos().to_vec());
+        for flavor in ["", "Team", "nightly", "public"] {
+            assert_eq!(release_repos_for(flavor), public, "flavour {flavor:?}");
+        }
+        for repo in &team {
+            assert!(!public.iter().any(|p| p.eq_ignore_ascii_case(repo)), "{repo} is read by both flavours");
+        }
+        let team_script = fetch_manifest_script(&team);
+        let public_script = fetch_manifest_script(&public);
+        for repo in &public {
+            assert!(!team_script.contains(&format!("'{repo}'")), "team shell would read {repo}");
+        }
+        for repo in &team {
+            assert!(!public_script.contains(&format!("'{repo}'")), "public shell would read {repo}");
+        }
+        // A team installer whose URL sits in the public repo is refused.
+        if let Some(team_repo) = team.first() {
+            let k = key();
+            let body = flavored_manifest(Some("team"), &url(public[0]));
+            let err = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1213", &[*team_repo], "team")
+                .unwrap_err();
+            assert!(err.contains("unexpected installer location"), "{err}");
+        }
+        assert!(SHELL_FLAVOR == "public" || SHELL_FLAVOR == "team");
     }
 
     #[test]

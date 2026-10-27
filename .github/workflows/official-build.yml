@@ -1,0 +1,281 @@
+# The official SoluTerminal build (docs/OFFICIAL-BUILD.md).
+#
+# On a pushed tag vX.Y.Z this builds the official app from this repository
+# alone, on GitHub-hosted runners:
+#   - the web bundle, embedded in every daemon;
+#   - solud for the five platforms the update manifest carries, with the
+#     release flags (scripts/release-ldflags.sh), twice on separate runners:
+#     both builds must be byte for byte identical;
+#   - the Windows desktop app and its NSIS installer, carrying those same
+#     daemon bytes and the hosted cloud as a build setting;
+# then uploads every file with a SHA256SUMS and records a GitHub build
+# provenance attestation over it.
+#
+# It does not sign, tag, create releases or publish anything. There are no
+# secrets: the public auth defaults are repository variables, and the update
+# manifest is signed later, outside CI, from these digests.
+#
+# Run it by hand (Actions > official-build > Run workflow) for a dry run.
+name: official-build
+
+on:
+  push:
+    tags: ['v[0-9]+.[0-9]+.[0-9]+']
+  workflow_dispatch:
+    inputs:
+      allow_incomplete:
+        description: Dry run only. Build even when an official input (voice, the cloud allowlist, the auth variables) is missing; the result is labelled INCOMPLETE and never attested.
+        type: boolean
+        default: false
+      attest:
+        description: Record a provenance attestation for this manual run (tag pushes always do).
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-build-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # The hosted cloud is the product's, published in the source:
+  # desktop/src-tauri/hosted-cloud.env for the shell (build.rs) and
+  # daemon/hosted_cloud_defaults.go for solud. Preflight refuses a commit
+  # without them. To build against another cloud, set both of these here; the
+  # shell then reads only them and solud gets them with -X:
+  #   SOLU_CLOUD_URL: https://cloud.example.com       (API and relay origin)
+  #   SOLU_CLOUD_APP_URL: https://app.example.com     (pairing/sign-in pages)
+  # Public by design (every released daemon contains both, and the anon key is
+  # meant for browsers), but set as repository variables (Settings > Secrets
+  # and variables > Actions > Variables) rather than written into the source.
+  SOLU_SUPABASE_URL: ${{ vars.SOLU_SUPABASE_URL }}
+  SOLU_SUPABASE_ANON_KEY: ${{ vars.SOLU_SUPABASE_ANON_KEY }}
+  # The web bundle's bytes depend on Node/npm; keep both builds on one version.
+  NODE_VERSION: '24.2.0'
+  # The same CLI version desktop/package-lock.json pins.
+  TAURI_CLI_VERSION: '2.10.1'
+  SOLU_ALLOW_INCOMPLETE: ${{ github.event_name == 'workflow_dispatch' && inputs.allow_incomplete && '1' || '0' }}
+
+jobs:
+  preflight:
+    name: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      version: ${{ steps.check.outputs.version }}
+      complete: ${{ steps.check.outputs.complete }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - name: Check this commit can build the official app
+        id: check
+        run: |
+          if [[ "$GITHUB_REF_TYPE" == tag ]]; then
+            export SOLU_EXPECT_VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          version="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' desktop/src-tauri/tauri.conf.json | head -1)"
+          if SOLU_ALLOW_INCOMPLETE=0 bash scripts/official-build.sh preflight; then
+            complete=true
+          elif [[ "$SOLU_ALLOW_INCOMPLETE" == 1 ]]; then
+            complete=false
+            echo "::warning::Dry run of an INCOMPLETE build: this is not the official app and is not attested."
+          else
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "complete=$complete" >> "$GITHUB_OUTPUT"
+
+  daemons:
+    # Two independent builds of the same commit. The release job requires them
+    # to be identical, so anyone with the same toolchain gets the same bytes.
+    name: daemons (${{ matrix.build }})
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: true
+      matrix:
+        build: [primary, rebuild]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Read pinned Go toolchain
+        id: go
+        run: |
+          version="$(sed -n 's/^toolchain go\([0-9][0-9.]*\)$/\1/p' daemon/go.mod | head -1)"
+          [[ -n "$version" ]] || { echo "daemon/go.mod has no toolchain line" >&2; exit 1; }
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      # No dependency caches: a release build does not consume state written by
+      # earlier runs.
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ steps.go.outputs.version }}
+          cache: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - name: Build web bundle and solud (five platforms)
+        env:
+          SOLU_SOURCE_SHA: ${{ github.sha }}
+        run: bash scripts/official-build.sh daemons --out "$RUNNER_TEMP/daemons"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: solud-${{ matrix.build }}
+          path: ${{ runner.temp }}/daemons/
+          if-no-files-found: error
+          retention-days: 7
+
+  desktop:
+    name: desktop app + NSIS installer
+    needs: [preflight, daemons]
+    runs-on: windows-latest
+    timeout-minutes: 90
+    env:
+      SOLU_SOURCE_SHA: ${{ github.sha }}
+      VERSION: ${{ needs.preflight.outputs.version }}
+      # The validator requires the auth defaults in the daemons unless this
+      # is an incomplete dry run.
+      SOLU_ALLOW_NO_AUTH_SIDECAR: ${{ needs.preflight.outputs.complete == 'true' && '0' || '1' }}
+    steps:
+      - name: Check out with LF line endings (the bash scripts need them)
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
+        with:
+          toolchain: stable
+      - name: Install the Tauri CLI
+        run: cargo install tauri-cli --version "${{ env.TAURI_CLI_VERSION }}" --locked
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: solud-primary
+          path: ${{ runner.temp }}/daemons
+      - name: Stage the built daemons as the installer's sidecars
+        shell: bash
+        run: bash scripts/official-build.sh stage-sidecars --from "$RUNNER_TEMP/daemons"
+      - name: Build the desktop app and NSIS installer
+        # The same wrapper as the product build: it remaps the runner's user
+        # folder and checkout path out of the binary. prepare-sidecar.js
+        # (beforeBuildCommand) refuses unstamped or empty sidecars.
+        working-directory: desktop
+        shell: cmd
+        run: scripts\tauri-release-build.cmd --bundles nsis
+      - name: Validate the installer
+        shell: bash
+        run: |
+          installer="desktop/src-tauri/target/release/bundle/nsis/soluterminal_${VERSION}_x64-setup.exe"
+          bash scripts/validate-shell-installer.sh \
+            --installer "$installer" \
+            --release-version "$VERSION" \
+            --shell-version "$VERSION" \
+            --expect-web-source "$SOLU_SOURCE_SHA" \
+            --extract-check
+          bash scripts/official-build.sh check-installer --installer "$installer" --from "$RUNNER_TEMP/daemons"
+          mkdir -p "$RUNNER_TEMP/installer"
+          cp "$installer" "$RUNNER_TEMP/installer/"
+          {
+            echo "rustc $(rustc -V)"
+            echo "cargo-tauri $(cargo tauri --version)"
+            echo "node $(node --version)"
+            echo "runner $ImageOS $ImageVersion"
+          } > "$RUNNER_TEMP/installer/BUILDINFO-desktop.txt"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: windows-installer
+          path: ${{ runner.temp }}/installer/
+          if-no-files-found: error
+          retention-days: 7
+
+  release-files:
+    name: SHA256SUMS + attestation
+    needs: [preflight, daemons, desktop]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      VERSION: ${{ needs.preflight.outputs.version }}
+      COMPLETE: ${{ needs.preflight.outputs.complete }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: solud-primary
+          path: ${{ runner.temp }}/primary
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: solud-rebuild
+          path: ${{ runner.temp }}/rebuild
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: windows-installer
+          path: ${{ runner.temp }}/installer
+      - name: Require the two daemon builds to be identical
+        run: |
+          cd "$RUNNER_TEMP"
+          (cd primary && sha256sum -c --strict SHA256SUMS)
+          (cd rebuild && sha256sum -c --strict SHA256SUMS)
+          if ! cmp primary/SHA256SUMS rebuild/SHA256SUMS; then
+            echo "::error::The two independent daemon builds differ; the build is not reproducible."
+            diff primary/SHA256SUMS rebuild/SHA256SUMS || true
+            diff primary/BUILDINFO.txt rebuild/BUILDINFO.txt || true
+            exit 1
+          fi
+      - name: Collect the release files and SHA256SUMS
+        id: collect
+        run: |
+          out="$RUNNER_TEMP/official"
+          mkdir -p "$out"
+          cp "$RUNNER_TEMP"/primary/solud-* "$out/"
+          cp "$RUNNER_TEMP/installer/soluterminal_${VERSION}_x64-setup.exe" "$out/"
+          cp "$RUNNER_TEMP/primary/BUILDINFO.txt" "$out/BUILDINFO.txt"
+          cp "$RUNNER_TEMP/installer/BUILDINFO-desktop.txt" "$out/BUILDINFO-desktop.txt"
+          (cd "$out" && sha256sum solud-* "soluterminal_${VERSION}_x64-setup.exe" | LC_ALL=C sort -k2) > "$out/SHA256SUMS"
+          {
+            echo "repository $GITHUB_REPOSITORY"
+            echo "ref $GITHUB_REF"
+            echo "commit $GITHUB_SHA"
+            echo "workflow $GITHUB_WORKFLOW_REF"
+            echo "run $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID (attempt $GITHUB_RUN_ATTEMPT)"
+            echo "complete $COMPLETE"
+          } > "$out/SOURCE.txt"
+          if [[ "$COMPLETE" == true ]]; then
+            echo "name=soluterminal-$VERSION-official" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=soluterminal-$VERSION-INCOMPLETE-not-official" >> "$GITHUB_OUTPUT"
+          fi
+          {
+            echo "### ${VERSION} ($([[ "$COMPLETE" == true ]] && echo official || echo 'INCOMPLETE dry run'))"
+            echo '```'
+            cat "$out/SHA256SUMS"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      # Upload before attesting so the files survive an attestation outage.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ${{ steps.collect.outputs.name }}
+          path: ${{ runner.temp }}/official/
+          if-no-files-found: error
+          retention-days: 90
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        if: needs.preflight.outputs.complete == 'true' && (github.event_name == 'push' || inputs.attest)
+        with:
+          subject-checksums: ${{ runner.temp }}/official/SHA256SUMS

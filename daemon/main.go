@@ -54,6 +54,7 @@ func buildProvenance() map[string]any {
 		"sourceSha": buildSourceSha,
 		"dirty":     buildDirty == "1",
 		"channel":   buildChannel,
+		"flavor":    currentBuildFlavor(),
 	}
 }
 
@@ -1236,10 +1237,17 @@ func main() {
 	}
 	gate := &authGate{token: token}
 	api.gate = gate
-	api.entitlements = newTeamEntitlements(*dataDir, api.cloudCreds, func() bool { return savedProviderAccounts != nil && savedProviderAccounts(api) })
+	api.entitlements = newTeamEntitlements(*dataDir, api.cloudCreds)
 	jevEntitlementsRef.Store(api.entitlements)
 	api.view = newPersonalView(*dataDir)
 	api.entitlements.onChange = api.publishEntitlementsChanged
+	// The update channel follows the account (update_channel.go). Wired
+	// after the entitlements cache so the first decision sees the cached
+	// account verdict.
+	updater.channelStore = newUpdateChannelStore(*dataDir)
+	updater.channelEvidence = func() channelEvidence {
+		return entitlementChannelEvidence(api.entitlements)
+	}
 	api.agentAuthority = newAgentAuthority(*dataDir)
 	api.trustedDevices = newTrustedDevices(*dataDir)
 	// Reminder names already mirrored to the cloud are replaced as soon as

@@ -37,7 +37,7 @@ func releaseRepoUpdater(t *testing.T, repo string, body, signedBody []byte) *Upd
 }
 
 func signedReleaseBody(repo string) []byte {
-	return []byte(`{"version":"9.9.9","platforms":{"linux-amd64":{"url":"` +
+	return []byte(`{"flavor":"public","version":"9.9.9","platforms":{"linux-amd64":{"url":"` +
 		releases.DownloadPrefix(repo) + `v9.9.9/solud-linux-amd64","sha256":"abc"}}}`)
 }
 

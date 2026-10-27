@@ -46,8 +46,6 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
-
-	"soluterminal-shared/releases"
 )
 
 // Exit code used by Apply() after the successor daemon has been
@@ -75,9 +73,10 @@ const ExitCodeRestartForUpdate = 0
 // are always fetched from the immutable /releases/download/v<version>/
 // URLs — see fetchManifest in updater_manifest.go.
 //
-// The owner/repo comes from shared/releases (repo.txt). Before the repo
-// moves there, a 404 falls back to the legacy owner (getReleaseAsset).
-var defaultManifestURL = releases.LatestManifestURL(releases.Repo)
+// The owner/repo comes from shared/releases and depends on the build's
+// flavour (update_flavor.go): repo.txt for the public build, team-repo.txt
+// for the team build. Before the public repo moves to repo.txt's owner, a
+// 404 falls back to the legacy owner (getReleaseAsset); team URLs never do.
 
 // defaultUpdateManifestPubKey is the base64 raw Ed25519 public key used
 // to verify update.json.sig. It can be overridden at build time with
@@ -126,6 +125,11 @@ type Manifest struct {
 	Version   string                      `json:"version"`
 	Platforms map[string]ManifestPlatform `json:"platforms"`
 	Notes     string                      `json:"notes,omitempty"`
+	// Flavor is the build this release is for: "public" or "team". It is
+	// inside the signed bytes, and the updater refuses a manifest whose
+	// flavour is missing or is not its own (update_flavor.go). Clients from
+	// before flavours (0.0.1224 and older) ignore it.
+	Flavor string `json:"flavor,omitempty"`
 	// Source cryptographically attributes release artifacts to the private
 	// source repository. It is inside the signed manifest bytes; old clients
 	// ignore it and old manifests decode with Source nil.
@@ -257,17 +261,35 @@ type UpdateStatus struct {
 	RequiredReason      string `json:"requiredReason,omitempty"`
 	ShellRequired       bool   `json:"shellRequired"`
 	ShellRequiredReason string `json:"shellRequiredReason,omitempty"`
+
+	// UpdateChannel is the build this install follows: "public" or "team"
+	// (update_channel.go). Empty until the first decision is known.
+	UpdateChannel string `json:"updateChannel,omitempty"`
 }
 
 type Updater struct {
-	manifestURL   string
-	current       string
-	shellCurrent  string
-	shellPlatform string
-	httpClient    *http.Client
-	metrics       *Metrics // optional
-	rollback      *updateRollbackStore
-	dataDir       string
+	manifestURL string
+	// manifestURLOverride is true when SOLU_UPDATE_MANIFEST_URL set
+	// manifestURL; a channel switch then keeps the URL (the flavour check
+	// still applies).
+	manifestURLOverride bool
+	// channel is the install's update channel (update_channel.go): every
+	// manifest the updater trusts must be signed for it. It starts as the
+	// build's initial channel and follows channelStore once main wires it.
+	// Guarded by mu; tests may set it directly before use.
+	channel string
+	// channelStore and channelEvidence are wired by main after the
+	// entitlements cache exists. Until then the stored decision (or the
+	// initial channel) is used and nothing is decided or persisted.
+	channelStore    *updateChannelStore
+	channelEvidence func() channelEvidence
+	current         string
+	shellCurrent    string
+	shellPlatform   string
+	httpClient      *http.Client
+	metrics         *Metrics // optional
+	rollback        *updateRollbackStore
+	dataDir         string
 
 	// downloadIdleTimeout aborts a binary download only after this long with
 	// no bytes received; downloadMaxDuration is the absolute ceiling for one
@@ -500,9 +522,15 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	// pair; query-bearing/tokenized latest aliases are unsupported because the
 	// derived immutable asset URLs do not inherit the alias query. Any other
 	// custom URL keeps the plain single-fetch path.
+	//
+	// Without an override the URL is the build flavour's own releases repo.
+	// An override may point anywhere, but the signed manifest must still name
+	// this build's flavour, so it cannot switch a build to the other one.
+	channel := initialUpdateChannel()
 	url := os.Getenv("SOLU_UPDATE_MANIFEST_URL")
-	if url == "" {
-		url = defaultManifestURL
+	override := url != ""
+	if !override {
+		url = manifestURLForFlavor(channel)
 	}
 	// Backward compat: if no explicit shell platform was passed, infer
 	// it. Old Tauri shells (pre-v0.0.330) don't pass --shell-platform,
@@ -538,6 +566,8 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	transport.ResponseHeaderTimeout = 30 * time.Second
 	return &Updater{
 		manifestURL:         url,
+		manifestURLOverride: override,
+		channel:             channel,
 		current:             current,
 		shellCurrent:        shellCurrent,
 		shellPlatform:       shellPlatform,
@@ -547,7 +577,7 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 		httpClient:          &http.Client{Transport: transport, Timeout: 20 * time.Second},
 		downloadIdleTimeout: defaultUpdateDownloadIdleTimeout,
 		downloadMaxDuration: defaultUpdateDownloadMaxDuration,
-		status:              UpdateStatus{Current: current, ShellCurrent: shellCurrent},
+		status:              UpdateStatus{Current: current, ShellCurrent: shellCurrent, UpdateChannel: channel},
 		drainWindow:         defaultWorkflowDrainWindow,
 		launchShell:         launchShell,
 		shellDisplayPath:    shellInstallerDisplayPath,
@@ -562,6 +592,15 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 // skipped entirely so `go run` iterations don't spam the endpoint.
 func (u *Updater) StartBackgroundPoll(ctx context.Context) {
 	if u.current == "dev" {
+		return
+	}
+	if u.manifestURLNow() == "" {
+		// A team build from the public source export: it has no team
+		// releases repo, and it must never fall back to the public one.
+		u.mu.Lock()
+		u.fleetPollDisabled = "no-releases-repo"
+		u.mu.Unlock()
+		slog.Warn("auto-update disabled", "reason", "this build has no releases repo for its update channel", "channel", u.channelSnapshot())
 		return
 	}
 	// Surface which signature-verification mode we're in so a misbuilt
@@ -672,6 +711,7 @@ func (u *Updater) Check(ctx context.Context) (*UpdateStatus, error) {
 	if u.metrics != nil {
 		u.metrics.UpdaterChecksTotal.Add(1)
 	}
+	u.syncChannel()
 	m, err := u.fetchManifest(ctx)
 	// Fetch the control file alongside the manifest (no lock held during I/O).
 	// Only when the manifest itself succeeded — no manifest, nothing to gate.
@@ -694,6 +734,23 @@ func (u *Updater) Check(ctx context.Context) (*UpdateStatus, error) {
 	if err != nil {
 		if u.metrics != nil {
 			u.metrics.UpdaterErrorsTotal.Add(1)
+		}
+		var flavorErr *manifestFlavorError
+		if errors.As(err, &flavorErr) && !flavorErr.newer {
+			// The channel's repo still serves a release of another flavour
+			// that is not newer than this daemon (the one-time migration
+			// release, read by installs that already run it). There is
+			// nothing to install either way; report up to date, not a
+			// failure, and keep any manifest already verified for the
+			// channel.
+			u.transientFailures = 0
+			u.fleetLastCheckError = ""
+			u.status.LastError = ""
+			u.status.LastSuccessMs = now.UnixMilli()
+			if u.manifest == nil {
+				u.status.Available = false
+			}
+			return u.statusCopy(), nil
 		}
 		if isTransientUpdateErr(err) {
 			u.transientFailures++
@@ -720,6 +777,12 @@ func (u *Updater) Check(ctx context.Context) (*UpdateStatus, error) {
 		}
 		u.status.LastError = redactUpdateURLs(err.Error())
 		return u.statusCopy(), err
+	}
+	if m.Flavor != u.channel {
+		// The channel switched while this check was fetching (a concurrent
+		// check ran syncChannel). Drop the result; the next check fetches
+		// the new channel's manifest.
+		return u.statusCopy(), errors.New("update channel changed during the check; retrying")
 	}
 	u.status.LastError = ""
 	u.status.LastSuccessMs = now.UnixMilli()
