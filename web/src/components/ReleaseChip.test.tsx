@@ -76,7 +76,11 @@ describe('ReleaseChip', () => {
     expect(screen.getByText(/5 unreleased commits since v0\.0\.989/)).toBeInTheDocument();
     expect(screen.getByText(/3 functional files \+ 2 documentation files changed/)).toBeInTheDocument();
     expect(screen.getAllByText(/v0\.0\.990/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/Bump v0\.0\.990/)).toBeInTheDocument();
+    expect(screen.getByText(/bumps to v0\.0\.990 and freezes main/)).toBeInTheDocument();
+    expect(screen.getByText(/tried on Preview/)).toBeInTheDocument();
+    // The retired engine's steps and its empty "cut" row are gone.
+    expect(screen.queryByText(/Declare the release cut/)).toBeNull();
+    expect(screen.queryByText(/implicit \/ not declared/)).toBeNull();
     expect(screen.getByText('./publish.sh')).toBeInTheDocument();
     // Opening the popover reads two things and writes nothing: the release
     // scope check and the (opt-in, default-off) release-train status. The

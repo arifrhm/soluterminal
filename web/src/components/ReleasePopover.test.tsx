@@ -411,6 +411,17 @@ describe('ReleasePopover', () => {
     expect(screen.getByText(/3 functional files \+ 1 documentation files changed/)).toBeInTheDocument();
   });
 
+  it('says nothing about auto release while the release train is off', () => {
+    const off = train({
+      state: { phase: 'disabled', train: null, parked: null, restartPending: null },
+      preview: preview(),
+    });
+    off.policy = { ...off.policy, enabled: false };
+    render(<ReleasePopover anchor={anchor()} readiness={readiness} train={off} onClose={() => {}} />);
+    expect(screen.queryByText(/count toward auto release/)).toBeNull();
+    expect(screen.getByText(/3 functional files \+ 1 documentation files changed/)).toBeInTheDocument();
+  });
+
   it('leads with the actual hold reason when both release triggers are already satisfied', () => {
     const reason = 'release train requires a quiet engine (1 running, 0 pending, 1 awaiting approval)';
     render(<ReleasePopover

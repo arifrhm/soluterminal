@@ -13,14 +13,21 @@
 // cloud and the release scripts read.
 //
 // Flavours (daemon/update_flavor.go): this shell is a "public" or "team"
-// build (SOLU_SHELL_FLAVOR, set by build.rs from the daemons it bundles). It
-// reads only its own flavour's releases repo, and the signed manifest must
-// name its flavour ("flavor"), so a public shell never installs the team
-// installer and a team shell never installs the public one. A manifest with
-// no flavour (published before flavours) is refused too. Accounts move an
-// install between flavours through the daemon, whose updater follows the
-// account; this cloud-mode path, which runs without a local daemon, keeps
-// the shell's own flavour.
+// build (SOLU_SHELL_FLAVOR, set by build.rs from the daemons it bundles). The
+// signed manifest must name its flavour ("flavor"), so a public shell never
+// installs the team installer and a team shell never installs the public
+// one. A manifest with no flavour (published before flavours) is refused too.
+// Accounts move an install between flavours through the daemon, whose
+// updater follows the account; this cloud-mode path, which runs without a
+// local daemon, keeps the shell's own flavour.
+//
+// Only the public shell updates itself here. Team releases live in a private
+// repo and reach team machines through the cloud, which serves them only to a
+// paired machine's token (daemon/team_updates.go). A cloud-mode window has no
+// local daemon and so no machine token: a team shell reports that its
+// installer updates come through the app on this computer, stays on its
+// installer, and never falls back to the public repo. This source names no
+// team repo.
 
 use base64::Engine as _;
 use ed25519_dalek::{Signature, Verifier, VerifyingKey};
@@ -49,25 +56,25 @@ pub(crate) fn release_repos() -> [&'static str; 2] {
     ]
 }
 
-/// "<owner>/<name>" of the team build's releases repo ("" when this source
-/// tree has none).
-pub(crate) fn team_release_repo() -> &'static str {
-    include_str!("../../../shared/releases/team-repo.txt").trim()
-}
-
 /// This shell's flavour: "team" or "public" (build.rs).
 pub(crate) const SHELL_FLAVOR: &str = env!("SOLU_SHELL_FLAVOR");
 
-/// The repos a shell of `flavor` reads, current owner first: the team repo
-/// alone for "team" (none when this tree has no team repo), the public repo
-/// and its previous home for anything else.
+/// The repos a shell of `flavor` reads, current owner first: none for "team"
+/// (its releases come through the cloud, with a machine token this window
+/// does not have), the public repo and its previous home for anything else.
 pub(crate) fn release_repos_for(flavor: &str) -> Vec<&'static str> {
     if flavor == "team" {
-        let team = team_release_repo();
-        return if team.is_empty() { Vec::new() } else { vec![team] };
+        return Vec::new();
     }
     release_repos().to_vec()
 }
+
+/// What a team shell in cloud mode says instead of updating itself.
+#[cfg_attr(not(windows), allow(dead_code))]
+pub(crate) const TEAM_SHELL_UPDATE_UNAVAILABLE: &str =
+    "Team installer updates come through the app running on this computer, \
+     which fetches them from SoluTerminal cloud with this computer's sign-in. Switch to running \
+     on this computer to update; this window stays on its current installer.";
 
 /// The installer a verified manifest points at.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -265,7 +272,7 @@ pub(crate) fn fetch_verified_shell_asset(ps: &str) -> Result<VerifiedShellAsset,
 
     let repos = release_repos_for(SHELL_FLAVOR);
     if repos.is_empty() {
-        return Err("this build has no releases repo for its flavour".to_string());
+        return Err(TEAM_SHELL_UPDATE_UNAVAILABLE.to_string());
     }
     let out = Command::new(ps)
         .args([
@@ -445,11 +452,8 @@ mod tests {
     #[test]
     fn accepts_only_a_manifest_signed_for_its_own_flavour() {
         let k = key();
-        let team_repos: Vec<&str> = if team_release_repo().is_empty() {
-            vec!["example-owner/team-releases"]
-        } else {
-            release_repos_for("team")
-        };
+        // A team installer as the private repo would name it.
+        let team_repos = vec!["example-owner/team-releases"];
         for (shell, repos) in [("public", release_repos().to_vec()), ("team", team_repos)] {
             let url = url(repos[0]);
             for manifest_flavor in [Some("public"), Some("team"), None, Some("Team"), Some("migration")] {
@@ -482,30 +486,20 @@ mod tests {
     #[test]
     fn each_flavour_reads_only_its_own_repo() {
         let public = release_repos_for("public");
-        let team = release_repos_for("team");
         assert_eq!(public, release_repos().to_vec());
         for flavor in ["", "Team", "nightly", "public"] {
             assert_eq!(release_repos_for(flavor), public, "flavour {flavor:?}");
         }
-        for repo in &team {
-            assert!(!public.iter().any(|p| p.eq_ignore_ascii_case(repo)), "{repo} is read by both flavours");
-        }
-        let team_script = fetch_manifest_script(&team);
-        let public_script = fetch_manifest_script(&public);
-        for repo in &public {
-            assert!(!team_script.contains(&format!("'{repo}'")), "team shell would read {repo}");
-        }
-        for repo in &team {
-            assert!(!public_script.contains(&format!("'{repo}'")), "public shell would read {repo}");
-        }
+        // A team shell reads no GitHub repo at all: never the public one, and
+        // the private team repo only through the cloud (not from here).
+        assert!(release_repos_for("team").is_empty());
+        assert!(TEAM_SHELL_UPDATE_UNAVAILABLE.contains("this computer"));
         // A team installer whose URL sits in the public repo is refused.
-        if let Some(team_repo) = team.first() {
-            let k = key();
-            let body = flavored_manifest(Some("team"), &url(public[0]));
-            let err = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1213", &[*team_repo], "team")
-                .unwrap_err();
-            assert!(err.contains("unexpected installer location"), "{err}");
-        }
+        let k = key();
+        let body = flavored_manifest(Some("team"), &url(public[0]));
+        let err = verify_shell_manifest(&body, &sign(&k, &body), &pubkey(&k), "0.0.1213", &["example-owner/team-releases"], "team")
+            .unwrap_err();
+        assert!(err.contains("unexpected installer location"), "{err}");
         assert!(SHELL_FLAVOR == "public" || SHELL_FLAVOR == "team");
     }
 

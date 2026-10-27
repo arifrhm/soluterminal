@@ -180,29 +180,23 @@ func TestUpdateChannelThroughTheEntitlementsCache(t *testing.T) {
 	})
 }
 
-func TestUpdaterFollowsTheChannelAcrossRepos(t *testing.T) {
-	if releases.TeamRepo == "" {
-		t.Skip("this source tree has no team releases repo")
-	}
+func TestUpdaterFollowsTheChannelAcrossSources(t *testing.T) {
+	setTeamUpdatesPath(t, testTeamUpdatesPath)
 	t.Setenv("SOLU_UPDATE_MANIFEST_URL", "")
 	t.Setenv("SOLU_UPDATE_CHANNEL", "")
 	setBuildFlavorStamp(t, "solu-build-flavor=public")
 	priv := flavorKey(t)
 	bodies := map[string][]byte{}
-	serve := func(repo, flavor, version string) {
-		body := flavorManifest(flavor, version)
-		bodies[releases.LatestManifestURL(repo)] = body
-		pinned := releases.DownloadPrefix(repo) + "v" + version + "/"
-		bodies[pinned+"update.json"] = body
-		bodies[pinned+"update.json.sig"] = signB64(priv, body)
-	}
-	serve(releases.Repo, releases.FlavorPublic, "2.0.0")
-	serve(releases.TeamRepo, releases.FlavorTeam, "3.0.0")
+	teamReleases := teamUpdatesBase(testTeamCloud) + "releases/"
+	serveRelease(bodies, priv, releases.ReleasesBase(releases.Repo), releases.FlavorPublic, "2.0.0")
+	serveRelease(bodies, priv, teamReleases, releases.FlavorTeam, "3.0.0")
+	sources := map[string]string{releases.FlavorPublic: releases.ReleasesBase(releases.Repo), releases.FlavorTeam: teamReleases}
 	rt := &recordingRoundTripper{bodies: bodies}
 
 	u := NewUpdater("1.0.0", "", "windows-amd64", nil, nil)
 	u.homeDir = t.TempDir()
-	u.httpClient = &http.Client{Transport: rt}
+	u.SetCloudCreds(testTeamCloud, testMachineToken)
+	u.httpClient = &http.Client{Transport: &teamUpdatesAuth{next: rt, creds: u.cloudCreds}}
 	u.channelStore = newUpdateChannelStore(t.TempDir())
 	ev := channelEvidence{Initial: initialUpdateChannel()}
 	u.channelEvidence = func() channelEvidence { return ev }
@@ -218,11 +212,9 @@ func TestUpdaterFollowsTheChannelAcrossRepos(t *testing.T) {
 			t.Fatalf("status = channel %q latest %q available %v, want %s %s", st.UpdateChannel, st.Latest, st.Available, wantChannel, wantLatest)
 		}
 		for _, url := range rt.seen {
-			ok := false
-			for _, repo := range releases.ReposForFlavor(wantChannel) {
-				ok = ok || strings.HasPrefix(url, releases.ReleasesBase(repo))
-			}
-			if !ok {
+			// A 404 under the public repo is retried under its legacy owner.
+			legacy := wantChannel == releases.FlavorPublic && strings.HasPrefix(url, releases.ReleasesBase(releases.LegacyRepo))
+			if !strings.HasPrefix(url, sources[wantChannel]) && !legacy {
 				t.Fatalf("%s channel requested %s", wantChannel, url)
 			}
 		}
@@ -366,10 +358,10 @@ func TestApplyShellRefusesAnInstallerFromThePreviousChannel(t *testing.T) {
 	}
 }
 
-func TestTeamVerdictWithoutATeamRepoKeepsTheCurrentChannel(t *testing.T) {
-	prev := releases.TeamRepo
-	releases.TeamRepo = ""
-	t.Cleanup(func() { releases.TeamRepo = prev })
+func TestTeamVerdictOnAPublicBuildKeepsTheCurrentChannel(t *testing.T) {
+	// A public build has no team update endpoint (only team builds are
+	// stamped with it), so a team account's verdict cannot move it.
+	setTeamUpdatesPath(t, "")
 	t.Setenv("SOLU_UPDATE_MANIFEST_URL", "")
 	setBuildFlavorStamp(t, "solu-build-flavor=public")
 	u := NewUpdater("1.0.0", "", "", nil, nil)

@@ -33,8 +33,9 @@ describe('settings inventory', () => {
 
   it('keeps the two existing delayed-focus DOM ids stable', () => {
     expect(SETTINGS_SECTION_IDS['tasks.resourceLimits.maxHeavyOps']).toBe(
-      controlById('workflows.resources.maxHeavyOps')?.domId,
+      sectionById('workflows.resources')?.domId,
     );
+    expect(controlById('workflows.resources.maxHeavyOps')).toBeUndefined();
     expect(SETTINGS_SECTION_IDS['tasks.modelsFallbacks']).toBe(
       sectionById('workflows.modelsFallbacks')?.domId,
     );

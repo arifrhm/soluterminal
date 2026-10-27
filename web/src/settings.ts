@@ -29,7 +29,8 @@ export type { LegacySettingsTab, SettingsCategory, SettingsTarget };
 export type SettingsSection = 'tasks.resourceLimits.maxHeavyOps' | 'tasks.modelsFallbacks';
 
 export const SETTINGS_SECTION_IDS: Record<SettingsSection, string> = {
-  'tasks.resourceLimits.maxHeavyOps': 'settings-row-maxHeavyOps',
+  // The control went with the task engine; old links land on its section.
+  'tasks.resourceLimits.maxHeavyOps': 'settings-section-workflows-resources',
   'tasks.modelsFallbacks': 'settings-section-models-fallbacks',
 };
 

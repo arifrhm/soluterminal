@@ -10,8 +10,9 @@ package main
 // its build's flavour. The channel decides two things:
 //
 //  1. where the updater looks: the public channel reads the public releases
-//     repo (shared/releases/repo.txt), the team channel the team releases repo
-//     (team-repo.txt);
+//     repo (shared/releases/repo.txt); the team channel reads the team
+//     build's releases through the SoluTerminal cloud (team_updates.go), with
+//     this machine's token, because the team releases repo is private;
 //  2. what it accepts: the signed update.json names the flavour it was
 //     published for ("flavor"), and the updater refuses any manifest whose
 //     flavour is missing or is not the install's channel, on every path that
@@ -49,15 +50,22 @@ func currentBuildFlavor() string {
 	return releases.NormalizeFlavor(strings.TrimPrefix(strings.TrimSpace(buildFlavorStamp), buildFlavorMarkerPrefix))
 }
 
-// manifestURLForFlavor is the latest-alias manifest URL a build of flavor
-// polls, or "" when this build has no releases repo for it (a team build from
-// the public source export).
-func manifestURLForFlavor(flavor string) string {
-	repo := releases.RepoForFlavor(flavor)
-	if repo == "" {
-		return ""
+// channelSource is where an install following channel reads its releases
+// (no SOLU_UPDATE_MANIFEST_URL override): the public releases repo's latest
+// alias for the public channel; for the team channel, the cloud's team
+// update endpoint (viaCloud, URL derived per request from the cloud
+// credentials, team_updates.go). ok is false when this build has no source
+// for channel: a build without the team endpoint (every public build) never
+// polls the team channel, and never falls back to the public one.
+func channelSource(channel string) (url string, viaCloud, ok bool) {
+	if releases.NormalizeFlavor(channel) == releases.FlavorTeam {
+		configured := teamUpdatesConfigured()
+		return "", configured, configured
 	}
-	return releases.LatestManifestURL(repo)
+	if releases.Repo == "" {
+		return "", false, false
+	}
+	return releases.LatestManifestURL(releases.Repo), false, true
 }
 
 // manifestFlavorError reports a verified manifest published for another

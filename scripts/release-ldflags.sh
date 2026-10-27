@@ -177,6 +177,28 @@ solu_effective_update_manifest_pubkey() {
 # compiles; SOLU_BUILD_FLAVOR is the supported switch.)
 SOLU_TEAM_SOURCE_MARKER="${SOLU_TEAM_SOURCE_MARKER:-team_source_private.go}"
 
+# The team build's private release file, next to the team source marker and
+# likewise never in the public export: the team releases repo and the cloud's
+# team update endpoint, stamped into team builds only (solu_daemon_ldflags).
+SOLU_TEAM_RELEASE_FILE="${SOLU_TEAM_RELEASE_FILE:-team-release.private.env}"
+
+# solu_team_release_value <daemon-dir> <KEY>: KEY's value in the team build's
+# private release file. An error when the file or the value is missing: a
+# team build without them could not receive updates.
+solu_team_release_value() {
+  file="$1/$SOLU_TEAM_RELEASE_FILE"
+  if [ ! -f "$file" ]; then
+    echo "error: the team build needs its release file ($file is missing)" >&2
+    return 1
+  fi
+  value="$(sed -n "s/^$2=//p" "$file" | tail -n 1 | tr -d '[:space:]')"
+  if [ -z "$value" ]; then
+    echo "error: $file sets no $2" >&2
+    return 1
+  fi
+  printf '%s\n' "$value"
+}
+
 # solu_build_flavor <daemon-dir>: the flavour release tooling builds, from
 # SOLU_BUILD_FLAVOR. When unset it is team if the daemon directory has the
 # team source marker, else public (the public export, which also carries this
@@ -286,6 +308,33 @@ solu_daemon_ldflags() {
     return 1
   fi
   ldflags="$ldflags -X main.buildFlavorStamp=solu-build-flavor=$flavor"
+  # Only a team build learns where team releases live: the cloud endpoint
+  # team installs update from (daemon/team_updates.go) and the private repo
+  # (only the release pipeline reads it). A public build is stamped with
+  # neither, so it names no team repo and has no team update source. A team
+  # build that starts on the public channel (the one-time migration release
+  # and the cloud's install binaries, both downloadable by anyone) gets the
+  # endpoint but not the repo name: no client needs it.
+  if [ "$flavor" = team ]; then
+    team_repo="$(solu_team_release_value "$daemon_module" SOLU_TEAM_RELEASES_REPO)" || return 1
+    team_path="$(solu_team_release_value "$daemon_module" SOLU_TEAM_UPDATES_PATH)" || return 1
+    case "$team_repo" in
+      */*/*|/*|*/|*[!A-Za-z0-9_./-]*) echo "error: SOLU_TEAM_RELEASES_REPO must be <owner>/<name>" >&2; return 1 ;;
+      */*) ;;
+      *) echo "error: SOLU_TEAM_RELEASES_REPO must be <owner>/<name>" >&2; return 1 ;;
+    esac
+    case "$team_path" in
+      /*) ;;
+      *) echo "error: SOLU_TEAM_UPDATES_PATH must be an absolute path" >&2; return 1 ;;
+    esac
+    case "$team_path" in
+      *[!A-Za-z0-9_/-]*|*//*) echo "error: SOLU_TEAM_UPDATES_PATH has unexpected characters" >&2; return 1 ;;
+    esac
+    ldflags="$ldflags -X main.teamUpdatesPath=$team_path"
+    if [ -z "${SOLU_UPDATE_INITIAL_CHANNEL:-}" ]; then
+      ldflags="$ldflags -X soluterminal-shared/releases.TeamRepo=$team_repo"
+    fi
+  fi
   # The one-time migration release starts installs from before flavours on
   # the public channel (daemon/update_channel.go); nothing else sets this.
   case "${SOLU_UPDATE_INITIAL_CHANNEL:-}" in

@@ -265,12 +265,13 @@ func (u *Updater) syncChannel() {
 		log.Printf("auto-update: switch to the %s channel waits for the update in progress", rec.Channel)
 		return
 	}
-	url := u.manifestURL
+	url, viaCloud := u.manifestURL, false
 	if !u.manifestURLOverride {
-		url = manifestURLForFlavor(rec.Channel)
-		if url == "" {
-			// This build has no releases repo for that channel (a team
-			// account on a build from the public source export). Keep
+		var ok bool
+		url, viaCloud, ok = channelSource(rec.Channel)
+		if !ok {
+			// This build has no source for that channel (a team account on
+			// a public build, which has no team update endpoint). Keep
 			// following the current channel rather than stranding the
 			// install with nothing to poll.
 			return
@@ -280,6 +281,7 @@ func (u *Updater) syncChannel() {
 	u.channel = rec.Channel
 	u.status.UpdateChannel = rec.Channel
 	u.manifestURL = url
+	u.teamViaCloud = viaCloud
 	// Nothing learned about the previous channel may be applied on the new
 	// one: forget its manifest, its verified-pin cache and its control file.
 	// The next fetch (this same Check) repopulates them for the new channel.

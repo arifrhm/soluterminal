@@ -78,6 +78,16 @@ func validReleaseVersion(v string) bool { return releaseVersionRe.MatchString(v)
 // Custom/direct manifest URLs (SOLU_UPDATE_MANIFEST_URL pointing at a local
 // server, tests) keep the original single-fetch path.
 func (u *Updater) fetchManifest(ctx context.Context) (*Manifest, error) {
+	if u.teamViaCloudNow() {
+		// The team channel through the cloud (team_updates.go). Without a
+		// paired cloud there is nowhere to ask; either way the install stays
+		// on its version and never falls back to the public repo.
+		if u.manifestURLNow() == "" {
+			return nil, errTeamUpdatesNoCloud
+		}
+		m, err := u.fetchManifestResolveThenPin(ctx)
+		return m, teamUpdatesError(err)
+	}
 	if strings.Contains(u.manifestURLNow(), "/releases/latest/download/") {
 		return u.fetchManifestResolveThenPin(ctx)
 	}
@@ -218,7 +228,7 @@ func (u *Updater) fetchUpdateAsset(ctx context.Context, assetURL string, notFoun
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		mErr := fmt.Errorf("%s: HTTP %d", updateAssetLabel(assetURL), resp.StatusCode)
+		mErr := &updateHTTPError{label: updateAssetLabel(assetURL), code: resp.StatusCode}
 		if retryableStatus(resp.StatusCode) || (notFound404Transient && resp.StatusCode == http.StatusNotFound) {
 			return nil, transient(mErr)
 		}
@@ -232,11 +242,34 @@ func (u *Updater) fetchUpdateAsset(ctx context.Context, assetURL string, notFoun
 }
 
 // manifestURLNow is the current channel's manifest URL. syncChannel can
-// change it, so fetches read it under the lock.
+// change it, so fetches read it under the lock. On the team channel through
+// the cloud it is derived from the paired cloud's origin ("" while there is
+// none), so pairing or a new cloud takes effect on the next check.
 func (u *Updater) manifestURLNow() string {
 	u.mu.Lock()
+	url, viaCloud := u.manifestURL, u.teamViaCloud
+	u.mu.Unlock()
+	if !viaCloud {
+		return url
+	}
+	base, _ := u.cloudCreds()
+	return teamUpdatesManifestURL(base)
+}
+
+// teamViaCloudNow reports that the current channel is the team channel read
+// through the cloud.
+func (u *Updater) teamViaCloudNow() bool {
+	u.mu.Lock()
 	defer u.mu.Unlock()
-	return u.manifestURL
+	return u.teamViaCloud
+}
+
+// noUpdateSource reports that this build has nothing to poll for its
+// channel (a team channel in a build without the team endpoint).
+func (u *Updater) noUpdateSource() bool {
+	u.mu.Lock()
+	defer u.mu.Unlock()
+	return !u.teamViaCloud && u.manifestURL == ""
 }
 
 // detachedSigURL returns the URL of the detached signature for raw: ".sig"

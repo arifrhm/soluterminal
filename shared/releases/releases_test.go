@@ -77,20 +77,24 @@ func TestNormalizeFlavorIsTeamOnlyWhenExactlyTeam(t *testing.T) {
 	}
 }
 
+// No source file names the team repo: only a team build's -X stamp sets it.
+func TestTeamRepoIsOnlyStamped(t *testing.T) {
+	if TeamRepo != "" {
+		t.Fatalf("an unstamped build names the team repo %q", TeamRepo)
+	}
+	if RepoForFlavor(FlavorTeam) != "" || len(ReposForFlavor(FlavorTeam)) != 0 {
+		t.Fatalf("no team repo, yet team repos = %q %v", RepoForFlavor(FlavorTeam), ReposForFlavor(FlavorTeam))
+	}
+}
+
 func TestFlavorReposNeverOverlap(t *testing.T) {
+	TeamRepo = "example-owner/team-releases" // as a team build's stamp sets it
+	t.Cleanup(func() { TeamRepo = "" })
 	if RepoForFlavor(FlavorPublic) != Repo {
 		t.Fatalf("public repo = %q, want %q", RepoForFlavor(FlavorPublic), Repo)
 	}
 	if RepoForFlavor(FlavorTeam) != TeamRepo {
 		t.Fatalf("team repo = %q, want %q", RepoForFlavor(FlavorTeam), TeamRepo)
-	}
-	if TeamRepo == "" {
-		// The public source export has no team repo: a team build from it
-		// has nothing to read.
-		if len(ReposForFlavor(FlavorTeam)) != 0 {
-			t.Fatalf("no team repo, yet team repos = %v", ReposForFlavor(FlavorTeam))
-		}
-		return
 	}
 	if !repoRE.MatchString(TeamRepo) {
 		t.Fatalf("team repo %q is not <owner>/<name>", TeamRepo)

@@ -281,6 +281,8 @@ export function ReleasePopover({
   const version = readiness.suggestedNextVersion;
   const status = trainStatusOf(train);
   const landings = status?.preview?.functionalLandings ?? readiness.functionalCommitCount;
+  // Landings only count toward something while the opt-in release train is on.
+  const trainOn = !!status?.policy?.enabled;
   const cut = releaseCheck?.cut;
   const sourceSha = cut?.sourceSha || '';
   let scopeVerdict = 'Release required to activate merged work';
@@ -319,7 +321,7 @@ export function ReleasePopover({
       {publishOverridesScope && <div className="vp-summary release-scope-verdict">{scopeVerdict}</div>}
       <div className="vp-summary release-delta">
         {readiness.unreleasedTotal} unreleased commits since v{readiness.lastReleaseVersion}
-        {landings !== undefined && <>{' '}· {landings} functional landing{landings === 1 ? '' : 's'} count toward auto release</>}
+        {trainOn && landings !== undefined && <>{' '}· {landings} functional landing{landings === 1 ? '' : 's'} count toward auto release</>}
         {' '}· {readiness.functionalCount} functional files + {readiness.docsOnlyCount} documentation files changed
         {' '}· oldest {releaseAge(readiness.oldestUnreleasedAt, readiness.computedAt)} ago · daemon running v{readiness.runningVersion}
       </div>
@@ -342,7 +344,7 @@ export function ReleasePopover({
           ) : releaseCheck && (
             <div className="release-scope-body">
               <div className="release-scope-meta">
-                <span>cut <code>{cut?.id || 'implicit / not declared'}</code></span>
+                {cut?.id && <span>cut <code>{cut.id}</code></span>}
                 <span>version <code>{cut?.version || version || 'unknown'}</code></span>
                 <span>source <code>{sourceSha || 'not captured'}</code></span>
                 <span className={`release-scope-badge is-${readiness.anchorProvenance === 'exact' ? 'ok' : 'inferred'}`}>
@@ -415,14 +417,14 @@ export function ReleasePopover({
         <div className="release-next">v{version || 'unavailable'}</div>
       </div>
       <div className="vp-section">
-        <div className="vp-section-title">Prepare, publish, activate</div>
+        <div className="vp-section-title">How a release goes out</div>
+        {/* launch/deploy/release-process.md: one release owner; two human steps. */}
         <ol className="release-sequence">
-          <li>Declare the release cut and included workflow dependencies.</li>
-          <li>Wait for human approval and land every included dependency.</li>
-          <li>Verify the typed release blockers are clear.</li>
-          <li>Bump v{version}, commit, and push <code>origin main</code>.</li>
-          <li>Run <code>./publish.sh</code>; it captures and rechecks one source commit.</li>
-          <li>Verify public manifest source SHA, cloud status <code>live</code>, and fleet activation.</li>
+          <li>Changes merge to main by PR, after review and the required checks.</li>
+          <li>The release owner gets the notes approved, bumps to v{version} and freezes main.</li>
+          <li>The candidate is tried on Preview.</li>
+          <li>“Publish v{version}”: the release owner runs <code>./publish.sh</code>.</li>
+          <li>Check the public manifest's source SHA, cloud status <code>live</code> and fleet activation, then lift the freeze.</li>
         </ol>
       </div>
       <div className="release-info">

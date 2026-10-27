@@ -54,21 +54,31 @@ func flavorManifest(flavor, version string) []byte {
 		`","platforms":{"windows-amd64":{"url":"https://cdn.test/setup-` + version + `.exe","sha256":"def"}}}}`)
 }
 
-// recordingRoundTripper serves fixed bodies and records every URL requested.
+// recordingRoundTripper serves fixed bodies and records every URL requested
+// and the Authorization header it carried.
 type recordingRoundTripper struct {
 	mu     sync.Mutex
 	bodies map[string][]byte
+	status map[string]int // overrides the status for a URL
 	seen   []string
+	auth   map[string]string
 }
 
 func (r *recordingRoundTripper) RoundTrip(req *http.Request) (*http.Response, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.seen = append(r.seen, req.URL.String())
+	if r.auth == nil {
+		r.auth = map[string]string{}
+	}
+	r.auth[req.URL.String()] = req.Header.Get("Authorization")
 	body, ok := r.bodies[req.URL.String()]
 	status := http.StatusOK
 	if !ok {
 		status = http.StatusNotFound
+	}
+	if code, ok := r.status[req.URL.String()]; ok {
+		status = code
 	}
 	return &http.Response{StatusCode: status, Body: io.NopCloser(bytes.NewReader(body)), Header: http.Header{}}, nil
 }
@@ -138,50 +148,40 @@ func TestPublicSourceNeverSpellsTheTeamMarker(t *testing.T) {
 	}
 }
 
-func TestEachFlavourPollsOnlyItsOwnReleasesRepo(t *testing.T) {
-	if releases.TeamRepo == "" {
-		t.Skip("this source tree has no team releases repo")
-	}
+func TestEachFlavourPollsOnlyItsOwnSource(t *testing.T) {
+	setTeamUpdatesPath(t, testTeamUpdatesPath)
 	t.Setenv("SOLU_UPDATE_MANIFEST_URL", "")
+	teamBase := teamUpdatesBase(testTeamCloud)
 	for _, tc := range []struct {
-		stamp, flavor, repo string
-		foreign             []string
+		stamp, flavor, base string
 	}{
-		{"solu-build-flavor=public", releases.FlavorPublic, releases.Repo, []string{releases.TeamRepo}},
-		{"solu-build-flavor=team", releases.FlavorTeam, releases.TeamRepo, releases.Repos()},
+		{"solu-build-flavor=public", releases.FlavorPublic, releases.ReleasesBase(releases.Repo)},
+		{"solu-build-flavor=team", releases.FlavorTeam, teamBase + "releases/"},
 	} {
 		t.Run(tc.flavor, func(t *testing.T) {
 			setBuildFlavorStamp(t, tc.stamp)
 			priv := flavorKey(t)
 			u := NewUpdater("1.0.0", "", "windows-amd64", nil, nil)
 			u.homeDir = t.TempDir()
+			u.SetCloudCreds(testTeamCloud, testMachineToken)
 			if u.channel != tc.flavor {
 				t.Fatalf("updater channel = %q, want %q", u.channel, tc.flavor)
 			}
-			if want := releases.LatestManifestURL(tc.repo); u.manifestURL != want {
-				t.Fatalf("manifest URL = %q, want %q", u.manifestURL, want)
+			if want := tc.base + "latest/download/update.json"; u.manifestURLNow() != want {
+				t.Fatalf("manifest URL = %q, want %q", u.manifestURLNow(), want)
 			}
-			for _, other := range tc.foreign {
-				if strings.Contains(u.manifestURL, "/"+other+"/") || strings.Contains(u.controlURL(), "/"+other+"/") {
-					t.Fatalf("%s build reaches %s: manifest %s, control %s", tc.flavor, other, u.manifestURL, u.controlURL())
-				}
+			if !strings.HasPrefix(u.controlURL(), tc.base) {
+				t.Fatalf("control URL %q is outside %s", u.controlURL(), tc.base)
 			}
 
-			// Serve BOTH repos, each with a newer release of its own flavour,
-			// and run a real check: the build must only ever request its own
-			// repo's URLs and must end up on its own flavour's release.
+			// Serve BOTH sources, each with a newer release of its own
+			// flavour, and run a real check: the build must only ever request
+			// its own source and must end up on its own flavour's release.
 			bodies := map[string][]byte{}
-			serve := func(repo, flavor, version string) {
-				body := flavorManifest(flavor, version)
-				bodies[releases.LatestManifestURL(repo)] = body
-				pinned := releases.DownloadPrefix(repo) + "v" + version + "/"
-				bodies[pinned+"update.json"] = body
-				bodies[pinned+"update.json.sig"] = signB64(priv, body)
-			}
-			serve(releases.Repo, releases.FlavorPublic, "2.0.0")
-			serve(releases.TeamRepo, releases.FlavorTeam, "3.0.0")
+			serveRelease(bodies, priv, releases.ReleasesBase(releases.Repo), releases.FlavorPublic, "2.0.0")
+			serveRelease(bodies, priv, teamBase+"releases/", releases.FlavorTeam, "3.0.0")
 			rt := &recordingRoundTripper{bodies: bodies}
-			u.httpClient = &http.Client{Transport: rt}
+			u.httpClient = &http.Client{Transport: &teamUpdatesAuth{next: rt, creds: u.cloudCreds}}
 			st, err := u.Check(context.Background())
 			if err != nil {
 				t.Fatal(err)
@@ -191,24 +191,31 @@ func TestEachFlavourPollsOnlyItsOwnReleasesRepo(t *testing.T) {
 				t.Fatalf("status = latest %q available %v shell %q, want own release %s", st.Latest, st.Available, st.ShellLatest, want)
 			}
 			for _, url := range rt.seen {
-				if !strings.HasPrefix(url, releases.ReleasesBase(tc.repo)) &&
+				if !strings.HasPrefix(url, tc.base) &&
 					!(tc.flavor == releases.FlavorPublic && strings.HasPrefix(url, releases.ReleasesBase(releases.LegacyRepo))) {
-					t.Fatalf("%s build requested %s outside its repo", tc.flavor, url)
+					t.Fatalf("%s build requested %s outside its source", tc.flavor, url)
+				}
+				// The machine token goes to the cloud's team endpoint only.
+				wantAuth := ""
+				if tc.flavor == releases.FlavorTeam {
+					wantAuth = "Bearer " + testMachineToken
+				}
+				if got := rt.auth[url]; got != wantAuth {
+					t.Fatalf("%s: Authorization %q, want %q", url, got, wantAuth)
 				}
 			}
 		})
 	}
 }
 
-func TestTeamBuildWithoutTeamRepoNeverPolls(t *testing.T) {
-	prev := releases.TeamRepo
-	releases.TeamRepo = ""
-	t.Cleanup(func() { releases.TeamRepo = prev })
+func TestBuildWithoutTheTeamEndpointNeverPollsTeam(t *testing.T) {
+	setTeamUpdatesPath(t, "")
 	t.Setenv("SOLU_UPDATE_MANIFEST_URL", "")
 	setBuildFlavorStamp(t, "solu-build-flavor=team")
 	u := NewUpdater("1.0.0", "", "", nil, nil)
-	if u.manifestURL != "" {
-		t.Fatalf("team build without a team repo polls %q", u.manifestURL)
+	u.SetCloudCreds(testTeamCloud, testMachineToken)
+	if u.manifestURLNow() != "" || u.teamViaCloudNow() {
+		t.Fatalf("a build without the team endpoint polls %q", u.manifestURLNow())
 	}
 	u.StartBackgroundPoll(context.Background())
 	u.mu.Lock()

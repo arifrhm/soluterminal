@@ -116,7 +116,7 @@ function labelRoot(r: string): string {
 }
 
 // Palette actions that open team-only surfaces (see entitlements.ts).
-const TEAM_ONLY_ACTIONS = new Set(['view.tasks', 'tasks.new', 'pane.role.orchestrator', 'settings.modelsFallbacks']);
+const TEAM_ONLY_ACTIONS = new Set(['pane.role.orchestrator']);
 
 export function CommandPalette({
   open,

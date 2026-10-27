@@ -21,7 +21,7 @@ github.com/creack/pty v1.1.24 — MIT [7]
 github.com/gorilla/websocket v1.5.3 — BSD [8]
 github.com/hashicorp/yamux v0.1.2 — MPL-2.0 [9]
 github.com/hinshun/vt10x v0.0.0-20220301184237-5011da428d02 — MIT [10]
-github.com/klauspost/compress v1.18.6 — Apache-2.0 [11]
+github.com/klauspost/compress v1.18.7 — Apache-2.0 [11]
 github.com/lucasb-eyer/go-colorful v1.3.0 — MIT [12]
 github.com/mattn/go-runewidth v0.0.19 — MIT [13]
 github.com/muesli/cancelreader v0.2.2 — MIT [14]
@@ -29,348 +29,359 @@ github.com/rivo/uniseg v0.4.7 — MIT [15]
 github.com/robfig/cron/v3 v3.0.1 — MIT [16]
 github.com/u-root/u-root v0.11.0 — BSD [17]
 github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e — MIT [18]
-golang.org/x/crypto v0.17.0 — BSD [19]
-golang.org/x/sync v0.19.0 — BSD [20]
-golang.org/x/sys v0.44.0 — BSD [20]
-mvdan.cc/sh/v3 v3.12.0 — BSD [21]
-Go standard library go1.26.10 — BSD-3-Clause [20]
+golang.org/x/crypto v0.52.0 — BSD [19]
+golang.org/x/sync v0.19.0 — BSD [19]
+golang.org/x/sys v0.45.0 — BSD [19]
+mvdan.cc/sh/v3 v3.12.0 — BSD [20]
+Go standard library go1.26.10 — BSD-3-Clause [19]
 
 == npm (26)
 
-@supabase/auth-js 2.103.3 — MIT [22]
-@supabase/functions-js 2.103.3 — MIT [23]
-@supabase/phoenix 0.4.0 — MIT [24]
-@supabase/postgrest-js 2.103.3 — MIT [25]
-@supabase/realtime-js 2.103.3 — MIT [26]
-@supabase/storage-js 2.103.3 — MIT [27]
-@supabase/supabase-js 2.103.3 — MIT [28]
-@tauri-apps/api 2.10.1 — Apache-2.0 OR MIT [29], [30]
-@tauri-apps/plugin-notification 2.3.3 — MIT OR Apache-2.0 [31]
-@types/node 25.6.0 — MIT [32]
-@types/ws 8.18.1 — MIT [32]
-@xterm/addon-fit 0.10.0 — MIT [33]
-@xterm/addon-search 0.16.0 — MIT [34]
-@xterm/addon-web-links 0.11.0 — MIT [34]
-@xterm/xterm 5.5.0 — MIT [35]
-iceberg-js 0.8.1 — MIT [36]
-js-tokens 4.0.0 — MIT [37]
-loose-envify 1.4.0 — MIT [38]
-react 18.3.1 — MIT [39]
-react-dom 18.3.1 — MIT [39]
-react-resizable-panels 2.1.9 — MIT [40]
-scheduler 0.23.2 — MIT [39]
-tslib 2.8.1 — 0BSD [41]
-undici-types 7.19.2 — MIT [42]
-ws 8.21.0 — MIT [43]
-zustand 5.0.12 — MIT [44]
+@supabase/auth-js 2.103.3 — MIT [21]
+@supabase/functions-js 2.103.3 — MIT [22]
+@supabase/phoenix 0.4.0 — MIT [23]
+@supabase/postgrest-js 2.103.3 — MIT [24]
+@supabase/realtime-js 2.103.3 — MIT [25]
+@supabase/storage-js 2.103.3 — MIT [26]
+@supabase/supabase-js 2.103.3 — MIT [27]
+@tauri-apps/api 2.10.1 — Apache-2.0 OR MIT [28], [29]
+@tauri-apps/plugin-notification 2.3.3 — MIT OR Apache-2.0 [30]
+@types/node 25.6.0 — MIT [31]
+@types/ws 8.18.1 — MIT [31]
+@xterm/addon-fit 0.10.0 — MIT [32]
+@xterm/addon-search 0.16.0 — MIT [33]
+@xterm/addon-web-links 0.11.0 — MIT [33]
+@xterm/xterm 5.5.0 — MIT [34]
+iceberg-js 0.8.1 — MIT [35]
+js-tokens 4.0.0 — MIT [36]
+loose-envify 1.4.0 — MIT [37]
+react 18.3.1 — MIT [38]
+react-dom 18.3.1 — MIT [38]
+react-resizable-panels 2.1.9 — MIT [39]
+scheduler 0.23.2 — MIT [38]
+tslib 2.8.1 — 0BSD [40]
+undici-types 7.19.2 — MIT [41]
+ws 8.21.0 — MIT [42]
+zustand 5.0.12 — MIT [43]
 
-== Rust (305)
+== Rust (316)
 
-adler2 2.0.1 — 0BSD OR MIT OR Apache-2.0 [45], [46], [47]
-aho-corasick 1.1.4 — Unlicense OR MIT [48], [49]
-alloc-no-stdlib 2.0.4 — BSD-3-Clause [50]
-alloc-stdlib 0.2.2 — BSD-3-Clause [51]
-anyhow 1.0.102 — MIT OR Apache-2.0 [52], [47]
-atomic-waker 1.1.2 — Apache-2.0 OR MIT [53], [47], [54]
-base64 0.22.1 — MIT OR Apache-2.0 [53], [55]
+adler2 2.0.1 — 0BSD OR MIT OR Apache-2.0 [44], [45], [46]
+aho-corasick 1.1.4 — Unlicense OR MIT [47], [48]
+alloc-no-stdlib 2.0.4 — BSD-3-Clause [49]
+alloc-stdlib 0.2.2 — BSD-3-Clause [50]
+anyhow 1.0.102 — MIT OR Apache-2.0 [51], [46]
+atomic-waker 1.1.2 — Apache-2.0 OR MIT [52], [46], [53]
+base64 0.22.1 — MIT OR Apache-2.0 [52], [54]
+base64 0.23.1 — MIT OR Apache-2.0 [52], [55]
 base64ct 1.8.3 — Apache-2.0 OR MIT [56], [57]
-bitflags 1.3.2 — MIT/Apache-2.0 [53], [58]
-bitflags 2.11.1 — MIT OR Apache-2.0 [53], [58]
+bitflags 1.3.2 — MIT/Apache-2.0 [52], [58]
+bitflags 2.11.1 — MIT OR Apache-2.0 [52], [58]
 block-buffer 0.10.4 — MIT OR Apache-2.0 [56], [59]
 brotli 8.0.2 — BSD-3-Clause AND MIT [60]
-brotli-decompressor 5.0.0 — BSD-3-Clause/MIT [50]
-byteorder 1.5.0 — Unlicense OR MIT [48], [49]
-bytes 1.11.1 — MIT [61]
-camino 1.2.2 — MIT OR Apache-2.0 [53], [47]
-cargo-platform 0.1.9 — MIT OR Apache-2.0 [46], [47]
-cargo_metadata 0.19.2 — MIT [47]
-cfb 0.7.3 — MIT [62]
-cfg-if 1.0.4 — MIT OR Apache-2.0 [53], [63]
-chrono 0.4.44 — MIT OR Apache-2.0 [64]
-const-oid 0.9.6 — Apache-2.0 OR MIT [56], [65]
-convert_case 0.4.0 — MIT [66]
-cookie 0.18.1 — MIT OR Apache-2.0 [67], [68]
-cpufeatures 0.2.17 — MIT OR Apache-2.0 [56], [69]
-crc32fast 1.5.0 — MIT OR Apache-2.0 [70], [71]
-crossbeam-channel 0.5.15 — MIT OR Apache-2.0 [53], [72], [73]
-crossbeam-utils 0.8.21 — MIT OR Apache-2.0 [53], [72]
-crypto-common 0.1.7 — MIT OR Apache-2.0 [56], [74]
-cssparser 0.29.6 — MPL-2.0 [75]
-cssparser-macros 0.6.1 — MPL-2.0 [75]
-ctor 0.2.9 — Apache-2.0 OR MIT [70], [76]
-curve25519-dalek 4.1.3 — BSD-3-Clause [77]
-curve25519-dalek-derive 0.1.1 — MIT/Apache-2.0 [53], [47]
-darling 0.23.0 — MIT [78]
-darling_core 0.23.0 — MIT [78]
-darling_macro 0.23.0 — MIT [78]
-der 0.7.10 — Apache-2.0 OR MIT [56], [79]
-deranged 0.5.8 — MIT OR Apache-2.0 [80], [81]
-derive_more 0.99.20 — MIT [82]
-digest 0.10.7 — MIT OR Apache-2.0 [56], [83]
-dirs 5.0.1 — MIT OR Apache-2.0 [84], [85]
-dirs 6.0.0 — MIT OR Apache-2.0 [84], [85]
-dirs-sys 0.4.1 — MIT OR Apache-2.0 [84], [85]
-dirs-sys 0.5.0 — MIT OR Apache-2.0 [84], [85]
-displaydoc 0.2.5 — MIT OR Apache-2.0 [53], [47]
-dpi 0.1.2 — Apache-2.0 AND MIT [70], [86]
-dtoa 1.0.11 — MIT OR Apache-2.0 [52], [47]
-dtoa-short 0.3.5 — MPL-2.0 [87]
-dunce 1.0.5 — CC0-1.0 OR MIT-0 OR Apache-2.0 [88]
-dyn-clone 1.0.20 — MIT OR Apache-2.0 [52], [47]
-ed25519 2.2.3 — Apache-2.0 OR MIT [89], [90]
-ed25519-dalek 2.1.1 — BSD-3-Clause [91]
-equivalent 1.0.2 — Apache-2.0 OR MIT [53], [92]
-erased-serde 0.4.10 — MIT OR Apache-2.0 [52], [47]
-fdeflate 0.3.7 — MIT OR Apache-2.0 [29], [93]
-flate2 1.1.9 — MIT OR Apache-2.0 [53], [94]
-fnv 1.0.7 — Apache-2.0 / MIT [53], [95]
-form_urlencoded 1.2.2 — MIT OR Apache-2.0 [53], [96]
-futf 0.1.5 — MIT / Apache-2.0 [53], [97]
-futures-channel 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-core 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-io 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-macro 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-sink 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-task 0.3.32 — MIT OR Apache-2.0 [98], [99]
-futures-util 0.3.32 — MIT OR Apache-2.0 [98], [99]
-fxhash 0.2.1 — Apache-2.0/MIT [100], [101]
-generic-array 0.14.7 — MIT [102]
-getrandom 0.2.17 — MIT OR Apache-2.0 [103], [104]
-getrandom 0.3.4 — MIT OR Apache-2.0 [103], [105]
-getrandom 0.4.2 — MIT OR Apache-2.0 [103], [106]
-glob 0.3.3 — MIT OR Apache-2.0 [53], [58]
-hashbrown 0.12.3 — MIT OR Apache-2.0 [53], [107]
-hashbrown 0.17.0 — MIT OR Apache-2.0 [53], [107]
-heck 0.5.0 — MIT OR Apache-2.0 [53], [108]
-hex 0.4.3 — MIT OR Apache-2.0 [70], [109]
-html5ever 0.29.1 — MIT OR Apache-2.0 [53], [110]
-http 1.4.0 — MIT OR Apache-2.0 [111], [112]
-http-body 1.0.1 — MIT [113]
-http-body-util 0.1.3 — MIT [114]
-httparse 1.10.1 — MIT OR Apache-2.0 [53], [115]
-hyper 1.9.0 — MIT [116]
-hyper-util 0.1.20 — MIT [117]
-ico 0.5.0 — MIT [118]
-icu_collections 2.2.0 — Unicode-3.0 [119]
-icu_locale_core 2.2.0 — Unicode-3.0 [119]
-icu_normalizer 2.2.0 — Unicode-3.0 [119]
-icu_normalizer_data 2.2.0 — Unicode-3.0 [119]
-icu_properties 2.2.0 — Unicode-3.0 [119]
-icu_properties_data 2.2.0 — Unicode-3.0 [119]
-icu_provider 2.2.0 — Unicode-3.0 [119]
-ident_case 1.0.1 — MIT/Apache-2.0 [120]
-idna 1.1.0 — MIT OR Apache-2.0 [53], [121]
-idna_adapter 1.2.1 — Apache-2.0 OR MIT [53], [122]
-indexmap 1.9.3 — Apache-2.0 OR MIT [53], [123]
-indexmap 2.14.0 — Apache-2.0 OR MIT [53], [123]
-infer 0.19.0 — MIT [124]
-ipnet 2.12.0 — MIT OR Apache-2.0 [125], [126]
-iri-string 0.7.12 — MIT OR Apache-2.0 [127], [128]
-itoa 1.0.18 — MIT OR Apache-2.0 [52], [47]
-json-patch 3.0.1 — MIT/Apache-2.0 [70], [129]
-jsonptr 0.6.3 — MIT OR Apache-2.0 [130], [131]
-keyboard-types 0.7.0 — MIT OR Apache-2.0 [53], [132]
-kuchikiki 0.8.8-speedreader — MIT [47]
-libc 0.2.185 — MIT OR Apache-2.0 [52], [133]
-litemap 0.8.2 — Unicode-3.0 [119]
-lock_api 0.4.14 — MIT OR Apache-2.0 [53], [134]
-log 0.4.29 — MIT OR Apache-2.0 [53], [58]
-mac 0.1.1 — MIT/Apache-2.0 [135], [136]
-markup5ever 0.14.1 — MIT OR Apache-2.0 [53], [110]
-match_token 0.1.0 — MIT OR Apache-2.0 [137], [138]
-matches 0.1.10 — MIT [139]
-memchr 2.8.0 — Unlicense OR MIT [48], [49]
-mime 0.3.17 — MIT OR Apache-2.0 [53], [140]
-miniz_oxide 0.8.9 — MIT OR Zlib OR Apache-2.0 [141], [29], [142], [143]
-mio 1.2.0 — MIT [144]
-muda 0.17.2 — Apache-2.0 OR MIT [53], [145], [146]
-new_debug_unreachable 1.0.6 — MIT [147]
-nodrop 0.1.14 — MIT/Apache-2.0 [53], [148]
-notify-rust 4.18.2 — MIT OR Apache-2.0 [70], [149]
-num-conv 0.2.1 — MIT OR Apache-2.0 [29], [150]
-num-traits 0.2.19 — MIT OR Apache-2.0 [53], [58]
-once_cell 1.21.4 — MIT OR Apache-2.0 [53], [47]
-open 5.3.4 — MIT [151]
-option-ext 0.2.0 — MPL-2.0 [152]
-parking_lot 0.12.5 — MIT OR Apache-2.0 [53], [134]
-parking_lot_core 0.9.12 — MIT OR Apache-2.0 [53], [134]
-percent-encoding 2.3.2 — MIT OR Apache-2.0 [53], [121]
-phf 0.10.1 — MIT [153]
-phf 0.11.3 — MIT [154]
-phf 0.8.0 — MIT [153]
-phf_generator 0.10.0 — MIT [155]
-phf_generator 0.11.3 — MIT [154]
-phf_macros 0.10.0 — MIT [156]
-phf_macros 0.11.3 — MIT [154]
-phf_shared 0.10.0 — MIT [157]
-phf_shared 0.11.3 — MIT [154]
-phf_shared 0.8.0 — MIT [157]
-pin-project-lite 0.2.17 — Apache-2.0 OR MIT [29], [47]
-pkcs8 0.10.2 — Apache-2.0 OR MIT [56], [79]
-png 0.17.16 — MIT OR Apache-2.0 [53], [158]
-potential_utf 0.1.5 — Unicode-3.0 [119]
-powerfmt 0.2.0 — MIT OR Apache-2.0 [159], [160]
-ppv-lite86 0.2.21 — MIT OR Apache-2.0 [161], [162]
-precomputed-hash 0.1.1 — MIT [163]
-proc-macro-hack 0.5.20+deprecated — MIT OR Apache-2.0 [53], [164]
-proc-macro2 1.0.106 — MIT OR Apache-2.0 [52], [47]
-quote 1.0.45 — MIT OR Apache-2.0 [52], [47]
-rand 0.8.6 — MIT OR Apache-2.0 [165], [166]
-rand 0.9.4 — MIT OR Apache-2.0 [165], [166]
-rand_chacha 0.3.1 — MIT OR Apache-2.0 [103], [166]
-rand_chacha 0.9.0 — MIT OR Apache-2.0 [165], [166]
-rand_core 0.6.4 — MIT OR Apache-2.0 [167], [166]
-rand_core 0.9.5 — MIT OR Apache-2.0 [167], [166]
-raw-window-handle 0.6.2 — MIT OR Apache-2.0 OR Zlib [29], [168], [169]
-ref-cast 1.0.25 — MIT OR Apache-2.0 [52], [47]
-ref-cast-impl 1.0.25 — MIT OR Apache-2.0 [52], [47]
-regex 1.12.3 — MIT OR Apache-2.0 [53], [58]
-regex-automata 0.4.14 — MIT OR Apache-2.0 [53], [58]
-regex-syntax 0.8.10 — MIT OR Apache-2.0 [53], [58]
-reqwest 0.13.2 — MIT OR Apache-2.0 [170], [171]
-rfd 0.16.0 — MIT [172]
-same-file 1.0.6 — Unlicense/MIT [48], [173]
-schemars 0.8.22 — MIT [174]
-schemars 0.9.0 — MIT [174]
-schemars 1.2.1 — MIT [174]
-schemars_derive 0.8.22 — MIT [174]
-scopeguard 1.2.0 — MIT OR Apache-2.0 [53], [175]
-selectors 0.24.0 — MPL-2.0 [176]
-semver 1.0.28 — MIT OR Apache-2.0 [52], [47]
-serde 1.0.228 — MIT OR Apache-2.0 [52], [47]
-serde-untagged 0.1.9 — MIT OR Apache-2.0 [52], [47]
-serde_core 1.0.228 — MIT OR Apache-2.0 [52], [47]
-serde_derive 1.0.228 — MIT OR Apache-2.0 [52], [47]
-serde_derive_internals 0.29.1 — MIT OR Apache-2.0 [52], [47]
-serde_json 1.0.149 — MIT OR Apache-2.0 [52], [47]
-serde_repr 0.1.20 — MIT OR Apache-2.0 [52], [47]
-serde_spanned 1.1.1 — MIT OR Apache-2.0 [70], [177]
-serde_with 3.18.0 — MIT OR Apache-2.0 [53], [178]
-serde_with_macros 3.18.0 — MIT OR Apache-2.0 [53], [178]
-serialize-to-javascript 0.1.2 — MIT OR Apache-2.0 [127], [179]
-serialize-to-javascript-impl 0.1.2 — MIT OR Apache-2.0 [127], [179]
-servo_arc 0.2.0 — MIT OR Apache-2.0 [53], [47]
-sha2 0.10.9 — MIT OR Apache-2.0 [56], [180]
-signature 2.2.0 — Apache-2.0 OR MIT [56], [90]
-simd-adler32 0.3.9 — MIT [181]
-siphasher 0.3.11 — MIT/Apache-2.0 [182]
-siphasher 1.0.2 — MIT/Apache-2.0 [183]
-slab 0.4.12 — MIT [184]
-smallvec 1.15.1 — MIT OR Apache-2.0 [53], [185]
-socket2 0.6.3 — MIT OR Apache-2.0 [53], [63]
-softbuffer 0.4.8 — MIT OR Apache-2.0 [186], [187]
-spki 0.7.3 — Apache-2.0 OR MIT [56], [188]
-stable_deref_trait 1.2.1 — MIT OR Apache-2.0 [53], [189]
-string_cache 0.8.9 — MIT OR Apache-2.0 [53], [190]
-strsim 0.11.1 — MIT [191]
-subtle 2.6.1 — BSD-3-Clause [192]
-syn 1.0.109 — MIT OR Apache-2.0 [53], [47]
-syn 2.0.117 — MIT OR Apache-2.0 [52], [47]
-sync_wrapper 1.0.2 — Apache-2.0 [29]
-synstructure 0.13.2 — MIT [193]
-tao 0.34.8 — Apache-2.0 [70], [194]
-tauri 2.10.3 — Apache-2.0 OR MIT [29], [30]
-tauri-codegen 2.5.5 — Apache-2.0 OR MIT [29], [30]
-tauri-macros 2.5.5 — Apache-2.0 OR MIT [29], [30]
-tauri-plugin-dialog 2.7.0 — Apache-2.0 OR MIT [31], [29], [30]
-tauri-plugin-fs 2.5.0 — Apache-2.0 OR MIT [31], [29], [30]
-tauri-plugin-notification 2.3.3 — Apache-2.0 OR MIT [31], [29], [30]
-tauri-plugin-opener 2.5.3 — Apache-2.0 OR MIT [31], [29], [30]
-tauri-plugin-single-instance 2.4.2 — Apache-2.0 OR MIT [31], [29], [195]
-tauri-runtime 2.10.1 — Apache-2.0 OR MIT [29], [30]
-tauri-runtime-wry 2.10.1 — Apache-2.0 OR MIT [29], [30]
-tauri-utils 2.8.3 — Apache-2.0 OR MIT [29], [30]
-tauri-winrt-notification 0.8.1 — MIT OR Apache-2.0 [196], [29], [30]
-tendril 0.4.3 — MIT/Apache-2.0 [53], [97]
-thiserror 1.0.69 — MIT OR Apache-2.0 [52], [47]
-thiserror 2.0.18 — MIT OR Apache-2.0 [52], [47]
-thiserror-impl 1.0.69 — MIT OR Apache-2.0 [52], [47]
-thiserror-impl 2.0.18 — MIT OR Apache-2.0 [52], [47]
-time 0.3.47 — MIT OR Apache-2.0 [29], [197]
-time-core 0.1.8 — MIT OR Apache-2.0 [29], [197]
-time-macros 0.2.27 — MIT OR Apache-2.0 [29], [197]
-tinystr 0.8.3 — Unicode-3.0 [119]
-tokio 1.52.1 — MIT [198]
-tokio-util 0.7.18 — MIT [198]
-toml 0.9.12+spec-1.1.0 — MIT OR Apache-2.0 [70], [177]
-toml_datetime 0.7.5+spec-1.1.0 — MIT OR Apache-2.0 [70], [177]
-toml_parser 1.1.2+spec-1.1.0 — MIT OR Apache-2.0 [70], [177]
-toml_writer 1.1.1+spec-1.1.0 — MIT OR Apache-2.0 [70], [177]
-tower 0.5.3 — MIT [199]
-tower-http 0.6.8 — MIT [200]
-tower-layer 0.3.3 — MIT [199]
-tower-service 0.3.3 — MIT [199]
-tracing 0.1.44 — MIT [201]
-tracing-attributes 0.1.31 — MIT [201]
-tracing-core 0.1.36 — MIT [201]
-tray-icon 0.21.3 — MIT OR Apache-2.0 [53], [145], [202]
-try-lock 0.2.5 — MIT [203]
-typeid 1.0.3 — MIT OR Apache-2.0 [52], [47]
-typenum 1.20.0 — MIT OR Apache-2.0 [204], [205], [206]
-unic-char-property 0.9.0 — MIT/Apache-2.0 [207], [208]
-unic-char-range 0.9.0 — MIT/Apache-2.0 [209], [210]
-unic-common 0.9.0 — MIT/Apache-2.0 [211], [212]
-unic-ucd-ident 0.9.0 — MIT/Apache-2.0 [213], [214]
-unic-ucd-version 0.9.0 — MIT/Apache-2.0 [215], [216]
-unicode-ident 1.0.24 — (MIT OR Apache-2.0) AND Unicode-3.0 [52], [47], [217]
-unicode-segmentation 1.13.2 — MIT OR Apache-2.0 [53], [108]
-url 2.5.8 — MIT OR Apache-2.0 [53], [121]
-urlpattern 0.3.0 — MIT [218]
-utf-8 0.7.6 — MIT OR Apache-2.0 [52], [47]
-utf8_iter 1.0.4 — Apache-2.0 OR MIT [127], [219]
-uuid 1.23.1 — Apache-2.0 OR MIT [53], [220]
-walkdir 2.5.0 — Unlicense/MIT [48], [49]
-want 0.3.1 — MIT [221]
-webview2-com 0.38.2 — MIT [222]
-webview2-com-macros 0.8.1 — MIT [223]
-webview2-com-sys 0.38.2 — MIT [224]
-winapi-util 0.1.11 — Unlicense OR MIT [48], [173]
-window-vibrancy 0.6.0 — Apache-2.0 OR MIT [53], [225], [226]
-windows 0.61.3 — MIT OR Apache-2.0 [227], [32]
-windows 0.62.2 — MIT OR Apache-2.0 [227], [32]
-windows-collections 0.2.0 — MIT OR Apache-2.0 [227], [32]
-windows-collections 0.3.2 — MIT OR Apache-2.0 [227], [32]
-windows-core 0.61.2 — MIT OR Apache-2.0 [227], [32]
-windows-core 0.62.2 — MIT OR Apache-2.0 [227], [32]
-windows-future 0.2.1 — MIT OR Apache-2.0 [227], [32]
-windows-future 0.3.2 — MIT OR Apache-2.0 [227], [32]
-windows-implement 0.60.2 — MIT OR Apache-2.0 [227], [32]
-windows-interface 0.59.3 — MIT OR Apache-2.0 [227], [32]
-windows-link 0.1.3 — MIT OR Apache-2.0 [227], [32]
-windows-link 0.2.1 — MIT OR Apache-2.0 [227], [32]
-windows-numerics 0.2.0 — MIT OR Apache-2.0 [227], [32]
-windows-numerics 0.3.1 — MIT OR Apache-2.0 [227], [32]
-windows-result 0.3.4 — MIT OR Apache-2.0 [227], [32]
-windows-result 0.4.1 — MIT OR Apache-2.0 [227], [32]
-windows-strings 0.4.2 — MIT OR Apache-2.0 [227], [32]
-windows-strings 0.5.1 — MIT OR Apache-2.0 [227], [32]
-windows-sys 0.48.0 — MIT OR Apache-2.0 [227], [32]
-windows-sys 0.59.0 — MIT OR Apache-2.0 [227], [32]
-windows-sys 0.60.2 — MIT OR Apache-2.0 [227], [32]
-windows-sys 0.61.2 — MIT OR Apache-2.0 [227], [32]
-windows-targets 0.48.5 — MIT OR Apache-2.0 [227], [32]
-windows-targets 0.52.6 — MIT OR Apache-2.0 [227], [32]
-windows-targets 0.53.5 — MIT OR Apache-2.0 [227], [32]
-windows-threading 0.1.0 — MIT OR Apache-2.0 [227], [32]
-windows-threading 0.2.1 — MIT OR Apache-2.0 [227], [32]
-windows-version 0.1.7 — MIT OR Apache-2.0 [227], [32]
-windows_x86_64_msvc 0.48.5 — MIT OR Apache-2.0 [227], [32]
-windows_x86_64_msvc 0.52.6 — MIT OR Apache-2.0 [227], [32]
-windows_x86_64_msvc 0.53.1 — MIT OR Apache-2.0 [227], [32]
-winnow 0.7.15 — MIT [228]
-winnow 1.0.1 — MIT [228]
-writeable 0.6.3 — Unicode-3.0 [119]
-wry 0.54.4 — Apache-2.0 OR MIT [53], [229], [230]
-yoke 0.8.2 — Unicode-3.0 [119]
-yoke-derive 0.8.2 — Unicode-3.0 [119]
-zerocopy 0.8.48 — BSD-2-Clause OR Apache-2.0 OR MIT [231], [232], [233]
-zerofrom 0.1.7 — Unicode-3.0 [119]
-zerofrom-derive 0.1.7 — Unicode-3.0 [119]
-zeroize 1.9.1 — Apache-2.0 OR MIT [127], [234]
-zerotrie 0.2.4 — Unicode-3.0 [119]
-zerovec 0.11.6 — Unicode-3.0 [119]
-zerovec-derive 0.11.3 — Unicode-3.0 [119]
-zmij 1.0.21 — MIT [47]
+brotli-decompressor 5.0.0 — BSD-3-Clause/MIT [49]
+bs58 0.5.1 — MIT/Apache-2.0 [52], [61]
+byteorder 1.5.0 — Unlicense OR MIT [47], [48]
+bytes 1.11.1 — MIT [62]
+camino 1.2.2 — MIT OR Apache-2.0 [52], [46]
+cargo-platform 0.1.9 — MIT OR Apache-2.0 [45], [46]
+cargo_metadata 0.19.2 — MIT [46]
+cfb 0.7.3 — MIT [63]
+cfg-if 1.0.4 — MIT OR Apache-2.0 [52], [64]
+chrono 0.4.44 — MIT OR Apache-2.0 [65]
+const-oid 0.9.6 — Apache-2.0 OR MIT [56], [66]
+convert_case 0.4.0 — MIT [67]
+cookie 0.18.1 — MIT OR Apache-2.0 [68], [69]
+cpufeatures 0.2.17 — MIT OR Apache-2.0 [56], [70]
+crc32fast 1.5.0 — MIT OR Apache-2.0 [71], [72]
+crossbeam-channel 0.5.15 — MIT OR Apache-2.0 [52], [73], [74]
+crossbeam-utils 0.8.21 — MIT OR Apache-2.0 [52], [73]
+crypto-common 0.1.7 — MIT OR Apache-2.0 [56], [75]
+cssparser 0.29.6 — MPL-2.0 [76]
+cssparser-macros 0.6.1 — MPL-2.0 [76]
+ctor 0.2.9 — Apache-2.0 OR MIT [71], [77]
+curve25519-dalek 4.1.3 — BSD-3-Clause [78]
+curve25519-dalek-derive 0.1.1 — MIT/Apache-2.0 [52], [46]
+darling 0.24.1 — MIT [79]
+darling_core 0.24.1 — MIT [79]
+darling_macro 0.24.1 — MIT [79]
+defmt 1.2.0 — MIT OR Apache-2.0 [80], [81]
+defmt-macros 1.2.0 — MIT OR Apache-2.0 [80], [81]
+defmt-parser 1.1.0 — MIT OR Apache-2.0 [80], [81]
+der 0.7.10 — Apache-2.0 OR MIT [56], [82]
+deranged 0.5.8 — MIT OR Apache-2.0 [83], [84]
+derive_more 0.99.20 — MIT [85]
+digest 0.10.7 — MIT OR Apache-2.0 [56], [86]
+dirs 5.0.1 — MIT OR Apache-2.0 [87], [88]
+dirs 6.0.0 — MIT OR Apache-2.0 [87], [88]
+dirs-sys 0.4.1 — MIT OR Apache-2.0 [87], [88]
+dirs-sys 0.5.0 — MIT OR Apache-2.0 [87], [88]
+displaydoc 0.2.5 — MIT OR Apache-2.0 [52], [46]
+dpi 0.1.2 — Apache-2.0 AND MIT [71], [89]
+dtoa 1.0.11 — MIT OR Apache-2.0 [51], [46]
+dtoa-short 0.3.5 — MPL-2.0 [90]
+dunce 1.0.5 — CC0-1.0 OR MIT-0 OR Apache-2.0 [91]
+dyn-clone 1.0.20 — MIT OR Apache-2.0 [51], [46]
+ed25519 2.2.3 — Apache-2.0 OR MIT [92], [93]
+ed25519-dalek 2.1.1 — BSD-3-Clause [94]
+equivalent 1.0.2 — Apache-2.0 OR MIT [52], [95]
+erased-serde 0.4.10 — MIT OR Apache-2.0 [51], [46]
+fdeflate 0.3.7 — MIT OR Apache-2.0 [28], [96]
+flate2 1.1.9 — MIT OR Apache-2.0 [52], [97]
+fnv 1.0.7 — Apache-2.0 / MIT [52], [98]
+form_urlencoded 1.2.2 — MIT OR Apache-2.0 [52], [99]
+futf 0.1.5 — MIT / Apache-2.0 [52], [100]
+futures-channel 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-core 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-io 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-macro 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-sink 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-task 0.3.32 — MIT OR Apache-2.0 [101], [102]
+futures-util 0.3.32 — MIT OR Apache-2.0 [101], [102]
+fxhash 0.2.1 — Apache-2.0/MIT [103], [104]
+generic-array 0.14.7 — MIT [105]
+getrandom 0.2.17 — MIT OR Apache-2.0 [106], [107]
+getrandom 0.3.4 — MIT OR Apache-2.0 [106], [108]
+getrandom 0.4.2 — MIT OR Apache-2.0 [106], [109]
+glob 0.3.3 — MIT OR Apache-2.0 [52], [58]
+hashbrown 0.12.3 — MIT OR Apache-2.0 [52], [110]
+hashbrown 0.17.0 — MIT OR Apache-2.0 [52], [110]
+heck 0.5.0 — MIT OR Apache-2.0 [52], [111]
+hex 0.4.3 — MIT OR Apache-2.0 [71], [112]
+html5ever 0.29.1 — MIT OR Apache-2.0 [52], [113]
+http 1.4.0 — MIT OR Apache-2.0 [114], [115]
+http-body 1.0.1 — MIT [116]
+http-body-util 0.1.3 — MIT [117]
+httparse 1.10.1 — MIT OR Apache-2.0 [52], [118]
+hyper 1.9.0 — MIT [119]
+hyper-util 0.1.20 — MIT [120]
+ico 0.5.0 — MIT [121]
+icu_collections 2.2.0 — Unicode-3.0 [122]
+icu_locale_core 2.2.0 — Unicode-3.0 [122]
+icu_normalizer 2.2.0 — Unicode-3.0 [122]
+icu_normalizer_data 2.2.0 — Unicode-3.0 [122]
+icu_properties 2.2.0 — Unicode-3.0 [122]
+icu_properties_data 2.2.0 — Unicode-3.0 [122]
+icu_provider 2.2.0 — Unicode-3.0 [122]
+ident_case 1.0.1 — MIT/Apache-2.0 [123]
+idna 1.1.0 — MIT OR Apache-2.0 [52], [124]
+idna_adapter 1.2.1 — Apache-2.0 OR MIT [52], [125]
+indexmap 1.9.3 — Apache-2.0 OR MIT [52], [126]
+indexmap 2.14.0 — Apache-2.0 OR MIT [52], [126]
+infer 0.19.0 — MIT [127]
+ipnet 2.12.0 — MIT OR Apache-2.0 [128], [129]
+iri-string 0.7.12 — MIT OR Apache-2.0 [130], [131]
+itoa 1.0.18 — MIT OR Apache-2.0 [51], [46]
+jiff 0.2.38 — Unlicense OR MIT [47], [48]
+jiff-core 0.1.1 — Unlicense OR MIT [47], [48]
+jiff-tzdb 0.1.9 — Unlicense OR MIT [47], [48]
+jiff-tzdb-platform 0.1.3 — Unlicense OR MIT [47], [48]
+json-patch 3.0.1 — MIT/Apache-2.0 [71], [132]
+jsonptr 0.6.3 — MIT OR Apache-2.0 [133], [134]
+keyboard-types 0.7.0 — MIT OR Apache-2.0 [52], [135]
+kuchikiki 0.8.8-speedreader — MIT [46]
+libc 0.2.185 — MIT OR Apache-2.0 [51], [136]
+litemap 0.8.2 — Unicode-3.0 [122]
+lock_api 0.4.14 — MIT OR Apache-2.0 [52], [137]
+log 0.4.29 — MIT OR Apache-2.0 [52], [58]
+mac 0.1.1 — MIT/Apache-2.0 [138], [139]
+markup5ever 0.14.1 — MIT OR Apache-2.0 [52], [113]
+match_token 0.1.0 — MIT OR Apache-2.0 [140], [141]
+matches 0.1.10 — MIT [142]
+memchr 2.8.0 — Unlicense OR MIT [47], [48]
+mime 0.3.17 — MIT OR Apache-2.0 [52], [143]
+miniz_oxide 0.8.9 — MIT OR Zlib OR Apache-2.0 [144], [28], [145], [146]
+mio 1.2.0 — MIT [147]
+muda 0.17.2 — Apache-2.0 OR MIT [52], [148], [149]
+new_debug_unreachable 1.0.6 — MIT [150]
+nodrop 0.1.14 — MIT/Apache-2.0 [52], [151]
+notify-rust 4.18.2 — MIT OR Apache-2.0 [71], [152]
+num-conv 0.2.1 — MIT OR Apache-2.0 [28], [153]
+num-traits 0.2.19 — MIT OR Apache-2.0 [52], [58]
+once_cell 1.21.4 — MIT OR Apache-2.0 [52], [46]
+open 5.3.4 — MIT [154]
+option-ext 0.2.0 — MPL-2.0 [155]
+parking_lot 0.12.5 — MIT OR Apache-2.0 [52], [137]
+parking_lot_core 0.9.12 — MIT OR Apache-2.0 [52], [137]
+percent-encoding 2.3.2 — MIT OR Apache-2.0 [52], [124]
+phf 0.10.1 — MIT [156]
+phf 0.11.3 — MIT [157]
+phf 0.8.0 — MIT [156]
+phf_generator 0.10.0 — MIT [158]
+phf_generator 0.11.3 — MIT [157]
+phf_macros 0.10.0 — MIT [159]
+phf_macros 0.11.3 — MIT [157]
+phf_shared 0.10.0 — MIT [160]
+phf_shared 0.11.3 — MIT [157]
+phf_shared 0.8.0 — MIT [160]
+pin-project-lite 0.2.17 — Apache-2.0 OR MIT [28], [46]
+pkcs8 0.10.2 — Apache-2.0 OR MIT [56], [82]
+png 0.17.16 — MIT OR Apache-2.0 [52], [161]
+potential_utf 0.1.5 — Unicode-3.0 [122]
+powerfmt 0.2.0 — MIT OR Apache-2.0 [162], [163]
+ppv-lite86 0.2.21 — MIT OR Apache-2.0 [164], [165]
+precomputed-hash 0.1.1 — MIT [166]
+proc-macro-hack 0.5.20+deprecated — MIT OR Apache-2.0 [52], [167]
+proc-macro2 1.0.106 — MIT OR Apache-2.0 [51], [46]
+quote 1.0.45 — MIT OR Apache-2.0 [51], [46]
+rand 0.8.6 — MIT OR Apache-2.0 [168], [169]
+rand 0.9.4 — MIT OR Apache-2.0 [168], [169]
+rand_chacha 0.3.1 — MIT OR Apache-2.0 [106], [169]
+rand_chacha 0.9.0 — MIT OR Apache-2.0 [168], [169]
+rand_core 0.6.4 — MIT OR Apache-2.0 [170], [169]
+rand_core 0.9.5 — MIT OR Apache-2.0 [170], [169]
+raw-window-handle 0.6.2 — MIT OR Apache-2.0 OR Zlib [28], [171], [172]
+ref-cast 1.0.25 — MIT OR Apache-2.0 [51], [46]
+ref-cast-impl 1.0.25 — MIT OR Apache-2.0 [51], [46]
+regex 1.12.3 — MIT OR Apache-2.0 [52], [58]
+regex-automata 0.4.14 — MIT OR Apache-2.0 [52], [58]
+regex-syntax 0.8.10 — MIT OR Apache-2.0 [52], [58]
+reqwest 0.13.2 — MIT OR Apache-2.0 [173], [174]
+rfd 0.16.0 — MIT [175]
+same-file 1.0.6 — Unlicense/MIT [47], [176]
+schemars 0.8.22 — MIT [177]
+schemars 0.9.0 — MIT [177]
+schemars 1.2.1 — MIT [177]
+schemars_derive 0.8.22 — MIT [177]
+scopeguard 1.2.0 — MIT OR Apache-2.0 [52], [178]
+selectors 0.24.0 — MPL-2.0 [179]
+semver 1.0.28 — MIT OR Apache-2.0 [51], [46]
+serde 1.0.228 — MIT OR Apache-2.0 [51], [46]
+serde-untagged 0.1.9 — MIT OR Apache-2.0 [51], [46]
+serde_core 1.0.228 — MIT OR Apache-2.0 [51], [46]
+serde_derive 1.0.228 — MIT OR Apache-2.0 [51], [46]
+serde_derive_internals 0.29.1 — MIT OR Apache-2.0 [51], [46]
+serde_json 1.0.154 — MIT OR Apache-2.0 [51], [46]
+serde_repr 0.1.20 — MIT OR Apache-2.0 [51], [46]
+serde_spanned 1.1.1 — MIT OR Apache-2.0 [71], [180]
+serde_with 3.24.0 — MIT OR Apache-2.0 [52], [181]
+serde_with_macros 3.24.0 — MIT OR Apache-2.0 [52], [181]
+serialize-to-javascript 0.1.2 — MIT OR Apache-2.0 [130], [182]
+serialize-to-javascript-impl 0.1.2 — MIT OR Apache-2.0 [130], [182]
+servo_arc 0.2.0 — MIT OR Apache-2.0 [52], [46]
+sha2 0.10.9 — MIT OR Apache-2.0 [56], [183]
+signature 2.2.0 — Apache-2.0 OR MIT [56], [93]
+simd-adler32 0.3.9 — MIT [184]
+siphasher 0.3.11 — MIT/Apache-2.0 [185]
+siphasher 1.0.2 — MIT/Apache-2.0 [186]
+slab 0.4.12 — MIT [187]
+smallvec 1.15.1 — MIT OR Apache-2.0 [52], [188]
+socket2 0.6.3 — MIT OR Apache-2.0 [52], [64]
+softbuffer 0.4.8 — MIT OR Apache-2.0 [189], [190]
+spki 0.7.3 — Apache-2.0 OR MIT [56], [191]
+stable_deref_trait 1.2.1 — MIT OR Apache-2.0 [52], [192]
+string_cache 0.8.9 — MIT OR Apache-2.0 [52], [193]
+strsim 0.11.1 — MIT [194]
+subtle 2.6.1 — BSD-3-Clause [195]
+syn 1.0.109 — MIT OR Apache-2.0 [52], [46]
+syn 2.0.117 — MIT OR Apache-2.0 [51], [46]
+syn 3.0.9 — MIT OR Apache-2.0 [51], [46]
+sync_wrapper 1.0.2 — Apache-2.0 [28]
+synstructure 0.13.2 — MIT [196]
+tao 0.34.8 — Apache-2.0 [71], [197]
+tauri 2.10.3 — Apache-2.0 OR MIT [28], [29]
+tauri-codegen 2.5.5 — Apache-2.0 OR MIT [28], [29]
+tauri-macros 2.5.5 — Apache-2.0 OR MIT [28], [29]
+tauri-plugin-dialog 2.7.0 — Apache-2.0 OR MIT [30], [28], [29]
+tauri-plugin-fs 2.5.0 — Apache-2.0 OR MIT [30], [28], [29]
+tauri-plugin-notification 2.3.3 — Apache-2.0 OR MIT [30], [28], [29]
+tauri-plugin-opener 2.5.3 — Apache-2.0 OR MIT [30], [28], [29]
+tauri-plugin-single-instance 2.4.2 — Apache-2.0 OR MIT [30], [28], [198]
+tauri-runtime 2.10.1 — Apache-2.0 OR MIT [28], [29]
+tauri-runtime-wry 2.10.1 — Apache-2.0 OR MIT [28], [29]
+tauri-utils 2.8.3 — Apache-2.0 OR MIT [28], [29]
+tauri-winrt-notification 0.8.1 — MIT OR Apache-2.0 [199], [28], [29]
+tendril 0.4.3 — MIT/Apache-2.0 [52], [100]
+thiserror 1.0.69 — MIT OR Apache-2.0 [51], [46]
+thiserror 2.0.18 — MIT OR Apache-2.0 [51], [46]
+thiserror-impl 1.0.69 — MIT OR Apache-2.0 [51], [46]
+thiserror-impl 2.0.18 — MIT OR Apache-2.0 [51], [46]
+time 0.3.47 — MIT OR Apache-2.0 [28], [200]
+time-core 0.1.8 — MIT OR Apache-2.0 [28], [200]
+time-macros 0.2.27 — MIT OR Apache-2.0 [28], [200]
+tinystr 0.8.3 — Unicode-3.0 [122]
+tinyvec 1.13.3 — Zlib OR Apache-2.0 OR MIT [130], [77], [201]
+tokio 1.52.1 — MIT [202]
+tokio-util 0.7.18 — MIT [202]
+toml 0.9.12+spec-1.1.0 — MIT OR Apache-2.0 [71], [180]
+toml_datetime 0.7.5+spec-1.1.0 — MIT OR Apache-2.0 [71], [180]
+toml_parser 1.1.2+spec-1.1.0 — MIT OR Apache-2.0 [71], [180]
+toml_writer 1.1.1+spec-1.1.0 — MIT OR Apache-2.0 [71], [180]
+tower 0.5.3 — MIT [203]
+tower-http 0.6.8 — MIT [204]
+tower-layer 0.3.3 — MIT [203]
+tower-service 0.3.3 — MIT [203]
+tracing 0.1.44 — MIT [205]
+tracing-attributes 0.1.31 — MIT [205]
+tracing-core 0.1.36 — MIT [205]
+tray-icon 0.21.3 — MIT OR Apache-2.0 [52], [148], [206]
+try-lock 0.2.5 — MIT [207]
+typeid 1.0.3 — MIT OR Apache-2.0 [51], [46]
+typenum 1.20.0 — MIT OR Apache-2.0 [208], [209], [210]
+unic-char-property 0.9.0 — MIT/Apache-2.0 [211], [212]
+unic-char-range 0.9.0 — MIT/Apache-2.0 [213], [214]
+unic-common 0.9.0 — MIT/Apache-2.0 [215], [216]
+unic-ucd-ident 0.9.0 — MIT/Apache-2.0 [217], [218]
+unic-ucd-version 0.9.0 — MIT/Apache-2.0 [219], [220]
+unicode-ident 1.0.24 — (MIT OR Apache-2.0) AND Unicode-3.0 [51], [46], [221]
+unicode-segmentation 1.13.2 — MIT OR Apache-2.0 [52], [111]
+url 2.5.8 — MIT OR Apache-2.0 [52], [124]
+urlpattern 0.3.0 — MIT [222]
+utf-8 0.7.6 — MIT OR Apache-2.0 [51], [46]
+utf8_iter 1.0.4 — Apache-2.0 OR MIT [130], [223]
+uuid 1.23.1 — Apache-2.0 OR MIT [52], [224]
+walkdir 2.5.0 — Unlicense/MIT [47], [48]
+want 0.3.1 — MIT [225]
+webview2-com 0.38.2 — MIT [226]
+webview2-com-macros 0.8.1 — MIT [227]
+webview2-com-sys 0.38.2 — MIT [228]
+winapi-util 0.1.11 — Unlicense OR MIT [47], [176]
+window-vibrancy 0.6.0 — Apache-2.0 OR MIT [52], [229], [230]
+windows 0.61.3 — MIT OR Apache-2.0 [231], [31]
+windows 0.62.2 — MIT OR Apache-2.0 [231], [31]
+windows-collections 0.2.0 — MIT OR Apache-2.0 [231], [31]
+windows-collections 0.3.2 — MIT OR Apache-2.0 [231], [31]
+windows-core 0.61.2 — MIT OR Apache-2.0 [231], [31]
+windows-core 0.62.2 — MIT OR Apache-2.0 [231], [31]
+windows-future 0.2.1 — MIT OR Apache-2.0 [231], [31]
+windows-future 0.3.2 — MIT OR Apache-2.0 [231], [31]
+windows-implement 0.60.2 — MIT OR Apache-2.0 [231], [31]
+windows-interface 0.59.3 — MIT OR Apache-2.0 [231], [31]
+windows-link 0.1.3 — MIT OR Apache-2.0 [231], [31]
+windows-link 0.2.1 — MIT OR Apache-2.0 [231], [31]
+windows-numerics 0.2.0 — MIT OR Apache-2.0 [231], [31]
+windows-numerics 0.3.1 — MIT OR Apache-2.0 [231], [31]
+windows-result 0.3.4 — MIT OR Apache-2.0 [231], [31]
+windows-result 0.4.1 — MIT OR Apache-2.0 [231], [31]
+windows-strings 0.4.2 — MIT OR Apache-2.0 [231], [31]
+windows-strings 0.5.1 — MIT OR Apache-2.0 [231], [31]
+windows-sys 0.48.0 — MIT OR Apache-2.0 [231], [31]
+windows-sys 0.59.0 — MIT OR Apache-2.0 [231], [31]
+windows-sys 0.60.2 — MIT OR Apache-2.0 [231], [31]
+windows-sys 0.61.2 — MIT OR Apache-2.0 [231], [31]
+windows-targets 0.48.5 — MIT OR Apache-2.0 [231], [31]
+windows-targets 0.52.6 — MIT OR Apache-2.0 [231], [31]
+windows-targets 0.53.5 — MIT OR Apache-2.0 [231], [31]
+windows-threading 0.1.0 — MIT OR Apache-2.0 [231], [31]
+windows-threading 0.2.1 — MIT OR Apache-2.0 [231], [31]
+windows-version 0.1.7 — MIT OR Apache-2.0 [231], [31]
+windows_x86_64_msvc 0.48.5 — MIT OR Apache-2.0 [231], [31]
+windows_x86_64_msvc 0.52.6 — MIT OR Apache-2.0 [231], [31]
+windows_x86_64_msvc 0.53.1 — MIT OR Apache-2.0 [231], [31]
+winnow 0.7.15 — MIT [232]
+winnow 1.0.1 — MIT [232]
+writeable 0.6.3 — Unicode-3.0 [122]
+wry 0.54.4 — Apache-2.0 OR MIT [52], [233], [234]
+yoke 0.8.2 — Unicode-3.0 [122]
+yoke-derive 0.8.2 — Unicode-3.0 [122]
+zerocopy 0.8.48 — BSD-2-Clause OR Apache-2.0 OR MIT [235], [236], [237]
+zerofrom 0.1.7 — Unicode-3.0 [122]
+zerofrom-derive 0.1.7 — Unicode-3.0 [122]
+zeroize 1.9.1 — Apache-2.0 OR MIT [130], [238]
+zerotrie 0.2.4 — Unicode-3.0 [122]
+zerovec 0.11.6 — Unicode-3.0 [122]
+zerovec-derive 0.11.3 — Unicode-3.0 [122]
+zmij 1.0.21 — MIT [46]
 
 == Licence texts
 
@@ -1410,35 +1421,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ---- [19] ------------------------------------------------------------
-Copyright (c) 2009 The Go Authors. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-
-   * Redistributions of source code must retain the above copyright
-notice, this list of conditions and the following disclaimer.
-   * Redistributions in binary form must reproduce the above
-copyright notice, this list of conditions and the following disclaimer
-in the documentation and/or other materials provided with the
-distribution.
-   * Neither the name of Google Inc. nor the names of its
-contributors may be used to endorse or promote products derived from
-this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
----- [20] ------------------------------------------------------------
 Copyright 2009 The Go Authors.
 
 Redistribution and use in source and binary forms, with or without
@@ -1467,7 +1449,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [21] ------------------------------------------------------------
+---- [20] ------------------------------------------------------------
 Copyright (c) 2016, Daniel Martí. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -1496,7 +1478,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [22] ------------------------------------------------------------
+---- [21] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2020 Supabase
@@ -1519,7 +1501,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [23] ------------------------------------------------------------
+---- [22] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Supabase
@@ -1541,7 +1523,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: @supabase/functions-js declares this licence but ships no licence file.)
 
----- [24] ------------------------------------------------------------
+---- [23] ------------------------------------------------------------
 # MIT License
 
 Copyright (c) 2014 Chris McCord
@@ -1565,7 +1547,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [25] ------------------------------------------------------------
+---- [24] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Supabase
@@ -1587,7 +1569,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: @supabase/postgrest-js declares this licence but ships no licence file.)
 
----- [26] ------------------------------------------------------------
+---- [25] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Supabase
@@ -1609,7 +1591,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: @supabase/realtime-js declares this licence but ships no licence file.)
 
----- [27] ------------------------------------------------------------
+---- [26] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Supabase
@@ -1631,7 +1613,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: @supabase/storage-js declares this licence but ships no licence file.)
 
----- [28] ------------------------------------------------------------
+---- [27] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Supabase
@@ -1653,7 +1635,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: @supabase/supabase-js declares this licence but ships no licence file.)
 
----- [29] ------------------------------------------------------------
+---- [28] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -1831,7 +1813,7 @@ Apache License
 
    END OF TERMS AND CONDITIONS
 
----- [30] ------------------------------------------------------------
+---- [29] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 - Present Tauri Apps Contributors
@@ -1854,7 +1836,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [31] ------------------------------------------------------------
+---- [30] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: tauri
@@ -1876,7 +1858,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/tauri.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/tauri.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [32] ------------------------------------------------------------
+---- [31] ------------------------------------------------------------
 MIT License
 
     Copyright (c) Microsoft Corporation.
@@ -1899,7 +1881,7 @@ MIT License
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE
 
----- [33] ------------------------------------------------------------
+---- [32] ------------------------------------------------------------
 Copyright (c) 2019, The xterm.js authors (https://github.com/xtermjs/xterm.js)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1920,7 +1902,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [34] ------------------------------------------------------------
+---- [33] ------------------------------------------------------------
 Copyright (c) 2017, The xterm.js authors (https://github.com/xtermjs/xterm.js)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -1941,7 +1923,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [35] ------------------------------------------------------------
+---- [34] ------------------------------------------------------------
 Copyright (c) 2017-2019, The xterm.js authors (https://github.com/xtermjs/xterm.js)
 Copyright (c) 2014-2016, SourceLair Private Company (https://www.sourcelair.com)
 Copyright (c) 2012-2013, Christopher Jeffrey (https://github.com/chjj/)
@@ -1964,7 +1946,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [36] ------------------------------------------------------------
+---- [35] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2025 Supabase
@@ -1987,7 +1969,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [37] ------------------------------------------------------------
+---- [36] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2014, 2015, 2016, 2017, 2018 Simon Lydell
@@ -2010,7 +1992,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [38] ------------------------------------------------------------
+---- [37] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2015 Andres Suarez <zertosh@gmail.com>
@@ -2033,7 +2015,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [39] ------------------------------------------------------------
+---- [38] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Facebook, Inc. and its affiliates.
@@ -2056,7 +2038,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [40] ------------------------------------------------------------
+---- [39] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2023 Brian Vaughn
@@ -2079,7 +2061,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [41] ------------------------------------------------------------
+---- [40] ------------------------------------------------------------
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -2093,7 +2075,7 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 
----- [42] ------------------------------------------------------------
+---- [41] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Matteo Collina and Undici contributors
@@ -2116,7 +2098,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [43] ------------------------------------------------------------
+---- [42] ------------------------------------------------------------
 Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 Copyright (c) 2013 Arnout Kazemier and contributors
 Copyright (c) 2016 Luigi Pinca and contributors
@@ -2138,7 +2120,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [44] ------------------------------------------------------------
+---- [43] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2019 Paul Henschel
@@ -2161,7 +2143,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [45] ------------------------------------------------------------
+---- [44] ------------------------------------------------------------
 Copyright (C) Jonas Schievink <jonasschievink@gmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for
@@ -2175,7 +2157,7 @@ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
 AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
----- [46] ------------------------------------------------------------
+---- [45] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      https://www.apache.org/licenses/LICENSE-2.0
@@ -2378,7 +2360,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [47] ------------------------------------------------------------
+---- [46] ------------------------------------------------------------
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
 documentation files (the "Software"), to deal in the
@@ -2403,12 +2385,12 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [48] ------------------------------------------------------------
+---- [47] ------------------------------------------------------------
 This project is dual-licensed under the Unlicense and MIT licenses.
 
 You may use this code under the terms of either license.
 
----- [49] ------------------------------------------------------------
+---- [48] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2015 Andrew Gallant
@@ -2431,7 +2413,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [50] ------------------------------------------------------------
+---- [49] ------------------------------------------------------------
 Copyright (c) 2016 Dropbox, Inc.
 All rights reserved.
 
@@ -2445,7 +2427,7 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [51] ------------------------------------------------------------
+---- [50] ------------------------------------------------------------
 Copyright (c) Daniel Reiter Horn 
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -2460,7 +2442,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 (Standard BSD-3-Clause text: alloc-stdlib declares this licence but ships no licence file.)
 
----- [52] ------------------------------------------------------------
+---- [51] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -2638,7 +2620,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 END OF TERMS AND CONDITIONS
 
----- [53] ------------------------------------------------------------
+---- [52] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -2841,7 +2823,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [54] ------------------------------------------------------------
+---- [53] ------------------------------------------------------------
 ===============================================================================
 
 Copyright (c) 2016 Alex Crichton
@@ -2888,10 +2870,33 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [55] ------------------------------------------------------------
+---- [54] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2015 Alice Maz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+---- [55] ------------------------------------------------------------
+The MIT License (MIT)
+
+Copyright (c) 2025 Alice Maz, Marshall Pierce
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -3218,6 +3223,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ---- [61] ------------------------------------------------------------
+MIT License
+Copyright (c) 2016 The roaring-rs developers.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---- [62] ------------------------------------------------------------
 Copyright (c) 2018 Carl Lerche
 
 Permission is hereby granted, free of charge, to any
@@ -3244,7 +3271,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [62] ------------------------------------------------------------
+---- [63] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 Matthew D. Steele
@@ -3267,7 +3294,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [63] ------------------------------------------------------------
+---- [64] ------------------------------------------------------------
 Copyright (c) 2014 Alex Crichton
 
 Permission is hereby granted, free of charge, to any
@@ -3294,7 +3321,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [64] ------------------------------------------------------------
+---- [65] ------------------------------------------------------------
 Rust-chrono is dual-licensed under The MIT License [1] and
 Apache 2.0 License [2]. Copyright (c) 2014--2026, Kang Seonghoon and
 contributors.
@@ -3535,7 +3562,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ~~~~
 
----- [65] ------------------------------------------------------------
+---- [66] ------------------------------------------------------------
 Copyright (c) 2020-2022 The RustCrypto Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -3562,7 +3589,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [66] ------------------------------------------------------------
+---- [67] ------------------------------------------------------------
 MIT License
 
 Copyright (c) David Purdum
@@ -3584,7 +3611,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: convert_case declares this licence but ships no licence file.)
 
----- [67] ------------------------------------------------------------
+---- [68] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -3788,7 +3815,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [68] ------------------------------------------------------------
+---- [69] ------------------------------------------------------------
 Copyright (c) 2017 Sergio Benitez
 Copyright (c) 2014 Alex Crichton
 
@@ -3816,7 +3843,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [69] ------------------------------------------------------------
+---- [70] ------------------------------------------------------------
 Copyright (c) 2020-2025 The RustCrypto Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -3843,7 +3870,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [70] ------------------------------------------------------------
+---- [71] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -4046,7 +4073,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [71] ------------------------------------------------------------
+---- [72] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2018 Sam Rijs, Alex Crichton and contributors
@@ -4069,7 +4096,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [72] ------------------------------------------------------------
+---- [73] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2019 The Crossbeam Project Developers
@@ -4098,7 +4125,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [73] ------------------------------------------------------------
+---- [74] ------------------------------------------------------------
 ===============================================================================
 
 matching.go
@@ -4693,7 +4720,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [74] ------------------------------------------------------------
+---- [75] ------------------------------------------------------------
 Copyright (c) 2021 RustCrypto Developers
 
 Permission is hereby granted, free of charge, to any
@@ -4720,7 +4747,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [75] ------------------------------------------------------------
+---- [76] ------------------------------------------------------------
 Mozilla Public License Version 2.0
 ==================================
 
@@ -5095,14 +5122,14 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
 
----- [76] ------------------------------------------------------------
+---- [77] ------------------------------------------------------------
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [77] ------------------------------------------------------------
+---- [78] ------------------------------------------------------------
 Copyright (c) 2016-2021 isis agora lovecruft. All rights reserved.
 Copyright (c) 2016-2021 Henry de Valence. All rights reserved.
 
@@ -5169,7 +5196,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [78] ------------------------------------------------------------
+---- [79] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 Ted Driggs
@@ -5192,7 +5219,237 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [79] ------------------------------------------------------------
+---- [80] ------------------------------------------------------------
+Apache License
+                        Version 2.0, January 2004
+                     http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+   "License" shall mean the terms and conditions for use, reproduction,
+   and distribution as defined by Sections 1 through 9 of this document.
+
+   "Licensor" shall mean the copyright owner or entity authorized by
+   the copyright owner that is granting the License.
+
+   "Legal Entity" shall mean the union of the acting entity and all
+   other entities that control, are controlled by, or are under common
+   control with that entity. For the purposes of this definition,
+   "control" means (i) the power, direct or indirect, to cause the
+   direction or management of such entity, whether by contract or
+   otherwise, or (ii) ownership of fifty percent (50%) or more of the
+   outstanding shares, or (iii) beneficial ownership of such entity.
+
+   "You" (or "Your") shall mean an individual or Legal Entity
+   exercising permissions granted by this License.
+
+   "Source" form shall mean the preferred form for making modifications,
+   including but not limited to software source code, documentation
+   source, and configuration files.
+
+   "Object" form shall mean any form resulting from mechanical
+   transformation or translation of a Source form, including but
+   not limited to compiled object code, generated documentation,
+   and conversions to other media types.
+
+   "Work" shall mean the work of authorship, whether in Source or
+   Object form, made available under the License, as indicated by a
+   copyright notice that is included in or attached to the work
+   (an example is provided in the Appendix below).
+
+   "Derivative Works" shall mean any work, whether in Source or Object
+   form, that is based on (or derived from) the Work and for which the
+   editorial revisions, annotations, elaborations, or other modifications
+   represent, as a whole, an original work of authorship. For the purposes
+   of this License, Derivative Works shall not include works that remain
+   separable from, or merely link (or bind by name) to the interfaces of,
+   the Work and Derivative Works thereof.
+
+   "Contribution" shall mean any work of authorship, including
+   the original version of the Work and any modifications or additions
+   to that Work or Derivative Works thereof, that is intentionally
+   submitted to Licensor for inclusion in the Work by the copyright owner
+   or by an individual or Legal Entity authorized to submit on behalf of
+   the copyright owner. For the purposes of this definition, "submitted"
+   means any form of electronic, verbal, or written communication sent
+   to the Licensor or its representatives, including but not limited to
+   communication on electronic mailing lists, source code control systems,
+   and issue tracking systems that are managed by, or on behalf of, the
+   Licensor for the purpose of discussing and improving the Work, but
+   excluding communication that is conspicuously marked or otherwise
+   designated in writing by the copyright owner as "Not a Contribution."
+
+   "Contributor" shall mean Licensor and any individual or Legal Entity
+   on behalf of whom a Contribution has been received by Licensor and
+   subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   copyright license to reproduce, prepare Derivative Works of,
+   publicly display, publicly perform, sublicense, and distribute the
+   Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of
+   this License, each Contributor hereby grants to You a perpetual,
+   worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+   (except as stated in this section) patent license to make, have made,
+   use, offer to sell, sell, import, and otherwise transfer the Work,
+   where such license applies only to those patent claims licensable
+   by such Contributor that are necessarily infringed by their
+   Contribution(s) alone or by combination of their Contribution(s)
+   with the Work to which such Contribution(s) was submitted. If You
+   institute patent litigation against any entity (including a
+   cross-claim or counterclaim in a lawsuit) alleging that the Work
+   or a Contribution incorporated within the Work constitutes direct
+   or contributory patent infringement, then any patent licenses
+   granted to You under this License for that Work shall terminate
+   as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the
+   Work or Derivative Works thereof in any medium, with or without
+   modifications, and in Source or Object form, provided that You
+   meet the following conditions:
+
+   (a) You must give any other recipients of the Work or
+       Derivative Works a copy of this License; and
+
+   (b) You must cause any modified files to carry prominent notices
+       stating that You changed the files; and
+
+   (c) You must retain, in the Source form of any Derivative Works
+       that You distribute, all copyright, patent, trademark, and
+       attribution notices from the Source form of the Work,
+       excluding those notices that do not pertain to any part of
+       the Derivative Works; and
+
+   (d) If the Work includes a "NOTICE" text file as part of its
+       distribution, then any Derivative Works that You distribute must
+       include a readable copy of the attribution notices contained
+       within such NOTICE file, excluding those notices that do not
+       pertain to any part of the Derivative Works, in at least one
+       of the following places: within a NOTICE text file distributed
+       as part of the Derivative Works; within the Source form or
+       documentation, if provided along with the Derivative Works; or,
+       within a display generated by the Derivative Works, if and
+       wherever such third-party notices normally appear. The contents
+       of the NOTICE file are for informational purposes only and
+       do not modify the License. You may add Your own attribution
+       notices within Derivative Works that You distribute, alongside
+       or as an addendum to the NOTICE text from the Work, provided
+       that such additional attribution notices cannot be construed
+       as modifying the License.
+
+   You may add Your own copyright statement to Your modifications and
+   may provide additional or different license terms and conditions
+   for use, reproduction, or distribution of Your modifications, or
+   for any such Derivative Works as a whole, provided Your use,
+   reproduction, and distribution of the Work otherwise complies with
+   the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise,
+   any Contribution intentionally submitted for inclusion in the Work
+   by You to the Licensor shall be under the terms and conditions of
+   this License, without any additional terms or conditions.
+   Notwithstanding the above, nothing herein shall supersede or modify
+   the terms of any separate license agreement you may have executed
+   with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade
+   names, trademarks, service marks, or product names of the Licensor,
+   except as required for reasonable and customary use in describing the
+   origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or
+   agreed to in writing, Licensor provides the Work (and each
+   Contributor provides its Contributions) on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+   implied, including, without limitation, any warranties or conditions
+   of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+   PARTICULAR PURPOSE. You are solely responsible for determining the
+   appropriateness of using or redistributing the Work and assume any
+   risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory,
+   whether in tort (including negligence), contract, or otherwise,
+   unless required by applicable law (such as deliberate and grossly
+   negligent acts) or agreed to in writing, shall any Contributor be
+   liable to You for damages, including any direct, indirect, special,
+   incidental, or consequential damages of any character arising as a
+   result of this License or out of the use or inability to use the
+   Work (including but not limited to damages for loss of goodwill,
+   work stoppage, computer failure or malfunction, or any and all
+   other commercial damages or losses), even if such Contributor
+   has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing
+   the Work or Derivative Works thereof, You may choose to offer,
+   and charge a fee for, acceptance of support, warranty, indemnity,
+   or other liability obligations and/or rights consistent with this
+   License. However, in accepting such obligations, You may act only
+   on Your own behalf and on Your sole responsibility, not on behalf
+   of any other Contributor, and only if You agree to indemnify,
+   defend, and hold each Contributor harmless for any liability
+   incurred by, or claims asserted against, such Contributor by reason
+   of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+APPENDIX: How to apply the Apache License to your work.
+
+   To apply the Apache License to your work, attach the following
+   boilerplate notice, with the fields enclosed by brackets "[]"
+   replaced with your own identifying information. (Don't include
+   the brackets!)  The text should be enclosed in the appropriate
+   comment syntax for the file format. We also recommend that a
+   file or class name and description of purpose be included on the
+   same "printed page" as the copyright notice for easier
+   identification within third-party archives.
+
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+---- [81] ------------------------------------------------------------
+Copyright (c) Ferrous Systems
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+
+---- [82] ------------------------------------------------------------
 Copyright (c) 2020-2023 The RustCrypto Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -5219,7 +5476,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [80] ------------------------------------------------------------
+---- [83] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -5422,7 +5679,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [81] ------------------------------------------------------------
+---- [84] ------------------------------------------------------------
 Copyright (c) 2024 Jacob Pratt et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -5443,7 +5700,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [82] ------------------------------------------------------------
+---- [85] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2016 Jelte Fennema
@@ -5466,7 +5723,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [83] ------------------------------------------------------------
+---- [86] ------------------------------------------------------------
 Copyright (c) 2017 Artyom Pavlov
 
 Permission is hereby granted, free of charge, to any
@@ -5493,7 +5750,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [84] ------------------------------------------------------------
+---- [87] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -5669,7 +5926,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
    incurred by, or claims asserted against, such Contributor by reason
    of your accepting any such warranty or additional liability.
 
----- [85] ------------------------------------------------------------
+---- [88] ------------------------------------------------------------
 Copyright (c) 2018-2019 dirs-rs contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -5690,7 +5947,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [86] ------------------------------------------------------------
+---- [89] ------------------------------------------------------------
 rust-lang/libm as a whole is available for use under the MIT license:
 
 ------------------------------------------------------------------------------
@@ -5743,7 +6000,7 @@ and labelled as such in comments in the individual source files. All
 have been licensed under extremely permissive terms.
 ------------------------------------------------------------------------------
 
----- [87] ------------------------------------------------------------
+---- [90] ------------------------------------------------------------
 Mozilla Public License Version 2.0
 ==================================
 
@@ -6118,7 +6375,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
 
----- [88] ------------------------------------------------------------
+---- [91] ------------------------------------------------------------
 Creative Commons Legal Code
 
 CC0 1.0 Universal
@@ -6241,7 +6498,7 @@ express Statement of Purpose.
     party to this document and has no duty or obligation with respect to
     this CC0 or use of the Work.
 
----- [89] ------------------------------------------------------------
+---- [92] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -6444,7 +6701,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [90] ------------------------------------------------------------
+---- [93] ------------------------------------------------------------
 Copyright (c) 2018-2023 RustCrypto Developers
 
 Permission is hereby granted, free of charge, to any
@@ -6471,7 +6728,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [91] ------------------------------------------------------------
+---- [94] ------------------------------------------------------------
 Copyright (c) 2017-2019 isis agora lovecruft. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -6501,7 +6758,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [92] ------------------------------------------------------------
+---- [95] ------------------------------------------------------------
 Copyright (c) 2016--2023
 
 Permission is hereby granted, free of charge, to any
@@ -6528,7 +6785,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [93] ------------------------------------------------------------
+---- [96] ------------------------------------------------------------
 MIT License
 
 Permission is hereby granted, free of charge, to any
@@ -6555,7 +6812,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [94] ------------------------------------------------------------
+---- [97] ------------------------------------------------------------
 Copyright (c) 2014-2026 Alex Crichton
 
 Permission is hereby granted, free of charge, to any
@@ -6582,7 +6839,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [95] ------------------------------------------------------------
+---- [98] ------------------------------------------------------------
 Copyright (c) 2017 Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -6609,7 +6866,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [96] ------------------------------------------------------------
+---- [99] ------------------------------------------------------------
 Copyright (c) 2013-2016 The rust-url developers
 
 Permission is hereby granted, free of charge, to any
@@ -6636,7 +6893,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [97] ------------------------------------------------------------
+---- [100] ------------------------------------------------------------
 Copyright (c) 2015 Keegan McAllister
 
 Permission is hereby granted, free of charge, to any
@@ -6663,7 +6920,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [98] ------------------------------------------------------------
+---- [101] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -6867,7 +7124,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [99] ------------------------------------------------------------
+---- [102] ------------------------------------------------------------
 Copyright (c) 2016 Alex Crichton
 Copyright (c) 2017 The Tokio Authors
 
@@ -6895,7 +7152,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [100] ------------------------------------------------------------
+---- [103] ------------------------------------------------------------
 Apache License
 Version 2.0, January 2004
 http://www.apache.org/licenses/
@@ -6972,7 +7229,7 @@ limitations under the License.
 
 (Standard Apache-2.0 text: fxhash declares this licence but ships no licence file.)
 
----- [101] ------------------------------------------------------------
+---- [104] ------------------------------------------------------------
 MIT License
 
 Copyright (c) cbreeden
@@ -6994,7 +7251,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: fxhash declares this licence but ships no licence file.)
 
----- [102] ------------------------------------------------------------
+---- [105] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2015 Bartłomiej Kamiński
@@ -7017,7 +7274,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [103] ------------------------------------------------------------
+---- [106] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      https://www.apache.org/licenses/
@@ -7220,7 +7477,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [104] ------------------------------------------------------------
+---- [107] ------------------------------------------------------------
 Copyright (c) 2018-2024 The rust-random Project Developers
 Copyright (c) 2014 The Rust Project Developers
 
@@ -7248,7 +7505,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [105] ------------------------------------------------------------
+---- [108] ------------------------------------------------------------
 Copyright (c) 2018-2025 The rust-random Project Developers
 Copyright (c) 2014 The Rust Project Developers
 
@@ -7276,7 +7533,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [106] ------------------------------------------------------------
+---- [109] ------------------------------------------------------------
 Copyright (c) 2018-2026 The rust-random Project Developers
 Copyright (c) 2014 The Rust Project Developers
 
@@ -7304,7 +7561,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [107] ------------------------------------------------------------
+---- [110] ------------------------------------------------------------
 Copyright (c) 2016 Amanieu d'Antras
 
 Permission is hereby granted, free of charge, to any
@@ -7331,7 +7588,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [108] ------------------------------------------------------------
+---- [111] ------------------------------------------------------------
 Copyright (c) 2015 The Rust Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -7358,7 +7615,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [109] ------------------------------------------------------------
+---- [112] ------------------------------------------------------------
 Copyright (c) 2013-2014 The Rust Project Developers.
 Copyright (c) 2015-2020 The rust-hex Developers
 
@@ -7380,7 +7637,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [110] ------------------------------------------------------------
+---- [113] ------------------------------------------------------------
 Copyright (c) 2014 The html5ever Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -7407,7 +7664,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [111] ------------------------------------------------------------
+---- [114] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -7610,7 +7867,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [112] ------------------------------------------------------------
+---- [115] ------------------------------------------------------------
 Copyright (c) 2017 http-rs authors
 
 Permission is hereby granted, free of charge, to any
@@ -7637,7 +7894,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [113] ------------------------------------------------------------
+---- [116] ------------------------------------------------------------
 Copyright (c) 2019-2024 Sean McArthur & Hyper Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -7664,7 +7921,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [114] ------------------------------------------------------------
+---- [117] ------------------------------------------------------------
 Copyright (c) 2019-2025 Sean McArthur & Hyper Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -7691,7 +7948,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [115] ------------------------------------------------------------
+---- [118] ------------------------------------------------------------
 Copyright (c) 2015-2025 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7712,7 +7969,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [116] ------------------------------------------------------------
+---- [119] ------------------------------------------------------------
 Copyright (c) 2014-2026 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7733,7 +7990,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [117] ------------------------------------------------------------
+---- [120] ------------------------------------------------------------
 Copyright (c) 2023-2025 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7754,7 +8011,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [118] ------------------------------------------------------------
+---- [121] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2018 Matthew D. Steele
@@ -7777,7 +8034,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [119] ------------------------------------------------------------
+---- [122] ------------------------------------------------------------
 UNICODE LICENSE V3
 
 COPYRIGHT AND PERMISSION NOTICE
@@ -7825,7 +8082,7 @@ SPDX-License-Identifier: Unicode-3.0
 Portions of ICU4X may have been adapted from ICU4C and/or ICU4J.
 ICU 1.8.1 to ICU 57.1 © 1995-2016 International Business Machines Corporation and others.
 
----- [120] ------------------------------------------------------------
+---- [123] ------------------------------------------------------------
 MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7846,7 +8103,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [121] ------------------------------------------------------------
+---- [124] ------------------------------------------------------------
 Copyright (c) 2013-2025 The rust-url developers
 
 Permission is hereby granted, free of charge, to any
@@ -7873,7 +8130,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [122] ------------------------------------------------------------
+---- [125] ------------------------------------------------------------
 Copyright (c) The rust-url developers
 
 Permission is hereby granted, free of charge, to any
@@ -7900,7 +8157,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [123] ------------------------------------------------------------
+---- [126] ------------------------------------------------------------
 Copyright (c) 2016--2017
 
 Permission is hereby granted, free of charge, to any
@@ -7927,7 +8184,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [124] ------------------------------------------------------------
+---- [127] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2019 Bojan
@@ -7950,7 +8207,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [125] ------------------------------------------------------------
+---- [128] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -8153,7 +8410,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [126] ------------------------------------------------------------
+---- [129] ------------------------------------------------------------
 Copyright 2017 Juniper Networks, Inc.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -8162,7 +8419,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [127] ------------------------------------------------------------
+---- [130] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -8365,7 +8622,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [128] ------------------------------------------------------------
+---- [131] ------------------------------------------------------------
 Copyright 2019-2024 YOSHIOKA Takuma
 
 Permission is hereby granted, free of charge, to any
@@ -8392,7 +8649,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [129] ------------------------------------------------------------
+---- [132] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 Ivan Dubrov
@@ -8415,7 +8672,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [130] ------------------------------------------------------------
+---- [133] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -8618,7 +8875,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [131] ------------------------------------------------------------
+---- [134] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Chance Dinkins
@@ -8641,7 +8898,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [132] ------------------------------------------------------------
+---- [135] ------------------------------------------------------------
 Copyright (c) 2017 Pyfisch
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8662,7 +8919,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [133] ------------------------------------------------------------
+---- [136] ------------------------------------------------------------
 Copyright (c) The Rust Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -8689,7 +8946,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [134] ------------------------------------------------------------
+---- [137] ------------------------------------------------------------
 Copyright (c) 2016 The Rust Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -8716,7 +8973,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [135] ------------------------------------------------------------
+---- [138] ------------------------------------------------------------
 Apache License
 Version 2.0, January 2004
 http://www.apache.org/licenses/
@@ -8793,7 +9050,7 @@ limitations under the License.
 
 (Standard Apache-2.0 text: mac declares this licence but ships no licence file.)
 
----- [136] ------------------------------------------------------------
+---- [139] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Jonathan Reem
@@ -8815,7 +9072,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: mac declares this licence but ships no licence file.)
 
----- [137] ------------------------------------------------------------
+---- [140] ------------------------------------------------------------
 Apache License
 Version 2.0, January 2004
 http://www.apache.org/licenses/
@@ -8892,7 +9149,7 @@ limitations under the License.
 
 (Standard Apache-2.0 text: match_token declares this licence but ships no licence file.)
 
----- [138] ------------------------------------------------------------
+---- [141] ------------------------------------------------------------
 MIT License
 
 Copyright (c) the match_token authors
@@ -8914,7 +9171,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: match_token declares this licence but ships no licence file.)
 
----- [139] ------------------------------------------------------------
+---- [142] ------------------------------------------------------------
 Copyright (c) 2014-2016 Simon Sapin
 
 Permission is hereby granted, free of charge, to any
@@ -8941,7 +9198,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [140] ------------------------------------------------------------
+---- [143] ------------------------------------------------------------
 Copyright (c) 2014 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8962,7 +9219,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [141] ------------------------------------------------------------
+---- [144] ------------------------------------------------------------
 MIT License
 
 Copyright 2013-2014 RAD Game Tools and Valve Software
@@ -8989,7 +9246,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [142] ------------------------------------------------------------
+---- [145] ------------------------------------------------------------
 MIT License
 
 Copyright 2013-2014 RAD Game Tools and Valve Software
@@ -9015,7 +9272,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [143] ------------------------------------------------------------
+---- [146] ------------------------------------------------------------
 Copyright 2013-2014 RAD Game Tools and Valve Software
 Copyright 2010-2014 Rich Geldreich and Tenacious Software LLC
 Copyright (c) 2020 Frommi
@@ -9031,7 +9288,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 3. This notice may not be removed or altered from any source distribution.
 
----- [144] ------------------------------------------------------------
+---- [147] ------------------------------------------------------------
 Copyright (c) 2014 Carl Lerche and other MIO contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9052,7 +9309,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [145] ------------------------------------------------------------
+---- [148] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022-2022 Tauri Programme within The Commons Conservancy
@@ -9075,7 +9332,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [146] ------------------------------------------------------------
+---- [149] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: muda
@@ -9096,7 +9353,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/muda.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/muda.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [147] ------------------------------------------------------------
+---- [150] ------------------------------------------------------------
 Copyright (c) 2015 Jonathan Reem
 
 Permission is hereby granted, free of charge, to any
@@ -9123,7 +9380,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [148] ------------------------------------------------------------
+---- [151] ------------------------------------------------------------
 Copyright (c) Ulrik Sverdrup "bluss" 2015-2017
 
 Permission is hereby granted, free of charge, to any
@@ -9150,7 +9407,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [149] ------------------------------------------------------------
+---- [152] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 Hendrik Sollich
@@ -9173,7 +9430,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [150] ------------------------------------------------------------
+---- [153] ------------------------------------------------------------
 Copyright (c) Jacob Pratt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9194,7 +9451,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [151] ------------------------------------------------------------
+---- [154] ------------------------------------------------------------
 The MIT License (MIT)
 =====================
 
@@ -9221,7 +9478,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
----- [152] ------------------------------------------------------------
+---- [155] ------------------------------------------------------------
 Mozilla Public License Version 2.0
 ==================================
 
@@ -9596,7 +9853,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
 
----- [153] ------------------------------------------------------------
+---- [156] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Steven Fackler
@@ -9618,7 +9875,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: phf declares this licence but ships no licence file.)
 
----- [154] ------------------------------------------------------------
+---- [157] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2014-2022 Steven Fackler, Yuki Okushi
@@ -9640,7 +9897,7 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [155] ------------------------------------------------------------
+---- [158] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Steven Fackler
@@ -9662,7 +9919,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: phf_generator declares this licence but ships no licence file.)
 
----- [156] ------------------------------------------------------------
+---- [159] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Steven Fackler
@@ -9684,7 +9941,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: phf_macros declares this licence but ships no licence file.)
 
----- [157] ------------------------------------------------------------
+---- [160] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Steven Fackler
@@ -9706,7 +9963,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: phf_shared declares this licence but ships no licence file.)
 
----- [158] ------------------------------------------------------------
+---- [161] ------------------------------------------------------------
 Copyright (c) 2015 nwin
 
 Permission is hereby granted, free of charge, to any
@@ -9733,7 +9990,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [159] ------------------------------------------------------------
+---- [162] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -9936,7 +10193,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [160] ------------------------------------------------------------
+---- [163] ------------------------------------------------------------
 Copyright (c) 2023 Jacob Pratt et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9957,7 +10214,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [161] ------------------------------------------------------------
+---- [164] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -10160,7 +10417,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [162] ------------------------------------------------------------
+---- [165] ------------------------------------------------------------
 Copyright (c) 2019 The CryptoCorrosion Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -10187,7 +10444,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [163] ------------------------------------------------------------
+---- [166] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 Emilio Cobos Álvarez
@@ -10210,7 +10467,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [164] ------------------------------------------------------------
+---- [167] ------------------------------------------------------------
 Copyright (c) 2018 David Tolnay
 
 Permission is hereby granted, free of charge, to any
@@ -10237,7 +10494,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [165] ------------------------------------------------------------
+---- [168] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      https://www.apache.org/licenses/
@@ -10415,7 +10672,7 @@ TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
 
 END OF TERMS AND CONDITIONS
 
----- [166] ------------------------------------------------------------
+---- [169] ------------------------------------------------------------
 Copyright 2018 Developers of the Rand project
 Copyright (c) 2014 The Rust Project Developers
 
@@ -10443,7 +10700,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [167] ------------------------------------------------------------
+---- [170] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      https://www.apache.org/licenses/
@@ -10632,7 +10889,7 @@ APPENDIX: How to apply the Apache License to your work.
    same "printed page" as the copyright notice for easier
    identification within third-party archives.
 
----- [168] ------------------------------------------------------------
+---- [171] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2019 Osspial
@@ -10655,7 +10912,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [169] ------------------------------------------------------------
+---- [172] ------------------------------------------------------------
 Copyright (c) 2020 Osspial
 
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -10668,7 +10925,7 @@ Permission is granted to anyone to use this software for any purpose, including 
 
 3. This notice may not be removed or altered from any source distribution.
 
----- [170] ------------------------------------------------------------
+---- [173] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -10871,7 +11128,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [171] ------------------------------------------------------------
+---- [174] ------------------------------------------------------------
 Copyright (c) 2016-2026 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -10892,7 +11149,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [172] ------------------------------------------------------------
+---- [175] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2022 Bartłomiej Maryńczak
@@ -10915,7 +11172,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [173] ------------------------------------------------------------
+---- [176] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2017 Andrew Gallant
@@ -10938,7 +11195,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [174] ------------------------------------------------------------
+---- [177] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2019 Graham Esau
@@ -10961,7 +11218,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [175] ------------------------------------------------------------
+---- [178] ------------------------------------------------------------
 Copyright (c) 2016-2019 Ulrik Sverdrup "bluss" and scopeguard developers
 
 Permission is hereby granted, free of charge, to any
@@ -10988,7 +11245,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [176] ------------------------------------------------------------
+---- [179] ------------------------------------------------------------
 Mozilla Public License Version 2.0
 ==================================
 
@@ -11365,7 +11622,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 
 (Standard MPL-2.0 text: selectors declares this licence but ships no licence file.)
 
----- [177] ------------------------------------------------------------
+---- [180] ------------------------------------------------------------
 Copyright (c) Individual contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11386,7 +11643,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [178] ------------------------------------------------------------
+---- [181] ------------------------------------------------------------
 Copyright (c) 2015
 
 Permission is hereby granted, free of charge, to any
@@ -11413,7 +11670,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [179] ------------------------------------------------------------
+---- [182] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2021 Chip Reed
@@ -11436,7 +11693,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [180] ------------------------------------------------------------
+---- [183] ------------------------------------------------------------
 Copyright (c) 2006-2009 Graydon Hoare
 Copyright (c) 2009-2013 Mozilla Foundation
 Copyright (c) 2016 Artyom Pavlov
@@ -11465,7 +11722,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [181] ------------------------------------------------------------
+---- [184] ------------------------------------------------------------
 MIT License
 
 Copyright (c) [2021] [Marvin Countryman]
@@ -11488,7 +11745,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [182] ------------------------------------------------------------
+---- [185] ------------------------------------------------------------
 Copyright 2012-2016 The Rust Project Developers.
 Copyright 2016-2023 Frank Denis.
 
@@ -11497,7 +11754,7 @@ http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
 <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 option.
 
----- [183] ------------------------------------------------------------
+---- [186] ------------------------------------------------------------
 Copyright 2012-2016 The Rust Project Developers.
 Copyright 2016-2026 Frank Denis.
 
@@ -11506,7 +11763,7 @@ http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
 <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
 option.
 
----- [184] ------------------------------------------------------------
+---- [187] ------------------------------------------------------------
 Copyright (c) 2019 Carl Lerche
 
 Permission is hereby granted, free of charge, to any
@@ -11533,7 +11790,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [185] ------------------------------------------------------------
+---- [188] ------------------------------------------------------------
 Copyright (c) 2018 The Servo Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -11560,7 +11817,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [186] ------------------------------------------------------------
+---- [189] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -11763,7 +12020,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [187] ------------------------------------------------------------
+---- [190] ------------------------------------------------------------
 Copyright 2022 Kirill Chibisov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11784,7 +12041,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [188] ------------------------------------------------------------
+---- [191] ------------------------------------------------------------
 Copyright (c) 2021-2023 The RustCrypto Project Developers
 
 Permission is hereby granted, free of charge, to any
@@ -11811,7 +12068,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [189] ------------------------------------------------------------
+---- [192] ------------------------------------------------------------
 Copyright (c) 2017 Robert Grosse
 
 Permission is hereby granted, free of charge, to any
@@ -11838,7 +12095,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [190] ------------------------------------------------------------
+---- [193] ------------------------------------------------------------
 Copyright (c) 2012-2013 Mozilla Foundation
 
 Permission is hereby granted, free of charge, to any
@@ -11865,7 +12122,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [191] ------------------------------------------------------------
+---- [194] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2015 Danny Guo
@@ -11890,7 +12147,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [192] ------------------------------------------------------------
+---- [195] ------------------------------------------------------------
 Copyright (c) 2016-2017 Isis Agora Lovecruft, Henry de Valence. All rights reserved.
 Copyright (c) 2016-2024 Isis Agora Lovecruft. All rights reserved.
 
@@ -11921,7 +12178,7 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [193] ------------------------------------------------------------
+---- [196] ------------------------------------------------------------
 Copyright 2016 Nika Layzell
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -11930,7 +12187,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [194] ------------------------------------------------------------
+---- [197] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: tao
@@ -11950,7 +12207,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/tao.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/tao.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [195] ------------------------------------------------------------
+---- [198] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2017 - Present The Tauri Programme in the Commons Conservancy
@@ -11973,7 +12230,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [196] ------------------------------------------------------------
+---- [199] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: winrt-notification
@@ -11994,7 +12251,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/winrt-notification.gi
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/winrt-notification.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [197] ------------------------------------------------------------
+---- [200] ------------------------------------------------------------
 Copyright (c) Jacob Pratt et al.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12015,7 +12272,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [198] ------------------------------------------------------------
+---- [201] ------------------------------------------------------------
+Copyright (c) 2019 Daniel "Lokathor" Gee.
+
+This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+
+Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+
+2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
+
+---- [202] ------------------------------------------------------------
 MIT License
 
 Copyright (c) Tokio Contributors
@@ -12038,7 +12308,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [199] ------------------------------------------------------------
+---- [203] ------------------------------------------------------------
 Copyright (c) 2019 Tower Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -12065,7 +12335,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [200] ------------------------------------------------------------
+---- [204] ------------------------------------------------------------
 Copyright (c) 2019-2021 Tower Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -12092,7 +12362,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [201] ------------------------------------------------------------
+---- [205] ------------------------------------------------------------
 Copyright (c) 2019 Tokio Contributors
 
 Permission is hereby granted, free of charge, to any
@@ -12119,7 +12389,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [202] ------------------------------------------------------------
+---- [206] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: tray-icon
@@ -12140,7 +12410,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/tray-icon.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/tray-icon.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [203] ------------------------------------------------------------
+---- [207] ------------------------------------------------------------
 Copyright (c) 2018-2023 Sean McArthur
 Copyright (c) 2016 Alex Crichton
 
@@ -12162,10 +12432,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [204] ------------------------------------------------------------
+---- [208] ------------------------------------------------------------
 MIT OR Apache-2.0
 
----- [205] ------------------------------------------------------------
+---- [209] ------------------------------------------------------------
 Apache License
                         Version 2.0, January 2004
                      http://www.apache.org/licenses/
@@ -12368,7 +12638,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
----- [206] ------------------------------------------------------------
+---- [210] ------------------------------------------------------------
 The MIT License (MIT)
 
 Copyright (c) 2014 Paho Lurie-Gregg
@@ -12390,204 +12660,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----- [207] ------------------------------------------------------------
-Apache License
-Version 2.0, January 2004
-http://www.apache.org/licenses/
-
-TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-1. Definitions.
-
-"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
-
-"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
-
-"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
-
-"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
-
-"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
-
-"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
-
-"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
-
-"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
-
-"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
-
-"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
-
-2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
-
-3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
-
-4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
-
-     (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
-
-     (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
-
-     (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
-
-     (d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
-
-     You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
-
-5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
-
-6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
-
-7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
-
-8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
-
-9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
-
-END OF TERMS AND CONDITIONS
-
-APPENDIX: How to apply the Apache License to your work.
-
-To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don't include the brackets!)  The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.
-
-Copyright [yyyy] [name of copyright owner]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-(Standard Apache-2.0 text: unic-char-property declares this licence but ships no licence file.)
-
----- [208] ------------------------------------------------------------
-MIT License
-
-Copyright (c) The UNIC Project Developers
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
-following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-(Standard MIT text: unic-char-property declares this licence but ships no licence file.)
-
----- [209] ------------------------------------------------------------
-Apache License
-Version 2.0, January 2004
-http://www.apache.org/licenses/
-
-TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
-
-1. Definitions.
-
-"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
-
-"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
-
-"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
-
-"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
-
-"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
-
-"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
-
-"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
-
-"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
-
-"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
-
-"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
-
-2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
-
-3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
-
-4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
-
-     (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
-
-     (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
-
-     (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
-
-     (d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
-
-     You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
-
-5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
-
-6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
-
-7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
-
-8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
-
-9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
-
-END OF TERMS AND CONDITIONS
-
-APPENDIX: How to apply the Apache License to your work.
-
-To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don't include the brackets!)  The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.
-
-Copyright [yyyy] [name of copyright owner]
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-(Standard Apache-2.0 text: unic-char-range declares this licence but ships no licence file.)
-
----- [210] ------------------------------------------------------------
-MIT License
-
-Copyright (c) The UNIC Project Developers
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
-following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
-LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
-EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-(Standard MIT text: unic-char-range declares this licence but ships no licence file.)
 
 ---- [211] ------------------------------------------------------------
 Apache License
@@ -12664,7 +12736,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-(Standard Apache-2.0 text: unic-common declares this licence but ships no licence file.)
+(Standard Apache-2.0 text: unic-char-property declares this licence but ships no licence file.)
 
 ---- [212] ------------------------------------------------------------
 MIT License
@@ -12686,7 +12758,7 @@ EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(Standard MIT text: unic-common declares this licence but ships no licence file.)
+(Standard MIT text: unic-char-property declares this licence but ships no licence file.)
 
 ---- [213] ------------------------------------------------------------
 Apache License
@@ -12763,7 +12835,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-(Standard Apache-2.0 text: unic-ucd-ident declares this licence but ships no licence file.)
+(Standard Apache-2.0 text: unic-char-range declares this licence but ships no licence file.)
 
 ---- [214] ------------------------------------------------------------
 MIT License
@@ -12785,7 +12857,7 @@ EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(Standard MIT text: unic-ucd-ident declares this licence but ships no licence file.)
+(Standard MIT text: unic-char-range declares this licence but ships no licence file.)
 
 ---- [215] ------------------------------------------------------------
 Apache License
@@ -12862,7 +12934,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-(Standard Apache-2.0 text: unic-ucd-version declares this licence but ships no licence file.)
+(Standard Apache-2.0 text: unic-common declares this licence but ships no licence file.)
 
 ---- [216] ------------------------------------------------------------
 MIT License
@@ -12884,9 +12956,207 @@ EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(Standard MIT text: unic-ucd-version declares this licence but ships no licence file.)
+(Standard MIT text: unic-common declares this licence but ships no licence file.)
 
 ---- [217] ------------------------------------------------------------
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
+
+"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
+
+"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
+
+"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
+
+     (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+     (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+     (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
+
+     (d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
+
+     You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+APPENDIX: How to apply the Apache License to your work.
+
+To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don't include the brackets!)  The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.
+
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+(Standard Apache-2.0 text: unic-ucd-ident declares this licence but ships no licence file.)
+
+---- [218] ------------------------------------------------------------
+MIT License
+
+Copyright (c) The UNIC Project Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+(Standard MIT text: unic-ucd-ident declares this licence but ships no licence file.)
+
+---- [219] ------------------------------------------------------------
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
+
+"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
+
+"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
+
+"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
+
+     (a) You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+     (b) You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+     (c) You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
+
+     (d) If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License.
+
+     You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+APPENDIX: How to apply the Apache License to your work.
+
+To apply the Apache License to your work, attach the following boilerplate notice, with the fields enclosed by brackets "[]" replaced with your own identifying information. (Don't include the brackets!)  The text should be enclosed in the appropriate comment syntax for the file format. We also recommend that a file or class name and description of purpose be included on the same "printed page" as the copyright notice for easier identification within third-party archives.
+
+Copyright [yyyy] [name of copyright owner]
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+(Standard Apache-2.0 text: unic-ucd-version declares this licence but ships no licence file.)
+
+---- [220] ------------------------------------------------------------
+MIT License
+
+Copyright (c) The UNIC Project Developers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial
+portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+(Standard MIT text: unic-ucd-version declares this licence but ships no licence file.)
+
+---- [221] ------------------------------------------------------------
 UNICODE LICENSE V3
 
 COPYRIGHT AND PERMISSION NOTICE
@@ -12927,7 +13197,7 @@ not be used in advertising or otherwise to promote the sale, use or other
 dealings in these Data Files or Software without prior written
 authorization of the copyright holder.
 
----- [218] ------------------------------------------------------------
+---- [222] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2021 the Deno authors
@@ -12950,7 +13220,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [219] ------------------------------------------------------------
+---- [223] ------------------------------------------------------------
 Copyright Mozilla Foundation
 
 Permission is hereby granted, free of charge, to any
@@ -12977,7 +13247,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [220] ------------------------------------------------------------
+---- [224] ------------------------------------------------------------
 Copyright (c) 2014 The Rust Project Developers
 Copyright (c) 2018 Ashley Mannix, Christopher Armstrong, Dylan DPC, Hunar Roop Kahlon
 
@@ -13005,7 +13275,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [221] ------------------------------------------------------------
+---- [225] ------------------------------------------------------------
 Copyright (c) 2018-2019 Sean McArthur
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13026,7 +13296,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
----- [222] ------------------------------------------------------------
+---- [226] ------------------------------------------------------------
 MIT License
 
 Copyright (c) the webview2-com authors
@@ -13048,7 +13318,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: webview2-com declares this licence but ships no licence file.)
 
----- [223] ------------------------------------------------------------
+---- [227] ------------------------------------------------------------
 MIT License
 
 Copyright (c) the webview2-com-macros authors
@@ -13070,7 +13340,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: webview2-com-macros declares this licence but ships no licence file.)
 
----- [224] ------------------------------------------------------------
+---- [228] ------------------------------------------------------------
 MIT License
 
 Copyright (c) the webview2-com-sys authors
@@ -13092,7 +13362,7 @@ USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 (Standard MIT text: webview2-com-sys declares this licence but ships no licence file.)
 
----- [225] ------------------------------------------------------------
+---- [229] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2020-2022 Tauri Programme within The Commons Conservancy
@@ -13115,7 +13385,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [226] ------------------------------------------------------------
+---- [230] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: window-vibrancy
@@ -13136,7 +13406,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/window-vibrancy.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/window-vibrancy.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [227] ------------------------------------------------------------
+---- [231] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -13339,7 +13609,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [228] ------------------------------------------------------------
+---- [232] ------------------------------------------------------------
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -13359,7 +13629,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----- [229] ------------------------------------------------------------
+---- [233] ------------------------------------------------------------
 MIT License
 
 Copyright (c) 2020-2023 Ngo Iok Ui & Tauri Programme within The Commons Conservancy
@@ -13382,7 +13652,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----- [230] ------------------------------------------------------------
+---- [234] ------------------------------------------------------------
 SPDXVersion: SPDX-2.1
 DataLicense: CC0-1.0
 PackageName: wry
@@ -13404,7 +13674,7 @@ PackageDownloadLocation: git+https://github.com/tauri-apps/wry.git
 PackageDownloadLocation: git+ssh://github.com/tauri-apps/wry.git
 Creator: Person: Daniel Thompson-Yvetot
 
----- [231] ------------------------------------------------------------
+---- [235] ------------------------------------------------------------
 Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -13607,7 +13877,7 @@ Apache License
    See the License for the specific language governing permissions and
    limitations under the License.
 
----- [232] ------------------------------------------------------------
+---- [236] ------------------------------------------------------------
 Copyright 2019 The Fuchsia Authors.
 
 Redistribution and use in source and binary forms, with or without
@@ -13633,7 +13903,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
----- [233] ------------------------------------------------------------
+---- [237] ------------------------------------------------------------
 Copyright 2023 The Fuchsia Authors
 
 Permission is hereby granted, free of charge, to any
@@ -13660,7 +13930,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
 IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
----- [234] ------------------------------------------------------------
+---- [238] ------------------------------------------------------------
 Copyright (c) 2018-2026 The RustCrypto Project Developers
 
 Permission is hereby granted, free of charge, to any

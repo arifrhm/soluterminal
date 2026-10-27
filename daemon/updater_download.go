@@ -43,6 +43,18 @@ func (u *Updater) download(ctx context.Context, url, wantHex, dstPath string) er
 	}
 	ctx, cancel := context.WithTimeout(ctx, maxDuration)
 	defer cancel()
+	// On the team channel the signed manifest names the private repo's
+	// GitHub URLs; the bytes come through the cloud instead (team_updates.go).
+	// The SHA-256 check below is unchanged.
+	if u.teamViaCloudNow() {
+		base, _ := u.cloudCreds()
+		if base == "" {
+			return errTeamUpdatesNoCloud
+		}
+		if mapped, ok := teamAssetURL(url, base); ok {
+			url = mapped
+		}
+	}
 
 	// Use the configured transport but WITHOUT the short total timeout: the
 	// idle watchdog below bounds a stalled body, and the transport's

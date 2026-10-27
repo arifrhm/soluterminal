@@ -6,7 +6,7 @@ toolchain go1.26.10
 
 require soluterminal-shared v0.0.0
 
-require github.com/klauspost/compress v1.18.6
+require github.com/klauspost/compress v1.18.7
 
 replace soluterminal-shared => ../shared
 
@@ -34,8 +34,8 @@ require (
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/u-root/u-root v0.11.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
-	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.44.0
+	golang.org/x/sys v0.45.0
 	mvdan.cc/sh/v3 v3.12.0
 )

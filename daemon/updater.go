@@ -73,10 +73,10 @@ const ExitCodeRestartForUpdate = 0
 // are always fetched from the immutable /releases/download/v<version>/
 // URLs — see fetchManifest in updater_manifest.go.
 //
-// The owner/repo comes from shared/releases and depends on the build's
-// flavour (update_flavor.go): repo.txt for the public build, team-repo.txt
-// for the team build. Before the public repo moves to repo.txt's owner, a
-// 404 falls back to the legacy owner (getReleaseAsset); team URLs never do.
+// The public channel's owner/repo comes from shared/releases/repo.txt.
+// Before the public repo moves to repo.txt's owner, a 404 falls back to the
+// legacy owner (getReleaseAsset). The team channel reads the team build's
+// releases through the cloud instead (team_updates.go); it never falls back.
 
 // defaultUpdateManifestPubKey is the base64 raw Ed25519 public key used
 // to verify update.json.sig. It can be overridden at build time with
@@ -273,6 +273,10 @@ type Updater struct {
 	// manifestURL; a channel switch then keeps the URL (the flavour check
 	// still applies).
 	manifestURLOverride bool
+	// teamViaCloud is set while the install follows the team channel, which
+	// is read through the paired cloud (team_updates.go): manifestURL is then
+	// unused and every URL derives from the cloud credentials.
+	teamViaCloud bool
 	// channel is the install's update channel (update_channel.go): every
 	// manifest the updater trusts must be signed for it. It starts as the
 	// build's initial channel and follows channelStore once main wires it.
@@ -529,8 +533,9 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	channel := initialUpdateChannel()
 	url := os.Getenv("SOLU_UPDATE_MANIFEST_URL")
 	override := url != ""
+	viaCloud := false
 	if !override {
-		url = manifestURLForFlavor(channel)
+		url, viaCloud, _ = channelSource(channel)
 	}
 	// Backward compat: if no explicit shell platform was passed, infer
 	// it. Old Tauri shells (pre-v0.0.330) don't pass --shell-platform,
@@ -564,9 +569,10 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	// slow-but-steady transfer is bounded by progress, not wall-clock.
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.ResponseHeaderTimeout = 30 * time.Second
-	return &Updater{
+	u := &Updater{
 		manifestURL:         url,
 		manifestURLOverride: override,
+		teamViaCloud:        viaCloud,
 		channel:             channel,
 		current:             current,
 		shellCurrent:        shellCurrent,
@@ -574,7 +580,7 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 		restartGate:         &selfRestartInProgress,
 		executable:          os.Executable,
 		homeDir:             home,
-		httpClient:          &http.Client{Transport: transport, Timeout: 20 * time.Second},
+
 		downloadIdleTimeout: defaultUpdateDownloadIdleTimeout,
 		downloadMaxDuration: defaultUpdateDownloadMaxDuration,
 		status:              UpdateStatus{Current: current, ShellCurrent: shellCurrent, UpdateChannel: channel},
@@ -585,6 +591,10 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 		bus:                 bus,
 		metrics:             metrics,
 	}
+	// The machine token rides only on requests for the paired cloud's team
+	// update endpoint (team_updates.go).
+	u.httpClient = &http.Client{Transport: &teamUpdatesAuth{next: transport, creds: u.cloudCreds}, Timeout: 20 * time.Second}
+	return u
 }
 
 // StartBackgroundPoll kicks off an immediate check (async) + a 30-second
@@ -594,9 +604,9 @@ func (u *Updater) StartBackgroundPoll(ctx context.Context) {
 	if u.current == "dev" {
 		return
 	}
-	if u.manifestURLNow() == "" {
-		// A team build from the public source export: it has no team
-		// releases repo, and it must never fall back to the public one.
+	if u.noUpdateSource() {
+		// The team channel in a build without the team update endpoint
+		// (a public build): it must never fall back to the public repo.
 		u.mu.Lock()
 		u.fleetPollDisabled = "no-releases-repo"
 		u.mu.Unlock()

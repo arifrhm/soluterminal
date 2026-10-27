@@ -12,13 +12,14 @@
 // (the transfer has not happened yet) falls back to the legacy owner. Every
 // byte fetched either way is still checked against the signed manifest.
 //
-// team-repo.txt is the separate repo that hosts the team build (the public
-// app plus the private account tools). Each build has a flavour, "public" or
-// "team", fixed at build time; it reads only its own flavour's repo, and the
-// signed manifest names the flavour it was published for, so a public install
-// never takes the team build and a team install never takes the public one.
-// The public source export empties team-repo.txt: a build from public source
-// has no team repo at all.
+// The team build (the public app plus the private account tools) is
+// published to a separate, private repo. This source does not name it:
+// TeamRepo is stamped into team builds only (scripts/release-ldflags.sh,
+// from the private team release file), and team installs read those releases
+// through the SoluTerminal cloud rather than from GitHub. Every public build
+// has no team repo at all. The signed manifest names the flavour it was
+// published for, so a public install never takes the team build and a team
+// install never takes the public one.
 package releases
 
 import (
@@ -32,18 +33,17 @@ var repoFile string
 //go:embed legacy-repo.txt
 var legacyRepoFile string
 
-//go:embed team-repo.txt
-var teamRepoFile string
-
 // Repo is "<owner>/<name>" of the current releases repo.
 var Repo = strings.TrimSpace(repoFile)
 
 // LegacyRepo is "<owner>/<name>" of the repo's previous home.
 var LegacyRepo = strings.TrimSpace(legacyRepoFile)
 
-// TeamRepo is "<owner>/<name>" of the team build's releases repo, or "" in a
-// build from the public source export.
-var TeamRepo = strings.TrimSpace(teamRepoFile)
+// TeamRepo is "<owner>/<name>" of the team build's releases repo, stamped
+// with -ldflags "-X soluterminal-shared/releases.TeamRepo=..." into team
+// builds only; "" everywhere else. Only the release pipeline uses it: team
+// installs fetch team releases through the cloud.
+var TeamRepo string
 
 // Build flavours. Every name other than FlavorTeam means FlavorPublic.
 const (

@@ -44,7 +44,9 @@ describe('settings store compatibility adapter', () => {
 
     useSettings.getState().openSettings('tasks', 'tasks.resourceLimits.maxHeavyOps');
     expect(useSettings.getState().section).toBe('tasks.resourceLimits.maxHeavyOps');
-    expect(useSettings.getState().pendingTarget?.control).toBe('workflows.resources.maxHeavyOps');
+    // The control went with the task engine: the old link opens its section.
+    expect(useSettings.getState().pendingTarget).toMatchObject({ category: 'workflows', section: 'workflows.resources' });
+    expect(useSettings.getState().pendingTarget?.control).toBeUndefined();
 
     useSettings.getState().openSettings('agent');
     expect(useSettings.getState()).toMatchObject({ tab: 'agent', category: 'agents' });
@@ -63,11 +65,9 @@ describe('settings store compatibility adapter', () => {
     useSettings.getState().openSettings({
       category: 'workflows',
       section: 'workflows.resources',
-      control: 'workflows.resources.maxHeavyOps',
+      control: 'workflows.resources.maxAgentRuns',
     });
-    expect(useSettings.getState()).toMatchObject({
-      tab: 'tasks', section: 'tasks.resourceLimits.maxHeavyOps',
-    });
+    expect(useSettings.getState()).toMatchObject({ tab: 'tasks' });
 
     useSettings.getState().openSettings({ category: 'agents', section: 'agents.aria' });
     expect(useSettings.getState().tab).toBe('agent');

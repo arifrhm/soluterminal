@@ -27,7 +27,10 @@ describe('settingsRegistry', () => {
     for (const control of SETTINGS_CONTROLS) expect(sections.has(control.section)).toBe(true);
 
     expect(sectionById('workflows.modelsFallbacks')?.domId).toBe('settings-section-models-fallbacks');
-    expect(controlById('workflows.resources.maxHeavyOps')?.domId).toBe('settings-row-maxHeavyOps');
+    expect(controlById('workflows.resources.maxAgentRuns')?.domId).toBe('settings-row-workflows-resources-maxAgentRuns');
+    // The retired task engine's controls are gone from the index.
+    expect(controlById('workflows.resources.maxHeavyOps')).toBeUndefined();
+    expect(sectionById('workflows.delivery')).toBeUndefined();
   });
 
   it('distinguishes canonical ids from compatibility ids', () => {
@@ -43,10 +46,15 @@ describe('settingsRegistry', () => {
     for (const id of Object.keys(LEGACY_SECTION_TARGETS)) {
       expect(resolveSettingsTarget(id).legacy).toBe(true);
     }
-    expect(resolveSettingsTarget('workflows.resources.maxHeavyOps').target).toEqual({
+    expect(resolveSettingsTarget('workflows.resources.maxAgentRuns').target).toEqual({
       category: 'workflows',
       section: 'workflows.resources',
-      control: 'workflows.resources.maxHeavyOps',
+      control: 'workflows.resources.maxAgentRuns',
+    });
+    // An old link to the retired control opens its section.
+    expect(resolveSettingsTarget('tasks.resourceLimits.maxHeavyOps').target).toEqual({
+      category: 'workflows',
+      section: 'workflows.resources',
     });
   });
 
@@ -57,7 +65,7 @@ describe('settingsRegistry', () => {
       {
         category: 'workflows' as const,
         section: 'workflows.resources',
-        control: 'workflows.resources.maxHeavyOps',
+        control: 'workflows.resources.maxAgentRuns',
       },
     ]) {
       expect(parseSettingsHash(`#${formatSettingsHash(target)}`)).toEqual(target);
@@ -71,10 +79,9 @@ describe('settingsRegistry', () => {
   it.each([
     ['dark mode', 'appearance.theme', undefined],
     ['font size', 'appearance.text', undefined],
-    ['fallback', 'workflows.modelsFallbacks', undefined],
-    ['yolo', 'workflows.automation', undefined],
-    ['heavy', 'workflows.resources', 'workflows.resources.maxHeavyOps'],
-    ['worktree', 'workflows.resources', undefined],
+    ['local model', 'workflows.modelsFallbacks', undefined],
+    ['release train', 'workflows.automation', undefined],
+    ['memory', 'workflows.resources', undefined],
     ['api key', 'credentials.keys', undefined],
     ['screen share', 'credentials.privacy', undefined],
     ['phone', 'devices.pairing', undefined],
