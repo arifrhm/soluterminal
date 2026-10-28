@@ -103,8 +103,8 @@ func TestSpaFileServerUnknownAPIPathIsNotFound(t *testing.T) {
 	}{
 		{http.MethodGet, "/api/does-not-exist", http.StatusNotFound},
 		{http.MethodGet, "/api", http.StatusNotFound},
-		{http.MethodGet, "/api/aria/mcp/", http.StatusNotFound},
-		{http.MethodDelete, "/api/aria/mcp/aria-comms", http.StatusNotFound},
+		{http.MethodGet, "/api/feature/mcp/", http.StatusNotFound},
+		{http.MethodDelete, "/api/feature/mcp/name", http.StatusNotFound},
 		{http.MethodGet, "/apix/route", http.StatusOK}, // SPA route, not the API namespace
 		{http.MethodGet, "/tasks/wft_1", http.StatusOK},
 	} {

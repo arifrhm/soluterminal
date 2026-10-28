@@ -29,7 +29,7 @@ import type { AgentKind } from './lib/agentKind';
 import type { MiddleKey } from './components/sidebar/sidebarSections';
 import type { FeatureGate } from './featureGates';
 import type { SettingsTab } from './settings';
-import type { OrchestratorHostInfo, PaneInfo } from './types';
+import type { OrchestratorHostInfo, PaneInfo, ScheduleChatRef } from './types';
 
 /** One command-palette action. */
 export interface PaletteAction {
@@ -86,6 +86,18 @@ export interface SettingsTabEntry {
    *  every render. */
   useVisible: () => boolean;
   Component: ComponentType;
+}
+
+/** Delivery of a task schedule's reports to a chat (Schedule.deliverChat). */
+export interface ScheduleChatDeliverySlot {
+  /** The opt-in checkbox text. */
+  label: string;
+  /** Dim text after the label. */
+  hint?: string;
+  /** Toast when the box is ticked but no chat is picked. */
+  missingChoice: string;
+  /** Picks the destination; value.chatId is '' until one is chosen. */
+  Picker: ComponentType<{ value: ScheduleChatRef; onChange: (value: ScheduleChatRef) => void }>;
 }
 
 /** A daemon UI event as the app's event stream parses it. */
@@ -245,6 +257,7 @@ export interface WebExtension {
   shortcutGroups?: ShortcutGroupEntry[];
   composerVoice?: ComposerVoiceSlot;
   paneDictation?: PaneDictationSlot;
+  scheduleChatDelivery?: ScheduleChatDeliverySlot;
   /** Feature-gate inventory entries for the files these modules own
    *  (see featureGates.ts). */
   featureGates?: FeatureGate[];
@@ -254,7 +267,7 @@ type ListSlot =
   | 'statusBarChips' | 'appHosts' | 'paletteActions' | 'settingsTabs' | 'eventStreamOpened'
   | 'globalKeys' | 'rootOverlays' | 'topbarItems' | 'mobileBarItems' | 'settingsSections'
   | 'shortcutGroups' | 'featureGates';
-type SingleSlot = 'paneRoleHosts' | 'inboxReports' | 'composerVoice' | 'paneDictation';
+type SingleSlot = 'paneRoleHosts' | 'inboxReports' | 'composerVoice' | 'paneDictation' | 'scheduleChatDelivery';
 
 let registered: WebExtension[] = [];
 let testOverride: WebExtension[] | null = null;
@@ -383,4 +396,9 @@ export function notePaneTyped(paneId: string): void {
 /** Replaces the registrations for one test; pass null to restore. */
 export function setExtensionsForTests(next: WebExtension[] | null): void {
   testOverride = next;
+}
+
+/** The chat-delivery feature for schedule reports, when one is built in. */
+export function scheduleChatDelivery(): ScheduleChatDeliverySlot | undefined {
+  return slotValue('scheduleChatDelivery');
 }

@@ -172,12 +172,12 @@ func (o *supportBundleOffline) sections() []supportBundleSection {
 
 func (o *supportBundleOffline) logPaths() []string {
 	paths := []string{}
-	durableDir := strings.TrimSpace(os.Getenv("SOLU_DURABLE_LOG_DIR"))
-	if durableDir == "" {
-		durableDir = o.shellDir
-	}
-	if durableDir != "" && !strings.EqualFold(durableDir, "off") {
-		paths = append(paths, filepath.Join(durableDir, durableLogName))
+	envDir := strings.TrimSpace(os.Getenv("SOLU_DURABLE_LOG_DIR"))
+	if !strings.EqualFold(envDir, "off") {
+		durableDir, _ := resolveDurableLogDir(runtime.GOOS, envDir, o.dataDir, defaultDataDir(), func() (string, error) { return o.shellDir, nil })
+		if durableDir != "" {
+			paths = append(paths, filepath.Join(durableDir, durableLogName))
+		}
 	}
 	if o.shellDir != "" {
 		for _, name := range []string{"daemon.log", "launch.log", "successor.log"} {

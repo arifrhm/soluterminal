@@ -363,6 +363,23 @@ func registerScheduleKind(name string, k scheduleKind) {
 	scheduleKindOrder = append(scheduleKindOrder, name)
 }
 
+// ScheduleChatRef is where a task schedule's reports go (Schedule.DeliverChat).
+type ScheduleChatRef struct {
+	AgentID  string `json:"agentId,omitempty"` // "" = the feature's first configured sender
+	Source   string `json:"source"`            // the chat network
+	ChatID   string `json:"chatId"`
+	ChatName string `json:"chatName,omitempty"` // display only
+}
+
+// scheduleChatDelivery posts a finished task run's report to its schedule's
+// DeliverChat. Nil without a chat feature; such runs record that delivery
+// isn't available.
+var scheduleChatDelivery func(s *ScheduleStore, schedID string, run ScheduleRun, name string, ref ScheduleChatRef)
+
+func registerScheduleChatDelivery(fn func(s *ScheduleStore, schedID string, run ScheduleRun, name string, ref ScheduleChatRef)) {
+	scheduleChatDelivery = fn
+}
+
 // paneShellBashEnv are bash function definitions (BASH_FUNC_name%%=…) that
 // terminal panes pass through the environment, after the core `codex` hook;
 // their PowerShell counterparts extend paneShellPowerShellInit.

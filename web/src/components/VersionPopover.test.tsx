@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import type { UpdateStatus } from '../types';
 import { VersionPopover } from './VersionPopover';
 import { api } from '../api';
+import { useCloud } from '../cloud';
 
 const anchors: HTMLElement[] = [];
 const realApplyUpdate = useStore.getState().applyUpdate;
@@ -359,5 +360,113 @@ describe('VersionPopover', () => {
     expect(invoke.mock.calls.some(([command]) => command === 'apply_shell_update')).toBe(false);
     expect(invoke.mock.calls.some(([command]) => command === 'open_external_window')).toBe(false);
     expect(screen.queryByRole('button', { name: 'Show in folder' })).not.toBeInTheDocument();
+  });
+});
+
+// 2026-10-28: a public 0.0.1225 window on a team machine. Both daemons had
+// moved to the team channel and to team 0.0.1226; the app's own updater
+// refused the public repo's manifest ("not for the public build") and the
+// daemon was never asked, because the local daemon serves the sign-in config
+// and so useCloud reads mode 'cloud'. The team installer must come from the
+// local daemon, which verified a team-signed manifest; never from the app.
+describe('VersionPopover installer route', () => {
+  const realApplyShellUpdate = useStore.getState().applyShellUpdate;
+
+  function desktop(native: (command: string) => unknown) {
+    const invoke = vi.fn(async (command: string, _args?: unknown) => {
+      if (command === 'browser_pane_ping') return '0.0.1225';
+      return native(command);
+    });
+    Object.defineProperty(window, '__SOLU_TAURI__', { value: true, configurable: true });
+    Object.defineProperty(window, '__TAURI_INTERNALS__', { value: { invoke }, configurable: true });
+    return invoke;
+  }
+
+  const installerStatus = (channel: 'team' | 'public'): UpdateStatus => ({
+    current: '0.0.1226',
+    latest: '0.0.1226',
+    available: false,
+    shellCurrent: '0.0.1225',
+    shellLatest: '0.0.1226',
+    shellAvailable: true,
+    updateChannel: channel,
+  });
+
+  afterEach(() => {
+    useCloud.setState({ mode: 'detecting', isLocal: false });
+    useStore.setState({ applyShellUpdate: realApplyShellUpdate });
+  });
+
+  it('on the team channel, installs through the local daemon and never runs the app updater', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    const invoke = desktop(() => { throw new Error('the app updater must not run on the team channel'); });
+    const applyShellUpdate = vi.fn().mockResolvedValue(undefined);
+    const status = installerStatus('team');
+    useStore.setState({ updateStatus: status, applyShellUpdate: applyShellUpdate as never, applyAllUpdates: realApplyAllUpdates });
+    renderPopover(status);
+
+    expect(await screen.findByText('Installer update available')).toBeInTheDocument();
+    fireEvent.click(await screen.findByRole('button', { name: 'Update installer' }));
+
+    await vi.waitFor(() => expect(applyShellUpdate).toHaveBeenCalledOnce());
+    expect(invoke.mock.calls.some(([command]) => command === 'apply_shell_update')).toBe(false);
+    expect(invoke.mock.calls.some(([command]) => command === 'plugin:opener|open_url')).toBe(false);
+  });
+
+  it('on the team channel, a daemon failure says why and opens the download page, not the app updater', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    const toast = vi.fn();
+    const invoke = desktop(() => undefined);
+    const status = installerStatus('team');
+    useStore.setState({
+      updateStatus: status,
+      toast,
+      applyShellUpdate: vi.fn().mockRejectedValue(new Error('team updates unavailable: not connected')) as never,
+      applyAllUpdates: realApplyAllUpdates,
+    });
+    renderPopover(status);
+    fireEvent.click(await screen.findByRole('button', { name: 'Update installer' }));
+
+    await vi.waitFor(() => expect(invoke).toHaveBeenCalledWith(
+      'plugin:opener|open_url', { url: 'https://soluterminal.com/download/' },
+    ));
+    expect(toast).toHaveBeenCalledWith(expect.stringContaining('team updates unavailable'), expect.anything());
+    expect(invoke.mock.calls.some(([command]) => command === 'apply_shell_update')).toBe(false);
+  });
+
+  it('on the public channel, the local daemon is still the fallback after the app updater fails', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    const invoke = desktop((command) => {
+      if (command === 'apply_shell_update') throw new Error('update manifest is not for the public build');
+      return undefined;
+    });
+    const applyShellUpdate = vi.fn().mockResolvedValue(undefined);
+    const status = installerStatus('public');
+    useStore.setState({ updateStatus: status, applyShellUpdate: applyShellUpdate as never, applyAllUpdates: realApplyAllUpdates });
+    renderPopover(status);
+    fireEvent.click(await screen.findByRole('button', { name: 'Update installer' }));
+
+    await vi.waitFor(() => expect(applyShellUpdate).toHaveBeenCalledOnce());
+    expect(invoke).toHaveBeenCalledWith('apply_shell_update', { forceDowngrade: false });
+    expect(invoke.mock.calls.some(([command]) => command === 'plugin:opener|open_url')).toBe(false);
+  });
+
+  it('never asks a remote daemon, even one on the team channel', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: false });
+    const invoke = desktop((command) => {
+      if (command === 'apply_shell_update') throw new Error('update manifest is not for the public build');
+      return undefined;
+    });
+    const applyShellUpdate = vi.fn().mockResolvedValue(undefined);
+    const status = installerStatus('team');
+    useStore.setState({ updateStatus: status, applyShellUpdate: applyShellUpdate as never, applyAllUpdates: realApplyAllUpdates });
+    renderPopover(status);
+    fireEvent.click(await screen.findByRole('button', { name: 'Update installer' }));
+
+    await vi.waitFor(() => expect(invoke).toHaveBeenCalledWith(
+      'plugin:opener|open_url', { url: 'https://soluterminal.com/download/' },
+    ));
+    expect(invoke).toHaveBeenCalledWith('apply_shell_update', { forceDowngrade: false });
+    expect(applyShellUpdate).not.toHaveBeenCalled();
   });
 });

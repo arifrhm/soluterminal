@@ -28,8 +28,6 @@ export const SETTINGS_INVENTORY: Record<SettingsCategory, string[]> = {
   ],
   agents: [
     'Enable the Warden', 'Automatic pane flags', 'Model', 'Triage after', 'Max runs / hour', 'Run a fleet brief now',
-    'Agent key', 'Answer mentions from this machine', 'Permission', 'Answer with', 'Remove',
-    'Add agent',
   ],
   credentials: [
     'Provider accounts', 'Runtime API keys', 'Auto-switch', 'Team pool health',

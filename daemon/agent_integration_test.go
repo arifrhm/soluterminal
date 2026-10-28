@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
 )
 
 // isolateAgentHome points HOME (and so ~/.claude*, ~/.codex) at a temp dir,
@@ -72,7 +75,7 @@ func TestAgentIntegrationEffectiveAndNeedsAnswer(t *testing.T) {
 func TestBootAgentIntegrationRecordsExistingRegistrationOnce(t *testing.T) {
 	_, _, store := isolateAgentHome(t)
 	legacy := true
-	if got := bootAgentIntegration(store, "0.0.0.0:8787", false, func() bool { return legacy }); got != agentIntegrationOn {
+	if got := bootAgentIntegration(store, "0.0.0.0:8787", false, true, func() bool { return legacy }); got != agentIntegrationOn {
 		t.Fatalf("existing registration should keep it on, got %q", got)
 	}
 	rec := store.load()
@@ -84,24 +87,135 @@ func TestBootAgentIntegrationRecordsExistingRegistrationOnce(t *testing.T) {
 	}
 	// A later boot never re-derives the choice from the files.
 	legacy = false
-	if got := bootAgentIntegration(store, "0.0.0.0:8787", false, func() bool { return legacy }); got != agentIntegrationOn {
+	if got := bootAgentIntegration(store, "0.0.0.0:8787", false, true, func() bool { return legacy }); got != agentIntegrationOn {
 		t.Fatalf("recorded choice must persist, got %q", got)
 	}
 }
 
 func TestBootAgentIntegrationFreshInstallAsksAndOperatorDefaultsOn(t *testing.T) {
 	_, _, store := isolateAgentHome(t)
-	if got := bootAgentIntegration(store, "127.0.0.1:8787", false, func() bool { return false }); got != agentIntegrationAsk {
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", false, true, func() bool { return false }); got != agentIntegrationAsk {
 		t.Fatalf("fresh install should ask, got %q", got)
 	}
 	if agentIntegrationGlobalOn() {
 		t.Fatal("nothing global may be written before the user answers")
 	}
-	if got := bootAgentIntegration(store, "127.0.0.1:8787", true, func() bool { return true }); got != agentIntegrationOn {
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", true, true, func() bool { return true }); got != agentIntegrationOn {
 		t.Fatalf("operator installs default on, got %q", got)
 	}
 	if rec := store.load(); rec.State != "" {
 		t.Fatalf("an operator default is not a recorded choice: %+v", rec)
+	}
+}
+
+// A team build booting on a data dir whose cached verdict says not operator
+// (a copied ~/.solu, an old backup) must not drop the operator default, nor
+// record the existing registration as a choice, until the cloud answers.
+func TestBootAgentIntegrationStaleNonOperatorVerdictWaitsForFreshAnswer(t *testing.T) {
+	_, _, store := isolateAgentHome(t)
+	legacy := func() bool { return true }
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", true, true, legacy); got != agentIntegrationOn {
+		t.Fatalf("team boot: %q", got)
+	}
+	// Next boot reads a cached non-operator verdict (not fresh).
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", false, false, legacy); got != agentIntegrationOn {
+		t.Fatalf("stale non-operator verdict changed the integration: %q", got)
+	}
+	if rec := store.load(); !rec.OperatorDefault || rec.State != "" || rec.NoticePending {
+		t.Fatalf("stale verdict rewrote the record: %+v", rec)
+	}
+
+	// The cloud then confirms team: nothing changes.
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", func() (bool, bool, bool) { return true, true, true }, legacy)
+	if rec := store.load(); !rec.OperatorDefault || rec.State != "" {
+		t.Fatalf("fresh team answer: %+v", rec)
+	}
+
+	// A fresh non-operator answer lowers it, and only then records the
+	// existing registration as the user's choice.
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", func() (bool, bool, bool) { return false, true, true }, legacy)
+	rec := store.load()
+	if rec.OperatorDefault || rec.State != agentIntegrationOn || rec.Source != agentIntegrationSourceExisting || !rec.NoticePending {
+		t.Fatalf("fresh non-operator answer: %+v", rec)
+	}
+}
+
+// A boot that started in ask on a stale non-operator verdict writes the
+// global entries as soon as the cloud confirms operator, not on the next boot;
+// a settle that does not turn the integration on writes nothing.
+func TestSettleAgentIntegrationAppliesWhenTurningOn(t *testing.T) {
+	_, _, store := isolateAgentHome(t)
+	applied := 0
+	prevApply := applyAgentIntegrationOn
+	applyAgentIntegrationOn = func(string) { applied++ }
+	t.Cleanup(func() { applyAgentIntegrationOn = prevApply })
+
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", false, false, nil); got != agentIntegrationAsk {
+		t.Fatalf("boot: %q", got)
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", func() (bool, bool, bool) { return true, true, true }, nil)
+	if applied != 1 {
+		t.Fatalf("turning on must apply the registrations once, applied=%d", applied)
+	}
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", func() (bool, bool, bool) { return true, true, true }, nil)
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", func() (bool, bool, bool) { return false, true, true }, nil)
+	if applied != 1 {
+		t.Fatalf("no change, or on to ask, must not apply: applied=%d", applied)
+	}
+}
+
+// Without a recorded operator default (a public install), a cached verdict
+// behaves as before: nothing to protect.
+func TestBootAgentIntegrationStaleVerdictOnPublicInstallUnchanged(t *testing.T) {
+	_, _, store := isolateAgentHome(t)
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", false, false, func() bool { return false }); got != agentIntegrationAsk {
+		t.Fatalf("public install must ask, got %q", got)
+	}
+	// A stale cached operator verdict still raises it at once.
+	if got := bootAgentIntegration(store, "127.0.0.1:8787", true, false, func() bool { return false }); got != agentIntegrationOn {
+		t.Fatalf("operator verdict must raise the default, got %q", got)
+	}
+}
+
+// The settle loop waits while the verdict is unknown or not fresh, and stops
+// with the daemon.
+func TestSettleAgentIntegrationVerdictWaitsForFresh(t *testing.T) {
+	_, _, store := isolateAgentHome(t)
+	bootAgentIntegration(store, "127.0.0.1:8787", true, true, nil)
+	prev := agentIntegrationSettleEvery
+	agentIntegrationSettleEvery = time.Millisecond
+	t.Cleanup(func() { agentIntegrationSettleEvery = prev })
+
+	var calls atomic.Int32
+	verdict := func() (bool, bool, bool) {
+		switch calls.Add(1) {
+		case 1:
+			return false, false, false // cache not loaded
+		case 2, 3:
+			return false, true, false // loaded from disk
+		}
+		return false, true, true
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	settleAgentIntegrationVerdict(ctx, store, "127.0.0.1:8787", verdict, nil)
+	if n := calls.Load(); n != 4 {
+		t.Fatalf("verdict polled %d times, want 4", n)
+	}
+	if rec := store.load(); rec.OperatorDefault {
+		t.Fatalf("fresh non-operator answer must lower the default: %+v", rec)
+	}
+
+	bootAgentIntegration(store, "127.0.0.1:8787", true, true, nil)
+	stopped, stop := context.WithCancel(context.Background())
+	stop()
+	settleAgentIntegrationVerdict(stopped, store, "127.0.0.1:8787", func() (bool, bool, bool) { return false, true, false }, nil)
+	if rec := store.load(); !rec.OperatorDefault {
+		t.Fatalf("a cancelled settle must not lower the default: %+v", rec)
 	}
 }
 
@@ -116,7 +230,7 @@ func TestAgentIntegrationGlobalOnWithoutStoreKeepsOldBehaviour(t *testing.T) {
 
 func TestHooksAreNotWrittenWithoutConsent(t *testing.T) {
 	home, _, store := isolateAgentHome(t)
-	bootAgentIntegration(store, "127.0.0.1:8787", false, func() bool { return false })
+	bootAgentIntegration(store, "127.0.0.1:8787", false, true, func() bool { return false })
 	ensureClaudeHooksRegistered("127.0.0.1:8787")
 	if _, err := os.Stat(filepath.Join(home, ".claude", "settings.json")); !os.IsNotExist(err) {
 		t.Fatalf("hooks written without consent: %v", err)
@@ -277,7 +391,7 @@ func TestUninstallCleanupCommandRecordsTheUninstall(t *testing.T) {
 
 func TestAgentIntegrationAPI(t *testing.T) {
 	home, dataDir, store := isolateAgentHome(t)
-	bootAgentIntegration(store, "127.0.0.1:8787", false, func() bool { return false })
+	bootAgentIntegration(store, "127.0.0.1:8787", false, true, func() bool { return false })
 	a := &apiServer{addr: "127.0.0.1:8787", dataDir: dataDir}
 
 	applied := 0
@@ -329,7 +443,7 @@ func TestAgentIntegrationAPI(t *testing.T) {
 		t.Fatal("turning off left our hooks")
 	}
 	// Off survives a restart and is never re-added.
-	bootAgentIntegration(store, "127.0.0.1:8787", false, func() bool { return true })
+	bootAgentIntegration(store, "127.0.0.1:8787", false, true, func() bool { return true })
 	if agentIntegrationGlobalOn() {
 		t.Fatal("off must survive a restart")
 	}

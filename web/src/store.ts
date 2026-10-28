@@ -25,6 +25,7 @@ import { prettyModelName } from './native/modelInfo';
 import { hasAnyUnsentDraft } from './native/useNativePane';
 import { applyShellUpdateSilentNative, exitForUpdateNative, getShellVersion, isDesktopApp } from './tauri-browser';
 import { isCloudLaunchMode, isVersionNewer } from './lib/useCloudShellUpdate';
+import { daemonOnThisComputer } from './lib/shellUpdateRoute';
 import type { BrowserInfo, FileTileInfo, Layout, McpServer, NativeSettings, OrchestratorHostInfo, PaneAutoMode, PaneEffort, PaneInfo, PaneRole, Port, RecoveryResumeMode, RecoverySettings, RollbackDecline, Schedule, ScheduleInput, ShellAutoRestart, Todo, UpdateAutoApplyMode, UpdateHold, UpdateSettings, UpdateStatus, WardenSettings, Workspace, WorkspaceSummary } from './types';
 import { agentLabel, effectivePaneAgent } from './lib/agentKind';
 import {
@@ -5083,12 +5084,13 @@ export const useStore = create<State>((set, get, storeApi) => ({
   },
 
   applyShellUpdate: async (opts) => {
-    // Defensive: in cloud mode the daemon is on a REMOTE machine, so this would
-    // download + launch the installer THERE, not on this computer (the "stuck at
-    // Launching installer…" trap). The UI suppresses the daemon-driven shell
-    // action in cloud (VersionPopover/StatusBar/Topbar); this guards a stale or
-    // programmatic caller. The local shell updates via ShellUpdateBanner.
-    if (useCloud.getState().mode === 'cloud') {
+    // Defensive: in a relayed session the daemon is on a REMOTE machine, so this
+    // would download + launch the installer THERE, not on this computer (the
+    // "stuck at Launching installer…" trap). The UI suppresses the daemon-driven
+    // shell action there (VersionPopover/StatusBar/Topbar); this guards a stale
+    // or programmatic caller. The local shell updates via ShellUpdateBanner.
+    // Not useCloud's mode: a local daemon with sign-in also reports 'cloud'.
+    if (!daemonOnThisComputer()) {
       get().toast(
         'Installer updates apply to this computer — use the "Update now" banner at the top. In cloud mode the daemon is on another machine.',
         { kind: 'warn', icon: '⚠', ttlMs: 8000 },

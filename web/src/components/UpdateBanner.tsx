@@ -3,9 +3,9 @@ import { shellAutoApplyNeedsManual, useStore } from '../store';
 import { firstHighlight } from '../lib/updateNotes';
 import { useIsMobileDevice, useIsMobileView } from './useIsMobileView';
 import { applyShellUpdateNative, isDesktopApp, revealShellInstallerNative } from '../tauri-browser';
-import { useCloud } from '../cloud';
 import { apiErrorCode } from '../api';
 import { fallBackToDownloadPage } from '../lib/shellUpdateFallback';
+import { daemonOnThisComputer, shellUpdateNeedsDaemon } from '../lib/shellUpdateRoute';
 import { useShellUpdate } from '../lib/useCloudShellUpdate';
 import { VersionPopover } from './VersionPopover';
 
@@ -194,6 +194,17 @@ export function UpdateBanner() {
     bump();
     try {
       const applyManualShellFallback = async () => {
+        // Team channel: only the local daemon can fetch and verify the team
+        // installer; the app's own step reads public releases (shellUpdateRoute.ts).
+        if (shellUpdateNeedsDaemon(updateStatus)) {
+          try {
+            await applyShellUpdate(); // toasts its own success or failure
+          } catch (error) {
+            if (apiErrorCode(error) === 'shell_daemon_downgrade_refused') return;
+            await fallBackToDownloadPage(toast, error instanceof Error ? error.message : String(error));
+          }
+          return;
+        }
         const result = await applyShellUpdateNative(false);
         if (result.ok) {
           toast('Installer launched — follow the prompts to finish updating.', { kind: 'success', icon: '⬆' });
@@ -225,7 +236,7 @@ export function UpdateBanner() {
         // The app's own installer step failed before launching anything. The
         // local daemon has a separate download-and-launch path, so try it
         // before sending the user to the download page.
-        if (updateStatus?.shellAvailable && useCloud.getState().mode !== 'cloud') {
+        if (updateStatus?.shellAvailable && daemonOnThisComputer()) {
           try {
             await applyShellUpdate(); // toasts its own success or failure
             return;

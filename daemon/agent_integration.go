@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -157,12 +159,23 @@ func legacyAgentRegistrationPresent() bool {
 // bootAgentIntegration records what this boot knows: the operator default and
 // the daemon URLs for the shims, and — once — an existing install's
 // registration as an "on" choice with a notice. Returns the effective state.
-func bootAgentIntegration(s *agentIntegrationStore, listenAddr string, operator bool, legacyPresent func() bool) string {
+//
+// fresh says the operator verdict came from the cloud during this run or from
+// an env override. A verdict read from disk at boot may be stale (a machine
+// restored from an old backup, a copied data dir, a verdict another daemon
+// wrote), so it may not lower a recorded operator default: that would turn a
+// team user's integration from on to ask and record their existing
+// registration as a choice. The lowering waits for a fresh answer
+// (settleAgentIntegrationVerdict). Raising it never waits.
+func bootAgentIntegration(s *agentIntegrationStore, listenAddr string, operator, fresh bool, legacyPresent func() bool) string {
 	rec, err := s.update(func(r *agentIntegrationRecord) {
-		r.OperatorDefault = operator
+		deferLowering := !operator && !fresh && r.OperatorDefault
+		if !deferLowering {
+			r.OperatorDefault = operator
+		}
 		r.MCPURL = claudeMcpDesiredURL(listenAddr)
 		r.HookURL = claudeHookURL(listenAddr)
-		if r.State == "" && !operator && legacyPresent != nil && legacyPresent() {
+		if r.State == "" && !r.OperatorDefault && legacyPresent != nil && legacyPresent() {
 			r.State = agentIntegrationOn
 			r.Source = agentIntegrationSourceExisting
 			r.DecidedAtMs = time.Now().UnixMilli()
@@ -173,4 +186,36 @@ func bootAgentIntegration(s *agentIntegrationStore, listenAddr string, operator 
 		return s.load().effective()
 	}
 	return rec.effective()
+}
+
+// agentIntegrationSettleEvery is how often settleAgentIntegrationVerdict looks
+// for a fresh operator verdict.
+var agentIntegrationSettleEvery = 15 * time.Second
+
+// settleAgentIntegrationVerdict waits for a fresh operator verdict (verdict
+// reports on, known, fresh; see cachedOperatorVerdictFresh) and records it
+// once, so a boot that kept a stale-looking operator default (or started in
+// ask on a stale non-operator verdict) settles as soon as the cloud answers
+// instead of on the next boot.
+func settleAgentIntegrationVerdict(ctx context.Context, s *agentIntegrationStore, listenAddr string, verdict func() (on, known, fresh bool), legacyPresent func() bool) {
+	for {
+		if on, known, fresh := verdict(); known && fresh {
+			before := s.load().effective()
+			if after := bootAgentIntegration(s, listenAddr, on, true, legacyPresent); after != before {
+				log.Printf("agent integration: %s (fresh operator verdict %t)", after, on)
+				// The boot-time writers already ran while it was off or
+				// ask; write the global entries now instead of on the next
+				// boot. Turning to ask removes nothing, as at boot.
+				if after == agentIntegrationOn {
+					applyAgentIntegrationOn(listenAddr)
+				}
+			}
+			return
+		}
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(agentIntegrationSettleEvery):
+		}
+	}
 }

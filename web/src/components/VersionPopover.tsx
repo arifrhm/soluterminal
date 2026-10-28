@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from 'react';
 import { IconAlertTriangle } from './ui/icons';
 import { createPortal } from 'react-dom';
 import { useStore } from '../store';
-import { useCloud } from '../cloud';
 import { api, ApiError, apiErrorCode } from '../api';
 import { deriveRollbackPresentation, deriveUpdateHoldPresentation, type RollbackTarget, type UpdateStatus } from '../types';
 import { userFacingNotes } from '../lib/releaseNotes';
@@ -12,6 +11,7 @@ import { isPreviewBuild } from '../previewBoot';
 import { isVersionNewer } from '../lib/useCloudShellUpdate';
 import { applyShellUpdateNative, browserPanePing, isDesktopApp, revealShellInstallerNative } from '../tauri-browser';
 import { fallBackToDownloadPage } from '../lib/shellUpdateFallback';
+import { daemonOnThisComputer, shellUpdateNeedsDaemon } from '../lib/shellUpdateRoute';
 import { UPDATE_CHECK_FAILED } from '../lib/updateErrors';
 import { useIsMobileDevice } from './useIsMobileView';
 import { useDismiss } from './useDismiss';
@@ -248,20 +248,50 @@ export function VersionPopover({ anchor, status, currentFallback, onClose, place
     buttonSub = '↻ Restarts automatically when idle';
   }
 
+  // The local daemon's ApplyShell: download + SHA-verify + launch (WMI/explorer
+  // courier, WSL-interop aware). Resolves true when the attempt was handled
+  // (launched, or refused by policy with its own message); false with the
+  // reason when it failed and the manual download page is next.
+  async function applyShellViaDaemon(): Promise<{ handled: true } | { handled: false; error?: string }> {
+    try {
+      await applyShellUpdate(); // toasts success/failure itself
+      return { handled: true };
+    } catch (error) {
+      if (apiErrorCode(error) === 'shell_daemon_downgrade_refused') {
+        const body = error instanceof ApiError && typeof error.body === 'object' && error.body !== null
+          ? error.body as { installedVersion?: string; installerVersion?: string; message?: string }
+          : {};
+        setDowngradeRefusal({
+          installed: body.installedVersion,
+          installer: body.installerVersion,
+          message: body.message,
+        });
+        return { handled: true };
+      }
+      return { handled: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  }
+
   // One-click installer, trying every automatic path before the manual one:
   // 1. Native (download + SHA-verify + launch inside the Tauri process) —
   //    works on any topology, but shells ≤0.0.890 deny the command (ACL gap).
-  // 2. Daemon ApplyShell — same download+verify+launch done by the LOCAL
-  //    daemon (WMI/explorer courier, WSL-interop aware). Only when the daemon
-  //    itself reports shellAvailable (it verified it can see this machine's
-  //    shell) and we're not in cloud mode, where the daemon is remote and
-  //    would launch the installer on the wrong machine.
-  // 3. The release page for a manual download — last resort.
+  // 2. Daemon ApplyShell — the same done by the LOCAL daemon. Only when the
+  //    daemon itself reports shellAvailable (it verified it can see this
+  //    machine's shell) and is on this computer: in a relayed session it is
+  //    remote and would launch the installer on the wrong machine.
+  // 3. The public download page for a manual install — last resort.
+  // On the team channel the daemon goes alone (shellUpdateRoute.ts): the team
+  // installer comes only through it, and the native step reads public releases.
   async function applyShellNative() {
     setShellNativeApplying(true);
     setNativeLaunchFailure(null);
     setDowngradeRefusal(null);
     try {
+      if (shellUpdateNeedsDaemon(status)) {
+        const viaDaemon = await applyShellViaDaemon();
+        if (!viaDaemon.handled) await fallBackToDownloadPage(toast, viaDaemon.error);
+        return;
+      }
       const res = await applyShellUpdateNative(false);
       if (res.ok) {
         toast('Installer launched — follow the prompts to finish updating.', { kind: 'success', icon: '⬆' });
@@ -292,24 +322,9 @@ export function VersionPopover({ anchor, status, currentFallback, onClose, place
         });
         return;
       }
-      if (status?.shellAvailable && useCloud.getState().mode !== 'cloud') {
-        try {
-          await applyShellUpdate(); // toasts success/failure itself
-          return;
-        } catch (error) {
-          if (apiErrorCode(error) === 'shell_daemon_downgrade_refused') {
-            const body = error instanceof ApiError && typeof error.body === 'object' && error.body !== null
-              ? error.body as { installedVersion?: string; installerVersion?: string; message?: string }
-              : {};
-            setDowngradeRefusal({
-              installed: body.installedVersion,
-              installer: body.installerVersion,
-              message: body.message,
-            });
-            return;
-          }
-          /* fall through to the manual download page for non-policy failures */
-        }
+      if (status?.shellAvailable && daemonOnThisComputer()) {
+        // Non-policy failures fall through to the manual download page.
+        if ((await applyShellViaDaemon()).handled) return;
       }
       await fallBackToDownloadPage(toast, res.error);
     } finally {

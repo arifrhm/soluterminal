@@ -1,4 +1,7 @@
 {
+  "0.0.1226": [
+    "Includes everything in 0.0.1225."
+  ],
   "0.0.1225": [
     "Security: the background service no longer writes its access token into its log file.",
     "If you set SoluTerminal to accept connections from other devices and have shared its log, delete the token file (%USERPROFILE%\\.solu\\token on Windows, ~/.solu/token in WSL) and restart SoluTerminal to get a new one.",

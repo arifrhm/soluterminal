@@ -62,6 +62,8 @@ const durableLogName = "solud.log"
 //
 // Deliberately NOT the --data dir (~/.solu): this has to resolve before flag
 // parsing, and a bad --data must not cost us the log that would explain it.
+// The one exception is a Windows daemon given a non-default --data dir; see
+// resolveDurableLogDir.
 func soluShellDataDir() (string, error) {
 	if runtime.GOOS == "windows" {
 		if d := os.Getenv("LOCALAPPDATA"); d != "" {
@@ -77,6 +79,81 @@ func soluShellDataDir() (string, error) {
 		return "", err
 	}
 	return filepath.Join(home, ".local", "share", "soluterminal"), nil
+}
+
+// resolveDurableLogDir picks the directory solud.log lives in.
+//
+//   - SOLU_DURABLE_LOG_DIR (envDir) wins everywhere. Callers handle "off".
+//   - On Windows, a daemon started with a --data dir other than the default
+//     (~/.solu) logs into <data>\logs. Without this, a test daemon or a second
+//     daemon on Windows wrote into the real install's
+//     %LOCALAPPDATA%\soluterminal\solud.log: unlike Linux, where the shell
+//     data dir sits under $HOME and so moves with a scratch HOME, LOCALAPPDATA
+//     does not follow the data dir or the home directory. <data>\logs is the
+//     same name launchd already uses and the fresh-install check tolerates.
+//   - Otherwise (every real install, which never passes --data, and every
+//     non-Windows daemon) the log stays co-located with the shell's
+//     daemon.log in soluShellDataDir, exactly as before.
+//
+// Pure apart from shellDir so the Windows decision is testable on any host.
+func resolveDurableLogDir(goos, envDir, dataDir, defaultData string, shellDir func() (string, error)) (string, error) {
+	if envDir = strings.TrimSpace(envDir); envDir != "" {
+		return envDir, nil
+	}
+	if goos == "windows" && strings.TrimSpace(dataDir) != "" && !sameDataDir(goos, dataDir, defaultData) {
+		return filepath.Join(dataDir, "logs"), nil
+	}
+	return shellDir()
+}
+
+// sameDataDir compares two data directories after making them absolute and
+// clean; Windows paths compare case-insensitively.
+func sameDataDir(goos, a, b string) bool {
+	norm := func(p string) string {
+		p = strings.TrimSpace(p)
+		if abs, err := filepath.Abs(p); err == nil {
+			p = abs
+		}
+		return filepath.Clean(p)
+	}
+	x, y := norm(a), norm(b)
+	if goos == "windows" {
+		return strings.EqualFold(x, y)
+	}
+	return x == y
+}
+
+// durableLogDataFlag finds the --data value in the daemon's arguments. The
+// durable log is attached before flag parsing (see soluShellDataDir), so it
+// scans for it directly: -data/--data, with the value either attached (=) or
+// as the next argument, stopping at "--". It cannot know which other flags
+// take values, so it does not stop at non-flag arguments (the value of
+// --addr would otherwise end the scan); the last occurrence wins, as it does
+// in the flag package. A miss only means the log goes to the default
+// directory.
+func durableLogDataFlag(args []string) (string, bool) {
+	value, found := "", false
+	for i := 0; i < len(args); i++ {
+		a := args[i]
+		if a == "--" {
+			break
+		}
+		name, ok := strings.CutPrefix(a, "--")
+		if !ok {
+			if name, ok = strings.CutPrefix(a, "-"); !ok {
+				continue
+			}
+		}
+		if v, ok := strings.CutPrefix(name, "data="); ok {
+			value, found = v, true
+			continue
+		}
+		if name == "data" && i+1 < len(args) {
+			i++
+			value, found = args[i], true
+		}
+	}
+	return value, found
 }
 
 // rotatingLogWriter is an append-mode io.Writer that keeps the live file
@@ -252,17 +329,15 @@ var durableLog *rotatingLogWriter
 // Entirely best-effort. A logging problem must never be the reason a daemon
 // fails to boot, so every failure is one warning and a return.
 func attachDurableLog() {
-	dir := strings.TrimSpace(os.Getenv("SOLU_DURABLE_LOG_DIR"))
-	if strings.EqualFold(dir, "off") {
+	envDir := strings.TrimSpace(os.Getenv("SOLU_DURABLE_LOG_DIR"))
+	if strings.EqualFold(envDir, "off") {
 		return
 	}
-	if dir == "" {
-		d, err := soluShellDataDir()
-		if err != nil {
-			slog.Warn("durable log: no data dir; logging to stderr only", "err", err)
-			return
-		}
-		dir = d
+	dataDir, _ := durableLogDataFlag(os.Args[1:])
+	dir, err := resolveDurableLogDir(runtime.GOOS, envDir, dataDir, defaultDataDir(), soluShellDataDir)
+	if err != nil {
+		slog.Warn("durable log: no data dir; logging to stderr only", "err", err)
+		return
 	}
 	if err := attachDurableLogAt(dir); err != nil {
 		slog.Warn("durable log: unavailable; logging to stderr only", "dir", dir, "err", err)

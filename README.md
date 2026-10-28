@@ -31,8 +31,8 @@ voice input and smart approvals. The app's side of that is in this repository; t
 - `shared/`: shared libraries and the wire protocol.
 - `desktop/`: the Windows desktop shell ([desktop guide](desktop/README.md)).
 
-Not included: the hosted service itself (relay, accounts, push alerts), some internal tools and our release
-scripts. Builds from this repository are set up for our hosted service, like the official app; the
+Not included: the hosted service itself (relay, accounts, push alerts), some internal tools and our signing and
+publishing scripts. Builds from this repository are set up for our hosted service, like the official app; the
 [desktop guide](desktop/README.md#hosted-cloud) shows how to build without it. Builds you make yourself report
 version dev and send no check-in.
 
@@ -62,10 +62,12 @@ With neither, every prompt is left for you.
 
 ## Security
 - Updates for the official app are signed, and the app checks the signature before installing.
-- From version 0.0.1222, our CI rebuilds the background service that each update installs from our full source
-  (which includes internal tools that this repository leaves out) and checks it's byte-for-byte
-  identical to what we published ([details](https://soluterminal.com/security/?utm_source=github&utm_campaign=oss-launch)).
-  Builds from this repository leave those tools out, so they won't match release binaries yet.
+- From version 0.0.1225, the official Windows installer is built from this repository by its public GitHub Actions
+  workflow (`official-build.yml`, see [official build](docs/OFFICIAL-BUILD.md)) from a tagged commit. The background
+  service is built twice on separate runners and must match byte for byte, and every file is published with its
+  SHA-256 and a GitHub build attestation. We check those before signing the update manifest with a key that never
+  leaves our side. The installer isn't code-signed by Windows yet. (A build you make yourself from this README reports
+  version dev, so it won't match a release byte for byte.)
 - What's on by default and the known limits: [soluterminal.com/security](https://soluterminal.com/security/?utm_source=github&utm_campaign=oss-launch).
 - Found a vulnerability? Report it privately through GitHub's "Report a vulnerability" or email
   security@soluterminal.com. See [SECURITY.md](SECURITY.md).

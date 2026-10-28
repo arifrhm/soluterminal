@@ -118,7 +118,7 @@ func TestInjectAgentArgsForPaneFollowsTheChoice(t *testing.T) {
 	if got := injectAgentArgsForPane(dataDir, "p1", nil, cmd); !reflect.DeepEqual(got, cmd) {
 		t.Fatalf("no record: %v", got)
 	}
-	bootAgentIntegration(store, "127.0.0.1:8787", false, func() bool { return false })
+	bootAgentIntegration(store, "127.0.0.1:8787", false, true, func() bool { return false })
 	if got := injectAgentArgsForPane(dataDir, "p1", nil, cmd); injectFlagValue(got, "--mcp-config") == "" {
 		t.Fatalf("ask state must inject: %v", got)
 	}
@@ -149,7 +149,7 @@ func TestInjectAgentArgsForPaneFollowsTheChoice(t *testing.T) {
 // install's).
 func TestInjectAgentArgsCoversTheCodexLiveBridgeArgv(t *testing.T) {
 	_, dataDir, store := isolateAgentHome(t)
-	bootAgentIntegration(store, "127.0.0.1:47621", false, func() bool { return false })
+	bootAgentIntegration(store, "127.0.0.1:47621", false, true, func() bool { return false })
 	got := injectAgentArgsForPane(dataDir, "p1", nil, []string{"codex", "--no-alt-screen"})
 	joined := strings.Join(got, " ")
 	if got[0] != "codex" || got[1] != "--no-alt-screen" || !strings.Contains(joined, `mcp_servers.soluterminal.url="http://127.0.0.1:47621/mcp"`) {

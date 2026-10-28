@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useStore } from './store';
 import { useCloud } from './cloud';
-import { api, ApiError } from './api';
+import { api, ApiError, SHELL_APPLY_TIMEOUT_MS } from './api';
 
 const realApplyUpdate = useStore.getState().applyUpdate;
 const realApplyShellUpdate = useStore.getState().applyShellUpdate;
@@ -30,7 +30,8 @@ describe('applyShellUpdate cloud guard', () => {
     });
   });
   afterEach(() => {
-    useCloud.setState({ mode: 'detecting' });
+    useCloud.setState({ mode: 'detecting', isLocal: false });
+    setLaunchMode(undefined);
     useStore.setState({
       updateStatus: null,
       applyUpdate: realApplyUpdate,
@@ -47,11 +48,51 @@ describe('applyShellUpdate cloud guard', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
+  it('does NOT hit the daemon from the desktop app in cloud launch mode', async () => {
+    setLaunchMode('cloud');
+    const spy = vi.spyOn(api, 'applyShellUpdate').mockResolvedValue(undefined as never);
+    await useStore.getState().applyShellUpdate();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  // A local daemon built with sign-in serves /api/config, so useCloud reports
+  // mode 'cloud' with isLocal. That daemon is on this computer (2026-10-28: the
+  // guard on mode alone kept a team machine's window on the public installer).
+  it('applies via the local daemon when it serves the sign-in config', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    const spy = vi.spyOn(api, 'applyShellUpdate').mockResolvedValue(undefined as never);
+    await useStore.getState().applyShellUpdate();
+    expect(spy).toHaveBeenCalledWith(false);
+  });
+
   it('still applies via the daemon in local mode', async () => {
     useCloud.setState({ mode: 'local' });
     const spy = vi.spyOn(api, 'applyShellUpdate').mockResolvedValue(undefined as never);
     await useStore.getState().applyShellUpdate();
     expect(spy).toHaveBeenCalledWith(false);
+  });
+
+  it('gives the daemon minutes, not the default 30 s, to download and launch the installer', async () => {
+    vi.useFakeTimers();
+    try {
+      let signal: AbortSignal | undefined;
+      let answer!: (response: Response) => void;
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation((_url, init) => {
+        signal = (init as RequestInit | undefined)?.signal ?? undefined;
+        return new Promise<Response>((resolve) => { answer = resolve; });
+      });
+      const pending = api.applyShellUpdate(false);
+      await vi.advanceTimersByTimeAsync(5 * 60_000);
+      expect(fetchSpy).toHaveBeenCalledOnce();
+      expect(String(fetchSpy.mock.calls[0][0])).toContain('/api/update/apply-shell');
+      expect(signal?.aborted).toBe(false);
+      answer(new Response(JSON.stringify({ applying: true }), { status: 200 }));
+      await expect(pending).resolves.toEqual({ applying: true });
+      await vi.advanceTimersByTimeAsync(SHELL_APPLY_TIMEOUT_MS);
+      expect(signal?.aborted).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('passes the daemon downgrade override only when explicitly requested', async () => {

@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { api } from '../api';
 import { useStore } from '../store';
 import { useAccountFeatures, useOperatorFeatures } from '../entitlements';
-import type { AriaAgentChats, AriaChatRef, Schedule, ScheduleAgent, ScheduleInput, SchedulePermission } from '../types';
+import type { Schedule, ScheduleAgent, ScheduleChatRef, ScheduleInput, SchedulePermission } from '../types';
+import { scheduleChatDelivery } from '../extensions';
 import { SCHEDULE_TEMPLATES, templatePrompt, type ScheduleTemplate } from '../lib/scheduleTemplates';
 import {
   HOUR_STEP_CHOICES,
@@ -171,44 +172,16 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
   const [paneId, setPaneId] = useState('');
   const [prompt, setPrompt] = useState('');
   const [notifyOnRun, setNotifyOnRun] = useState(false);
-  // Phone push needs a free account; the cloud fallback and Aria chat
-  // delivery are team-only on the public beta.
+  // Phone push needs a free account; the cloud fallback and chat delivery
+  // are team-only on the public beta.
   const team = useOperatorFeatures();
   const phonePush = useAccountFeatures();
   // Once the user touches the notify checkbox (or we're editing a saved
   // schedule), stop auto-flipping it on mode changes.
   const notifyTouched = useRef(false);
-  // Aria chat delivery (task kind): null = off. The chat list loads lazily
-  // the first time the box is ticked — grants live Aria-side and change.
-  const [deliverChat, setDeliverChat] = useState<AriaChatRef | null>(null);
-  const [ariaChats, setAriaChats] = useState<AriaAgentChats[] | null>(null);
-  const [ariaChatsErr, setAriaChatsErr] = useState('');
-  const ariaChatsRequested = useRef(false);
-  // Flattened (agent, chat) list so the <select> can key options by integer
-  // index instead of packing agentId/source/chatId into a delimited string
-  // (a chat_id containing a space would mis-split and misroute the report).
-  const flatChats = useMemo(
-    () =>
-      (ariaChats ?? []).flatMap((a) =>
-        a.chats.map((c) => ({
-          agentId: a.id,
-          handle: a.handle,
-          source: c.source,
-          chatId: c.chat_id,
-          chatName: c.chat_name,
-        })),
-      ),
-    [ariaChats],
-  );
-  const selectedChatIdx =
-    deliverChat && deliverChat.chatId
-      ? flatChats.findIndex(
-          (f) =>
-            (f.agentId === (deliverChat.agentId ?? '') || !deliverChat.agentId) &&
-            f.source === deliverChat.source &&
-            f.chatId === deliverChat.chatId,
-        )
-      : -1;
+  // Report delivery to a chat (task kind, an optional feature): null = off.
+  const chatDelivery = scheduleChatDelivery();
+  const [deliverChat, setDeliverChat] = useState<ScheduleChatRef | null>(null);
   const [enabled, setEnabled] = useState(true);
   const [saving, setSaving] = useState(false);
   const [jobKind, setJobKind] = useState<JobKind>('task');
@@ -255,10 +228,6 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
   // Reset when opening.
   useEffect(() => {
     if (!open) return;
-    // Chats reload per dialog-open: grants change Aria-side, and a failed
-    // fetch must be retryable on the next open.
-    ariaChatsRequested.current = false;
-    setAriaChatsErr('');
     if (editing) {
       setName(editing.name);
       if (editing.runAt) {
@@ -300,7 +269,6 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
       setTimeoutMin(editing.timeoutMin || 30);
       setCatchUp(!!editing.catchUp);
       setDeliverChat(editing.deliverChat ?? null);
-      if (editing.deliverChat) void loadAriaChats();
       setShowTemplates(false);
     } else {
       setName('');
@@ -337,19 +305,6 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
     }
     setNlText('');
   }, [open, editing, initialPaneId, fromPaneMenu]);
-
-  async function loadAriaChats() {
-    if (ariaChatsRequested.current) return;
-    ariaChatsRequested.current = true;
-    try {
-      const res = await api.getAriaChats();
-      setAriaChats(res.agents);
-      setAriaChatsErr('');
-    } catch {
-      setAriaChats([]);
-      setAriaChatsErr('Could not load your Aria chats — is an agent key saved in Settings → Aria agent?');
-    }
-  }
 
   // Recipe → dialog state. Leaves cwd/paneId alone (already seeded) so a
   // template never yanks the user out of the directory they came from.
@@ -571,7 +526,7 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
     } else if (jobKind === 'task') {
       if (!cwd.trim()) { toast('Pick a working directory', { kind: 'warn', icon: '⚠' }); return; }
       if (!prompt.trim()) { toast('Task is empty', { kind: 'warn', icon: '⚠' }); return; }
-      if (deliverChat && !deliverChat.chatId) { toast('Pick the Aria chat for the report', { kind: 'warn', icon: '⚠' }); return; }
+      if (deliverChat && !deliverChat.chatId) { toast(chatDelivery?.missingChoice ?? 'Pick the chat for the report', { kind: 'warn', icon: '⚠' }); return; }
     } else {
       if (!paneId) { toast('Pick a target pane', { kind: 'warn', icon: '⚠' }); return; }
       if (!prompt.trim()) { toast('Prompt is empty', { kind: 'warn', icon: '⚠' }); return; }
@@ -1211,69 +1166,22 @@ export function ScheduleDialog({ open, onClose, editing, initialPaneId, fromPane
           </span>
         </label>
 
-        {team && jobKind === 'task' && (
+        {team && jobKind === 'task' && chatDelivery && (
           <>
             <label style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
               <input
                 type="checkbox"
                 checked={deliverChat !== null}
-                onChange={(e) => {
-                  if (e.target.checked) {
-                    setDeliverChat({ source: '', chatId: '' });
-                    void loadAriaChats();
-                  } else {
-                    setDeliverChat(null);
-                  }
-                }}
+                onChange={(e) => setDeliverChat(e.target.checked ? { source: '', chatId: '' } : null)}
               />
               <span style={{ fontSize: 12 }}>
-                Send the report to an Aria chat
-                <span style={{ color: 'var(--fg-dim)' }}> (as your agent — delivery failures notify)</span>
+                {chatDelivery.label}
+                {chatDelivery.hint && <span style={{ color: 'var(--fg-dim)' }}> {chatDelivery.hint}</span>}
               </span>
             </label>
             {deliverChat !== null && (
               <div style={{ marginLeft: 22, marginTop: 4 }}>
-                {ariaChats === null && !ariaChatsErr && (
-                  <div style={{ fontSize: 11, color: 'var(--fg-dim)' }}>Loading your agent's chats…</div>
-                )}
-                {ariaChatsErr && (
-                  <div style={{ fontSize: 11, color: 'var(--warn)' }}>{ariaChatsErr}</div>
-                )}
-                {ariaChats !== null && (
-                  <select
-                    className="settings-select"
-                    value={
-                      !deliverChat.chatId ? '' : selectedChatIdx >= 0 ? String(selectedChatIdx) : 'ghost'
-                    }
-                    onChange={(e) => {
-                      const v = e.target.value;
-                      if (v === '') { setDeliverChat({ source: '', chatId: '' }); return; }
-                      if (v === 'ghost') return; // the ungranted-ghost row is display-only
-                      const f = flatChats[Number(v)];
-                      if (f) setDeliverChat({ agentId: f.agentId, source: f.source, chatId: f.chatId, chatName: f.chatName });
-                    }}
-                  >
-                    <option value="">Pick a chat…</option>
-                    {/* A saved destination whose grant vanished (or whose list
-                        failed to load) still shows as itself, not a blank. */}
-                    {deliverChat.chatId && selectedChatIdx < 0 && (
-                      <option value="ghost">
-                        {deliverChat.chatName || `${deliverChat.source}/${deliverChat.chatId}`} (not currently granted)
-                      </option>
-                    )}
-                    {flatChats.map((f, i) => (
-                      <option key={`${f.agentId}-${f.source}-${f.chatId}`} value={String(i)}>
-                        {ariaChats.length > 1 ? `@${f.handle || f.agentId} — ` : ''}
-                        {f.chatName || f.chatId} ({f.source})
-                      </option>
-                    ))}
-                  </select>
-                )}
-                {ariaChats !== null && ariaChats.every((a) => a.chats.length === 0) && (
-                  <div style={{ fontSize: 10, color: 'var(--fg-dim)', marginTop: 3 }}>
-                    No granted chats yet — grant your agent a chat in Aria → Settings → Agents first.
-                  </div>
-                )}
+                <chatDelivery.Picker value={deliverChat} onChange={setDeliverChat} />
               </div>
             )}
           </>

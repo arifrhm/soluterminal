@@ -93,7 +93,14 @@ func (a *apiServer) updateApply(w http.ResponseWriter, r *http.Request) {
 // installer prompts.
 // ?force=1 is reserved for an explicit request to allow an otherwise-refused
 // bundled-daemon downgrade; normal and automatic clients never send it.
+//
+// LOCAL-ONLY: an installer runs on the computer whose daemon launches it, so a
+// request that arrived over the cloud relay (another computer, or a browser
+// session on the web) is refused before anything is downloaded.
 func (a *apiServer) updateApplyShell(w http.ResponseWriter, r *http.Request) {
+	if refuseInstallerOverRelay(w, r) {
+		return
+	}
 	if a.updater == nil {
 		http.Error(w, "updater disabled", 503)
 		return
@@ -124,6 +131,22 @@ func (a *apiServer) updateApplyShell(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, map[string]any{"applying": true, "installerPath": path})
+}
+
+// refuseInstallerOverRelay answers 403 and reports true when r arrived over
+// the cloud relay. Only a request made on this computer may launch the
+// desktop installer (or open its folder) here; the web UI already sends a
+// relayed session's shell update elsewhere, and this makes the daemon enforce
+// it rather than trust the UI.
+func refuseInstallerOverRelay(w http.ResponseWriter, r *http.Request) bool {
+	if !requestViaRelay(r) {
+		return false
+	}
+	writeJSON(w, http.StatusForbidden, map[string]any{
+		"code":    "installer_local_only",
+		"message": "the desktop installer can only be launched from this computer, not over the cloud relay",
+	})
+	return true
 }
 
 func writeUpdateHeld(w http.ResponseWriter, held *updateHeldError) {
@@ -258,8 +281,12 @@ func (a *apiServer) updateHoldRelease(w http.ResponseWriter, _ *http.Request) {
 
 // updateShellReveal opens the containing folder for the last staged installer.
 // The path comes exclusively from updater state; clients cannot turn this into
-// an arbitrary Explorer launch endpoint.
-func (a *apiServer) updateShellReveal(w http.ResponseWriter, _ *http.Request) {
+// an arbitrary Explorer launch endpoint. LOCAL-ONLY, like apply-shell: it opens
+// a window on this computer's desktop.
+func (a *apiServer) updateShellReveal(w http.ResponseWriter, r *http.Request) {
+	if refuseInstallerOverRelay(w, r) {
+		return
+	}
 	if a.updater == nil {
 		http.Error(w, "updater disabled", http.StatusServiceUnavailable)
 		return

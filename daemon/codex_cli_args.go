@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"net/url"
 	"path/filepath"
 	"runtime"
@@ -17,7 +16,18 @@ import (
 // and any registered launch broker). The value is an address, never a secret.
 const paneDaemonURLEnv = "SOLU_TEAM_BROKER_DAEMON_URL"
 
-var errCodexShellRouting = errors.New("SoluTerminal Codex routing is unavailable. Retry when SoluTerminal is online; if the selected team account is not ready, its owner must repair it. No personal-login fallback was used")
+// codexShellRoutingMessage is what a terminal user sees when a Codex launch
+// can't go through SoluTerminal. An optional feature may append a hint
+// (codexShellRoutingHint, set from its init) that only applies to its users.
+const codexShellRoutingMessage = "Codex couldn't start through SoluTerminal. Make sure SoluTerminal is running, then try again."
+
+var codexShellRoutingHint string
+
+type codexShellRoutingError struct{}
+
+func (codexShellRoutingError) Error() string { return codexShellRoutingMessage + codexShellRoutingHint }
+
+var errCodexShellRouting error = codexShellRoutingError{}
 
 // Only an address is inherited by a generic Unix shell. Resolve selection and
 // a fresh scoped capability when a model invocation actually starts.

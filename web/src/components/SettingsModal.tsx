@@ -13,7 +13,6 @@ import { DevicesTab } from './settings/DevicesTab';
 import { PhoneEncryptionSetting, privateRelayCandidateInView } from './settings/RemoteDevicesSetting';
 import { WardenTab } from './settings/WardenTab';
 import { ServicesTab } from './settings/ServicesTab';
-import { AgentTab } from './settings/AgentTab';
 import { ErrorBoundary } from './ErrorBoundary';
 
 // THE Settings dialog — every settings surface lives here as a tab on the
@@ -32,12 +31,11 @@ const TABS: { key: SettingsTab; label: string }[] = [
   { key: 'devices', label: 'Devices' },
   { key: 'warden', label: 'Warden' },
   { key: 'tasks', label: 'Services' },
-  { key: 'agent', label: 'Aria agent' },
 ];
 
-// Tabs for team-only surfaces: the Tasks engine, the ARIA agent and the Warden
-// caretaker. Feature modules add their own tabs (extensions.ts).
-const TEAM_ONLY_TABS = new Set<SettingsTab>(['tasks', 'agent', 'warden']);
+// Tabs for team-only surfaces: the Tasks engine and the Warden caretaker.
+// Feature modules add their own tabs (extensions.ts).
+const TEAM_ONLY_TABS = new Set<SettingsTab>(['tasks', 'warden']);
 
 export function SettingsModal() {
   const open = useSettings((s) => s.open);
@@ -72,10 +70,23 @@ export function SettingsModal() {
   const coreTabs = TABS.filter((t) => (t.key !== 'devices' || !isMobile || phoneEncryption)
     && (team || !TEAM_ONLY_TABS.has(t.key)));
   const tabs: { key: SettingsTab; label: string }[] = [];
+  const placed = new Set<number>();
+  // A feature tab follows its anchor, which may be another feature's tab;
+  // one whose anchor isn't shown goes at the end.
+  const placeAfter = (key: SettingsTab) => {
+    featureTabs.forEach((f, i) => {
+      if (f.after !== key || !featureVisible[i] || placed.has(i)) return;
+      placed.add(i);
+      tabs.push(f);
+      placeAfter(f.key);
+    });
+  };
   for (const t of TABS) {
-    if (coreTabs.includes(t)) tabs.push(t);
-    featureTabs.forEach((f, i) => { if (f.after === t.key && featureVisible[i]) tabs.push(f); });
+    if (!coreTabs.includes(t)) continue;
+    tabs.push(t);
+    placeAfter(t.key);
   }
+  featureTabs.forEach((f, i) => { if (featureVisible[i] && !placed.has(i)) { placed.add(i); tabs.push(f); } });
   // A deep link to a hidden tab lands on the first visible one instead of an
   // empty panel.
   // The old two-row "Claude sessions" tab now lives at the bottom of
@@ -121,7 +132,6 @@ export function SettingsModal() {
               {activeTab === 'devices' && isMobile && <PhoneEncryptionSetting />}
               {activeTab === 'warden' && <WardenTab />}
               {activeTab === 'tasks' && <ServicesTab />}
-              {activeTab === 'agent' && <AgentTab />}
               {featureTabs.map((f, i) => activeTab === f.key && featureVisible[i] && <f.Component key={f.key} />)}
             </ErrorBoundary>
           </div>

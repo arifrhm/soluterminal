@@ -39,7 +39,7 @@
       "id": "settings-category-agents",
       "title": "Agents category renders its complete settings surface",
       "steps": ["1. Open Settings and select Agents."],
-      "expected": ["Warden and Aria agent sections render with their controls."],
+      "expected": ["The Warden section renders with its controls."],
       "risk": "none"
     },
     {

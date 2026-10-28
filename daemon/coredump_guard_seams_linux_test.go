@@ -325,53 +325,6 @@ func TestWardenRealExecSuppressesCoreDumps(t *testing.T) {
 	requireLimitUnchanged(t, before)
 }
 
-// TestAriaHeadlessSuppressesCoreDumps proves the aria responder's daemon-direct
-// headless run is guarded; the newest run log must show soft=1.
-func TestAriaHeadlessSuppressesCoreDumps(t *testing.T) {
-	before := coreDumpGuardPreconditions(t)
-	binDir := t.TempDir()
-	fake := filepath.Join(binDir, "claude")
-	if err := os.WriteFile(fake, []byte("#!/bin/sh\n"+coreTreeReportScript+"\n"), 0o755); err != nil {
-		t.Fatal(err)
-	}
-	t.Setenv("PATH", binDir+string(os.PathListSeparator)+os.Getenv("PATH"))
-
-	dataDir := t.TempDir()
-	r := &ariaAgentRunner{
-		cfg:     ariaAgentConfig{GatewayURL: "http://127.0.0.1:1", AgentKey: "k", Permission: "plan"},
-		dataDir: dataDir,
-	}
-	r.replyHeadless("handle", "", nil, "")
-
-	runsDir := filepath.Join(dataDir, "aria-responder-runs")
-	entries, err := os.ReadDir(runsDir)
-	if err != nil {
-		t.Fatalf("read aria-responder-runs: %v", err)
-	}
-	newest := ""
-	for _, e := range entries {
-		if e.IsDir() {
-			continue
-		}
-		if newest == "" || e.Name() > newest {
-			newest = e.Name()
-		}
-	}
-	if newest == "" {
-		t.Fatal("no aria-responder run log written")
-	}
-	raw, err := os.ReadFile(filepath.Join(runsDir, newest))
-	if err != nil {
-		t.Fatalf("read aria run log: %v", err)
-	}
-	requireGuardedTree(t, string(raw), before)
-	soft, hard := coreLimitLine(t, string(raw))
-	if soft != "1" || hard != procLimitValue(before.Max) {
-		t.Fatalf("aria headless limits soft=%q hard=%q, want soft=1 hard=%q: %q", soft, hard, procLimitValue(before.Max), string(raw))
-	}
-	requireLimitUnchanged(t, before)
-}
-
 const coreTreeReportScript = `grep 'Max core' /proc/self/limits; sh -c "grep 'Max core' /proc/self/limits"`
 
 func requireGuardedTree(t *testing.T, raw string, before syscall.Rlimit) {
@@ -402,25 +355,6 @@ func coreGuardFake(t *testing.T, binDir, name, report, body string) string {
 		t.Fatal(err)
 	}
 	return path
-}
-
-func TestCoreDumpGuardAriaRegistrationSeams(t *testing.T) {
-	before := coreDumpGuardPreconditions(t)
-	dir := t.TempDir()
-	report := filepath.Join(dir, "limits")
-	t.Setenv("HOME", t.TempDir())
-	t.Setenv("PATH", dir+":"+os.Getenv("PATH"))
-	coreGuardFake(t, dir, "claude", report, "exit 0")
-	registerClaudeMcp("http://127.0.0.1:1/fixture", "fixture")
-	unregisterClaudeMcp("fixture")
-	raw, err := os.ReadFile(report)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(coreLimitLines(string(raw))) != 6 {
-		t.Fatalf("expected remove/add/remove trees: %s", raw)
-	}
-	requireGuardedTree(t, string(raw), before)
 }
 
 // Fake Codex app-server speaks only the two boot RPCs required to start the

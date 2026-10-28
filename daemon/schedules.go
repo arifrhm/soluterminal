@@ -109,10 +109,10 @@ type Schedule struct {
 	// web dialog defaults this ON for one-time reminders (a reminder
 	// that can't reach you isn't a reminder) and OFF for recurring.
 	NotifyOnRun bool `json:"notifyOnRun,omitempty"`
-	// DeliverChat posts each successful task run's report into an Aria
-	// chat as one of the user's agents (schedules_aria.go). Task kind
-	// only — it's the report that gets delivered.
-	DeliverChat *AriaChatRef `json:"deliverChat,omitempty"`
+	// DeliverChat posts each successful task run's report into a chat through
+	// an optional delivery feature (scheduleChatDelivery, extensions.go).
+	// Task kind only — it's the report that gets delivered.
+	DeliverChat *ScheduleChatRef `json:"deliverChat,omitempty"`
 	// CatchUp: if recurring runs were missed while the daemon was off,
 	// run ONCE shortly after startup (not once per missed fire — the
 	// no-catch-up policy still holds; this is "run the nightly report I
@@ -304,10 +304,8 @@ type ScheduleStore struct {
 	// SOLU_WORKFLOW_DISABLE=1 path and tests) uses env/default caps.
 	runCaps func() agentRunCaps
 
-	// aria posts task reports into Aria chats (schedules_aria.go). Set by
-	// main.go after the responder exists; nil until then (delivery stamps
-	// a failure instead of panicking).
-	aria *AriaResponder
+	// ext holds optional features' state on the store (extSlot, extensions.go).
+	ext extState
 
 	// pusher delivers schedule-error / schedule-fired phone pushes. Set by
 	// SetPusher when cloud creds arrive, cleared on disconnect — nil means
@@ -617,14 +615,14 @@ type ScheduleInput struct {
 	PaneID   string     `json:"paneId,omitempty"`
 	Prompt   string     `json:"prompt,omitempty"`
 	// kind=task only.
-	Cwd         string       `json:"cwd,omitempty"`
-	Permission  string       `json:"permission,omitempty"`
-	Model       string       `json:"model,omitempty"`
-	TimeoutMin  int          `json:"timeoutMin,omitempty"`
-	NotifyOnRun bool         `json:"notifyOnRun,omitempty"`
-	DeliverChat *AriaChatRef `json:"deliverChat,omitempty"` // kind=task only
-	CatchUp     bool         `json:"catchUp,omitempty"`     // kind=task recurring only
-	Enabled     *bool        `json:"enabled,omitempty"`     // nil = true
+	Cwd         string           `json:"cwd,omitempty"`
+	Permission  string           `json:"permission,omitempty"`
+	Model       string           `json:"model,omitempty"`
+	TimeoutMin  int              `json:"timeoutMin,omitempty"`
+	NotifyOnRun bool             `json:"notifyOnRun,omitempty"`
+	DeliverChat *ScheduleChatRef `json:"deliverChat,omitempty"` // kind=task only
+	CatchUp     bool             `json:"catchUp,omitempty"`     // kind=task recurring only
+	Enabled     *bool            `json:"enabled,omitempty"`     // nil = true
 }
 
 func (in *ScheduleInput) validate() error {

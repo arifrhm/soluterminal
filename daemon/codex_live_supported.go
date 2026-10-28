@@ -26,6 +26,19 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// codexLiveCopy is what a live Codex pane tells its user when its login needs
+// attention. Public builds follow the user's own Codex login, so they point at
+// `codex login`; a build with saved accounts replaces these from its init
+// (codex_team_copy.go) to point at its account settings.
+var codexLiveCopy = struct {
+	signedOut, loginChanged, refreshFailed, refreshFailedCodex string
+}{
+	signedOut:          "Signed out. Run codex login in a shell, then restart this pane.",
+	loginChanged:       "This pane is using a different Codex login. Restart it to use your normal one.",
+	refreshFailed:      "Codex sign-in expired. Run codex login in a shell, then restart this pane.",
+	refreshFailedCodex: "Codex sign-in expired. Run codex login in a shell, then restart this pane.",
+}
+
 type codexLiveRPC struct {
 	conn           *websocket.Conn
 	mu             sync.Mutex
@@ -414,13 +427,13 @@ func runCodexLiveTerminal(dir, daemonURL, paneID string, argv []string, brokerOv
 				// Respect an explicit TUI logout. Do not immediately sign it back
 				// in with the same file; a new host credential revision can reconnect.
 				recovery.userInput()
-				st.State, st.Error = "signed-out", "Sign in through Credentials to reconnect this pane"
+				st.State, st.Error = "signed-out", codexLiveCopy.signedOut
 				writeStatus()
 			} else if event.AuthMode != nil && *event.AuthMode == "chatgptAuthTokens" && token.AccessToken != "" {
 				st.State, st.Error = "live", ""
 				writeStatus()
 			} else if event.AuthMode != nil {
-				st.State, st.Error = "needs-attention", "Pane login changed outside the credential manager"
+				st.State, st.Error = "needs-attention", codexLiveCopy.loginChanged
 				writeStatus()
 			}
 		case request := <-rpc.requests:
@@ -439,7 +452,7 @@ func runCodexLiveTerminal(dir, daemonURL, paneID string, argv []string, brokerOv
 			refreshCtx, refreshCancel := context.WithTimeout(ctx, 8*time.Second)
 			next, refreshErr := readCodexLiveToken(authPath)
 			if refreshErr == nil && ((previous.AccountID != "" && previous.AccountID != token.AccountID) || !codexLiveSameOwner(token, next)) {
-				refreshErr = errors.New("account switch pending; old turn cannot refresh with another identity")
+				refreshErr = errors.New("the Codex sign-in changed; this turn cannot refresh with a different sign-in")
 			}
 			if refreshErr == nil && next.Revision == token.Revision {
 				refreshErr = codexLiveRefresh(refreshCtx, daemonURL, dir, token.Revision)
@@ -452,8 +465,8 @@ func runCodexLiveTerminal(dir, daemonURL, paneID string, argv []string, brokerOv
 				refreshErr = errors.New("account changed during refresh")
 			}
 			if refreshErr != nil {
-				_ = rpc.write(map[string]any{"id": request.ID, "error": map[string]any{"code": -32000, "message": "Refresh failed; check SoluTerminal Credentials"}})
-				st.State, st.Error = "needs-attention", "Refresh failed; check Credentials"
+				_ = rpc.write(map[string]any{"id": request.ID, "error": map[string]any{"code": -32000, "message": codexLiveCopy.refreshFailedCodex}})
+				st.State, st.Error = "needs-attention", codexLiveCopy.refreshFailed
 			} else {
 				if err = rpc.write(map[string]any{"id": request.ID, "result": next}); err != nil {
 					return err

@@ -84,9 +84,6 @@ type apiServer struct {
 	// Both nil in tests that don't exercise the warden surface.
 	wardenSettings *wardenSettingsStore
 	warden         *Warden
-	// ariaResponder answers Aria comms-gateway @mentions on this machine via
-	// the user's Claude subscription (aria_responder.go). Nil in tests.
-	ariaResponder *AriaResponder
 	// relayPaneDirsForTest is TEST-ONLY (nil in production): extra directories
 	// treated like live pane cwds when building the relay file roots
 	// (files_relay_roots.go), so handler tests need no live Manager.
@@ -480,17 +477,6 @@ func (a *apiServer) routes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/update/settings", a.handleUpdateSettings)
 	mux.HandleFunc("/api/warden/settings", a.handleWardenSettings)
 
-	// Aria agent responder — reply to comms-gateway @mentions from this
-	// machine on the user's Claude plan (aria_responder.go).
-	mux.HandleFunc("GET /api/aria/responder", a.getAriaResponder)
-	mux.HandleFunc("PUT /api/aria/responder", a.putAriaResponder)
-	mux.HandleFunc("DELETE /api/aria/responder/agents/{id}", a.deleteAriaResponderAgent)
-	mux.HandleFunc("GET /api/aria/responder/chats", a.getAriaResponderChats)
-	// Loopback MCP proxy: keyless local URL → agent's gateway /mcp with the
-	// current key injected server-side (aria_mcp_proxy.go). Local-only.
-	// Match every method so optional MCP GET streams receive a deliberate 405
-	// instead of falling through to the SPA shell and reconnecting forever.
-	mux.HandleFunc("/api/aria/mcp/{name}", a.handleAriaMcpProxy)
 	mux.HandleFunc("GET /api/warden/status", a.handleWardenStatus)
 	mux.HandleFunc("POST /api/warden/run-now", a.handleWardenRunNow)
 	mux.HandleFunc("GET /api/warden/runs/{name}", a.handleWardenRunLog)

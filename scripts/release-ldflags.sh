@@ -258,7 +258,7 @@ solu_daemon_ldflags() {
   # Failed analysis aborts the build; unstamped ad-hoc builds fail closed at
   # runtime instead of inheriting compatibility from a reused version label.
   # Accept either the repo root (which contains daemon/) or the daemon module
-  # directory itself (the Docker cross-compile stage), so both layouts work.
+  # directory itself (a flat copy of the module), so both layouts work.
   runtime_root="${3:-${ROOT:-}}"
   if [ -z "$runtime_root" ]; then
     echo "error: solu_daemon_ldflags needs ROOT or an explicit repository or daemon source directory for pane runtime provenance" >&2

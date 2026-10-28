@@ -945,7 +945,7 @@ func main() {
 	// install that already carries them is recorded as "on" with a notice.
 	agentIntegration := newAgentIntegrationStore(*dataDir)
 	activeAgentIntegration.Store(agentIntegration)
-	log.Printf("agent integration: %s", bootAgentIntegration(agentIntegration, *addr, bootTeam, legacyAgentRegistrationPresent))
+	log.Printf("agent integration: %s", bootAgentIntegration(agentIntegration, *addr, bootTeam, bootTeamSource == "env", legacyAgentRegistrationPresent))
 	go ensureClaudeMcpRegistration(*addr)
 	go ensureCodexMcpRegistration(*addr)
 	scheds, err := NewScheduleStore(*dataDir, mgr, bus)
@@ -1030,30 +1030,6 @@ func main() {
 	// otherwise detects releases but can remain old indefinitely.
 	updater.autoApplyWhenIdle = updateSettings.AutoApplyWhenIdle
 
-	// Aria agent responder (opt-in, DEFAULT OFF): answers Aria comms-gateway
-	// @mentions from this machine via the user's Claude subscription. A load
-	// failure only disables the feature — never blocks daemon boot.
-	respStore, err := newAriaResponderStore(*dataDir)
-	if err != nil {
-		log.Printf("aria-responder: settings load failed (%v) — starting disabled", err)
-		respStore = &ariaResponderStore{
-			path:    filepath.Join(*dataDir, "aria_responder.json"),
-			changed: make(chan struct{}, 1),
-		}
-	}
-	ariaResponder := newAriaResponder(respStore, bus, mgr, *dataDir)
-	// The keyless MCP proxy URL panes/headless runs point at derives from the
-	// daemon's own port; set before Run() so the boot migration + reconcile
-	// see it (aria_mcp_proxy.go).
-	ariaResponder.listenAddr = *addr
-	// The responder answers the team's Aria chats; public installs never run it.
-	if bootTeam {
-		go ariaResponder.Run()
-	}
-	// Schedules may deliver task reports into Aria chats as one of the
-	// user's agents (schedules_aria.go).
-	scheds.SetAriaResponder(ariaResponder)
-
 	api := &apiServer{
 		closed:             newClosedPaneStore(*dataDir),
 		harnessAutoInstall: true,
@@ -1075,7 +1051,6 @@ func main() {
 		rollback:           rollbackStore,
 		mcpScopes:          newMcpScopeStore(),
 		wardenSettings:     wardenStore,
-		ariaResponder:      ariaResponder,
 		startT:             time.Now(),
 		ver:                version,
 		addr:               *addr,
@@ -1296,6 +1271,9 @@ func main() {
 	defer stop()
 	boot.ctx = ctx
 	go api.entitlements.run(ctx)
+	if bootTeamSource != "env" {
+		go settleAgentIntegrationVerdict(ctx, agentIntegration, *addr, cachedOperatorVerdictFresh, legacyAgentRegistrationPresent)
+	}
 	api.checkin = newInstallCheckin(*dataDir, version, api.checkinCloudBase, api.checkinSignedIn)
 	go api.checkin.run(ctx)
 	previewMgr, previewErr := newPreviewManager(*dataDir, *backendID, func() (string, string) {

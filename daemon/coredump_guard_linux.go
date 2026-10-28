@@ -158,9 +158,9 @@ func coreDumpGuardPolicy(override string, insideWSL func() bool) bool {
 //   - native muse `muse exec` turns (muse_driver.go)
 //   - scheduled headless task runs (schedules_task.go)
 //   - warden runs (warden.go)
-//   - aria headless runs (aria_responder.go)
+//   - optional features' headless runs
 //   - workflow/delegated capability probes, npm-global Playwright discovery,
-//     and Aria's Claude MCP registration commands
+//     and optional features' Claude MCP registration commands
 //
 // Only Path and Args are adapted, on the original command object. This keeps
 // its context, cancellation, WaitDelay, descriptors and process attributes.

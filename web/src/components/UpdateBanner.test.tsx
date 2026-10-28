@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useStore } from '../store';
 import type { UpdateStatus } from '../types';
 import { UpdateBanner } from './UpdateBanner';
+import { useCloud } from '../cloud';
 
 const realApplyAllUpdates = useStore.getState().applyAllUpdates;
 
@@ -299,6 +300,55 @@ describe('UpdateBanner shell auto-restart states', () => {
     await waitFor(() => expect(applyShellUpdate).toHaveBeenCalledOnce());
     expect(invoke.mock.calls.some(([command]) => command === 'plugin:opener|open_url')).toBe(false);
     expect(JSON.stringify(invoke.mock.calls)).not.toContain('github.com');
+  });
+
+  // A local daemon built with sign-in serves /api/config, so useCloud reads
+  // mode 'cloud' (isLocal). On the team channel the installer comes from that
+  // daemon alone; the app's own updater reads public releases only.
+  it('on the team channel, installs through the local daemon without the app updater', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    try {
+      const invoke = nativeFailure(() => {
+        throw new Error('the app updater must not run on the team channel');
+      });
+      const applyShellUpdate = vi.fn().mockResolvedValue(undefined);
+      useStore.setState({
+        updateStatus: {
+          current: '0.0.1202', available: false, shellLatest: '0.0.1202', shellAvailable: true, updateChannel: 'team',
+        },
+        applyShellUpdate: applyShellUpdate as never,
+        applyAllUpdates: realApplyAllUpdates,
+      });
+      render(<UpdateBanner />);
+      fireEvent.click(screen.getByRole('button', { name: 'Update now' }));
+
+      await waitFor(() => expect(applyShellUpdate).toHaveBeenCalledOnce());
+      expect(invoke.mock.calls.some(([command]) => command === 'apply_shell_update')).toBe(false);
+      expect(invoke.mock.calls.some(([command]) => command === 'plugin:opener|open_url')).toBe(false);
+    } finally {
+      useCloud.setState({ mode: 'detecting', isLocal: false });
+    }
+  });
+
+  it('falls back to the local daemon even when it serves the sign-in config', async () => {
+    useCloud.setState({ mode: 'cloud', isLocal: true });
+    try {
+      nativeFailure(() => {
+        throw new Error('update manifest is not for the public build');
+      });
+      const applyShellUpdate = vi.fn().mockResolvedValue(undefined);
+      useStore.setState({
+        updateStatus: { current: '0.0.1202', available: false, shellLatest: '0.0.1202', shellAvailable: true },
+        applyShellUpdate: applyShellUpdate as never,
+        applyAllUpdates: realApplyAllUpdates,
+      });
+      render(<UpdateBanner />);
+      fireEvent.click(screen.getByRole('button', { name: 'Update now' }));
+
+      await waitFor(() => expect(applyShellUpdate).toHaveBeenCalledOnce());
+    } finally {
+      useCloud.setState({ mode: 'detecting', isLocal: false });
+    }
   });
 
   it('opens the public download page with the reason when every automatic path fails', async () => {

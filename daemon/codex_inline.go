@@ -141,7 +141,8 @@ const codexInlinePowerShellInit = `if (-not (Get-Command codex -CommandType Alia
         }
       } catch {
         $routingCode = & ` + codexPowerShellRoutingDiagnostic + ` $_.Exception $routingEvidence.phase
-        throw ('SoluTerminal Codex routing is unavailable. Retry when SoluTerminal is online; if the selected team account is not ready, its owner must repair it. No personal-login fallback was used. [solu-routing:' + $routingCode + ']')
+        $routingHint = Get-Variable -Name SoluCodexRoutingHint -Scope Global -ValueOnly -ErrorAction SilentlyContinue
+        throw ("` + codexShellRoutingMessage + `" + $routingHint + ' [solu-routing:' + $routingCode + ']')
       }
     }
     $savedEnv = New-Object Collections.Hashtable ([StringComparer]::Ordinal)

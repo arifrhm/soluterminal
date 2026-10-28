@@ -39,65 +39,6 @@ export interface NativeSettings {
 // /api/warden/settings). Default OFF: nothing spawns until `enabled`. See
 // daemon/warden_settings.go. model '' = the account default; triageAfterMin
 // and maxRunsPerHour are clamped daemon-side (2–120, 1–30).
-// Aria agent responder (daemon/aria_responder.go) — answers Aria
-// comms-gateway @mentions from this machine on the user's Claude plan.
-// Multi-agent: `agents` is the real list; the top-level fields mirror the
-// first agent for older daemons/clients (and Aria's pairing flow).
-export interface AriaResponderSettings {
-  enabled: boolean;
-  hasKey: boolean;
-  keyPrefix?: string;
-  handle?: string; // @mention handle cached from the save-time verify
-  gatewayUrl: string;
-  permission: string;
-  model?: string;
-  paneId?: string;
-  note: string;
-  verify?: AriaResponderVerify; // present only on a PUT that changed the key
-  status?: AriaResponderStatus; // absent on older daemons
-  agents?: AriaAgent[]; // absent on pre-multi-agent daemons
-}
-
-export interface AriaAgent {
-  id: string;
-  enabled: boolean;
-  hasKey: boolean;
-  keyPrefix?: string;
-  handle?: string;
-  gatewayUrl: string;
-  permission: string;
-  model?: string;
-  paneId?: string;
-  mcpName: string;
-  status?: AriaResponderStatus;
-  verify?: AriaResponderVerify;
-}
-
-export interface AriaResponderVerify {
-  ok: boolean;
-  handle?: string;
-  mode?: string;
-  grantedChats: number;
-  error?: string;
-}
-
-export interface AriaResponderStatus {
-  state: 'disabled' | 'starting' | 'standby' | 'listening' | 'auth-failed' | 'gateway-down';
-  mode?: string;
-  handle?: string;
-  lastError?: string;
-  lastPollAt?: string;
-  lastReplyAt?: string;
-  queueLen: number;
-  activity: AriaResponderActivity[];
-}
-
-export interface AriaResponderActivity {
-  at: string;
-  kind: string; // mention|pane|headless|fallback|queued|dropped|notice|error
-  chat?: string;
-  detail?: string;
-}
 
 export interface WardenSettings {
   enabled: boolean;
@@ -601,9 +542,9 @@ export interface Schedule {
   // Phone push on every successful run (errors always push). The dialog
   // defaults this ON for one-time reminders.
   notifyOnRun?: boolean;
-  // Task-kind only: post each successful run's report into an Aria chat
-  // as one of the user's agents (daemon/schedules_aria.go).
-  deliverChat?: AriaChatRef;
+  // Task-kind only: post each successful run's report into a chat through an
+  // optional chat-delivery feature.
+  deliverChat?: ScheduleChatRef;
   // Task-kind recurring only: if runs were missed while the daemon was
   // off, run ONCE shortly after startup (not once per miss).
   catchUp?: boolean;
@@ -636,27 +577,20 @@ export interface ScheduleInput {
   model?: string;         // kind=task only
   timeoutMin?: number;    // kind=task only
   notifyOnRun?: boolean;
-  deliverChat?: AriaChatRef; // kind=task only
+  deliverChat?: ScheduleChatRef; // kind=task only
   catchUp?: boolean;      // kind=task recurring only
   enabled?: boolean;
 }
 
-// A schedule's Aria-chat delivery destination (kind=task reports).
-export interface AriaChatRef {
-  agentId?: string; // '' = first configured agent
-  source: string;   // wa | telegram | soluverse | email
+// Where a task schedule's reports go, through an optional chat-delivery
+// feature (extensions.ts scheduleChatDelivery).
+export interface ScheduleChatRef {
+  agentId?: string; // '' = the feature's first configured sender
+  source: string;   // the chat network
   chatId: string;
   chatName?: string; // display only
 }
 
-// GET /api/aria/responder/chats — per-agent granted chats, live from the
-// gateway (the schedule dialog's chat picker source).
-export interface AriaAgentChats {
-  id: string;
-  handle?: string;
-  chats: { source: string; chat_id: string; chat_name?: string; can_read?: boolean }[];
-  error?: string;
-}
 
 // One built-in runnable agent (GET /api/schedules/agents). present=false
 // (or a 404 from an older daemon) simply hides the agent option.
@@ -995,6 +929,9 @@ export interface UpdateStatus {
   workflowDeferState?: 'draining' | 'backoff' | 'publish';
   sourceSha?: string;
   sourceProvenance?: 'exact' | '';
+  // The build this install follows (daemon/update_channel.go): "team" only
+  // after a positive team verdict. Absent until the first decision.
+  updateChannel?: 'public' | 'team';
   // Tauri-shell installer channel. Empty/false when the daemon was
   // launched standalone (no --shell-version) or when there's no shell
   // installer in the manifest for this platform.

@@ -2138,6 +2138,9 @@ export async function j<T>(r: Response): Promise<T> {
 // stall rejects with a readable timeout instead of hanging. Callers that own
 // their own AbortController (e.g. usageFetch) pass a signal and opt out of this default.
 const API_FETCH_TIMEOUT_MS = 30_000;
+// POST /api/update/apply-shell: the daemon's installer download may take up to
+// 15 minutes (daemon/updater_download.go) and its launch check about 30 s more.
+export const SHELL_APPLY_TIMEOUT_MS = 16 * 60_000;
 
 async function fetchBounded(url: string, init: RequestInit, headers: Headers): Promise<Response> {
   const requestPrefix = prefix;
@@ -4865,33 +4868,6 @@ const coreApi = {
   // Full text of one Warden run (raw markdown, same dialect as task reports).
   wardenRunLog: (name: string): Promise<string> =>
     apiFetch(`/api/warden/runs/${encodeURIComponent(name)}`).then((r) => r.text()),
-  // Aria agent responder (Settings → Aria agent).
-  getAriaResponder: (): Promise<import('./types').AriaResponderSettings> =>
-    apiFetch('/api/aria/responder').then(j<import('./types').AriaResponderSettings>),
-  saveAriaResponder: (
-    body: Partial<{
-      id: string; // '' = first/default agent, 'new' = create, else an agent id
-      enabled: boolean;
-      agentKey: string;
-      gatewayUrl: string;
-      permission: string;
-      model: string;
-      paneId: string;
-    }>,
-  ): Promise<import('./types').AriaResponderSettings> =>
-    apiFetch('/api/aria/responder', {
-      method: 'PUT',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(body),
-    }).then(j<import('./types').AriaResponderSettings>),
-  deleteAriaAgent: (id: string): Promise<import('./types').AriaResponderSettings> =>
-    apiFetch(`/api/aria/responder/agents/${encodeURIComponent(id)}`, { method: 'DELETE' }).then(
-      j<import('./types').AriaResponderSettings>,
-    ),
-  // Granted chats per agent, live from the gateway — the schedule dialog's
-  // "send report to an Aria chat" picker.
-  getAriaChats: (): Promise<{ agents: import('./types').AriaAgentChats[] }> =>
-    apiFetch('/api/aria/responder/chats').then(j<{ agents: import('./types').AriaAgentChats[] }>),
   getUpdateSettings: (): Promise<UpdateSettings> =>
     apiFetch('/api/update/settings').then(j<UpdateSettings>),
   putUpdateSettings: async (body: Partial<UpdateSettings>): Promise<UpdateSettings> => {
@@ -4946,9 +4922,17 @@ const coreApi = {
   // Download + launch the Tauri-shell installer (NSIS .exe on Windows).
   // Daemon stays alive; the installer prompts for UAC, closes the app,
   // installs over it, and (per Tauri NSIS template) relaunches.
-  applyShellUpdate: (forceDowngrade = false) =>
-    apiFetch(`/api/update/apply-shell${forceDowngrade ? '?force=1' : ''}`, { method: 'POST' })
-      .then(j<{ applying: boolean; installerPath?: string }>),
+  // The daemon answers only after it downloaded the whole installer (on the
+  // team channel, streamed through the cloud) and saw it start, which can take
+  // minutes. The default 30 s bound would abort the request, and with it the
+  // daemon's download, partway through.
+  applyShellUpdate: (forceDowngrade = false) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), SHELL_APPLY_TIMEOUT_MS);
+    return apiFetch(`/api/update/apply-shell${forceDowngrade ? '?force=1' : ''}`, { method: 'POST', signal: ctrl.signal })
+      .then(j<{ applying: boolean; installerPath?: string }>)
+      .finally(() => clearTimeout(timer));
+  },
   getRollbackTargets: () =>
     apiFetch('/api/update/rollback')
       .then(j<import('./types').RollbackTargetsResponse>),

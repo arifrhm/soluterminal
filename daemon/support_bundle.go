@@ -582,6 +582,12 @@ func readSupportBundleDurableLog() (text, path, note string) {
 		return "", "", "Durable logging is disabled by SOLU_DURABLE_LOG_DIR=off."
 	}
 	if dir == "" {
+		// Without an override, the log this daemon opened at boot is the
+		// authoritative answer: a Windows daemon given a non-default --data
+		// dir logs under it, not in the shell data dir.
+		if durableLog != nil && durableLog.path != "" {
+			return readSupportBundleLogTail(durableLog.path)
+		}
 		resolved, err := soluShellDataDir()
 		if err != nil {
 			return "", "", "The daemon log directory could not be resolved."

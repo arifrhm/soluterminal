@@ -349,7 +349,7 @@ func (s *ScheduleStore) recordRun(id string, run ScheduleRun) {
 	notifyOnRun := sched.NotifyOnRun
 	wasOneTime := sched.oneTime()
 	kind := sched.kindLabel()
-	var deliverChat *AriaChatRef
+	var deliverChat *ScheduleChatRef
 	if sched.DeliverChat != nil && sched.isTask() {
 		ref := *sched.DeliverChat
 		deliverChat = &ref
@@ -422,9 +422,41 @@ func (s *ScheduleStore) recordRun(id string, run ScheduleRun) {
 		}
 	}
 
-	// Aria chat delivery — the report goes where the user already talks to
-	// their agent (schedules_aria.go). Failures stamp the run AND push.
+	// Chat delivery (an optional feature) — the report goes where the user
+	// already talks. Failures stamp the run AND push.
 	if run.Status == "fired" && deliverChat != nil {
-		go s.deliverRunToAriaChat(id, run, name, *deliverChat)
+		if scheduleChatDelivery != nil {
+			go scheduleChatDelivery(s, id, run, name, *deliverChat)
+		} else {
+			// Loud, like any failed delivery: the user picked chat delivery
+			// because they aren't watching the app.
+			go s.stampRunDetail(id, run.At, "chat ✗ delivery isn't available in this build")
+			if pusher != nil {
+				go pusher.FireSchedule(id, name, "schedule-error", "report couldn't be delivered: chat delivery isn't available in this build")
+			}
+		}
+	}
+}
+
+// stampRunDetail appends a note to an existing run record (matched by
+// timestamp) — how async delivery outcomes reach the reports reader.
+func (s *ScheduleStore) stampRunDetail(id string, at time.Time, note string) {
+	s.mu.Lock()
+	sched, ok := s.items[id]
+	if ok {
+		for i := range sched.Runs {
+			if sched.Runs[i].At.Equal(at) {
+				if sched.Runs[i].Detail != "" {
+					sched.Runs[i].Detail += " · "
+				}
+				sched.Runs[i].Detail += note
+				break
+			}
+		}
+		_ = s.saveUnlocked()
+	}
+	s.mu.Unlock()
+	if ok {
+		s.notifyChanged()
 	}
 }

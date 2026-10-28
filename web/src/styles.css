@@ -16287,7 +16287,7 @@ textarea.ap-setup-input {
   max-width: none;
 }
 
-/* Settings → Aria agent: live status card + recent-activity list */
+/* Agent responder settings: live status card + recent-activity list */
 .aria-status {
   display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
   margin: 2px 0 6px; padding: 6px 10px;
