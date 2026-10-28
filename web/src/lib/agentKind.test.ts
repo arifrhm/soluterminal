@@ -5,15 +5,19 @@ describe('agentKind helpers', () => {
   it('recognizes direct commands, paths, and Windows executables', () => {
     expect(agentFromCommand('codex --resume')).toBe('codex');
     expect(agentFromCommand(['/usr/local/bin/claude', '--resume'])).toBe('claude');
+    expect(agentFromCommand(['muse'])).toBe('muse');
     expect(agentFromCommand(['C:\\tools\\codex.exe'])).toBe('codex');
     expect(agentFromCommand(['bash', '-lc', 'codex'])).toBeNull();
+    expect(agentFromCommand(['unknown-agent'])).toBeNull();
   });
 
   it('prefers explicit identity and preserves legacy native Claude panes', () => {
     expect(effectivePaneAgent({ agent: 'codex', cmd: ['claude'], kind: 'native' })).toBe('codex');
     expect(effectivePaneAgent({ agent: 'claude', cmd: ['bash'], codexThreadId: 'stale-thread' })).toBe('claude');
+    expect(effectivePaneAgent({ agent: 'muse', cmd: ['bash'] })).toBe('muse');
     expect(effectivePaneAgent({ cmd: [], kind: 'native' })).toBe('claude');
     expect(effectivePaneAgent({ cmd: ['bash'] })).toBeNull();
+    expect(effectivePaneAgent({ cmd: ['unknown-agent'] })).toBeNull();
   });
 
   it('identifies a shell-launched Codex pane once its thread id is discovered', () => {
@@ -33,9 +37,10 @@ describe('agentKind helpers', () => {
     expect(agentFromCommand(['/bin/bash', '-lc', "printf 'codex docs'"])).toBeNull();
   });
 
-  it('provides user-facing labels', () => {
+  it('provides user-facing labels for known kinds and fallback', () => {
     expect(agentLabel('claude')).toBe('Claude');
     expect(agentLabel('codex')).toBe('Codex');
-    expect(agentLabel(null)).toBe('agent');
+    expect(agentLabel('muse')).toBe('Muse');
+    expect(agentLabel(null)).toBe('Agent');
   });
 });

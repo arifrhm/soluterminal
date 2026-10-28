@@ -41,5 +41,5 @@ export function effectivePaneAgent(
 
 export function agentLabel(agent: AgentKind | null): string {
   if (agent === 'muse') return 'Muse';
-  return agent === 'codex' ? 'Codex' : agent === 'claude' ? 'Claude' : 'agent';
+  return agent === 'codex' ? 'Codex' : agent === 'claude' ? 'Claude' : 'Agent';
 }

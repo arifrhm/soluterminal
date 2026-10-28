@@ -1580,7 +1580,7 @@ export default function App() {
         const prevAttention = st.lastAttention;
         const label = pane.title || pane.cmd[0];
         const waitingAgent = agentLabel(
-          effectivePaneAgent(pane) ?? (pane.hasCodex && !pane.hasClaude ? 'codex' : 'claude'),
+          effectivePaneAgent(pane) ?? (pane.hasCodex ? 'codex' : pane.hasClaude ? 'claude' : null),
         );
         // Shared location grammar: "<workspace> · <pane>", workspace omitted
         // when the pane isn't in a named one. Same string sw.js/FCM render.
