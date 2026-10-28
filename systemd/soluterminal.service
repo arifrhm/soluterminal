@@ -22,7 +22,7 @@ StartLimitBurst=10
 # Use --backend-id host for native Linux/macOS systemd-style installs.
 # and the daemon will also dial out to the cloud. Absent file = local only.
 EnvironmentFile=-%h/.solu/service.env
-ExecStart=%h/wsl-projects/soluterminal/solud --addr 127.0.0.1:8787 $RELAY_ARGS
+ExecStart=%h/wsl-projects/soluterminal/daemon/solud --addr 127.0.0.1:8787 $RELAY_ARGS
 Restart=always
 # 5s (was 2s) so a fast-failing startup doesn't burn the StartLimitBurst
 # in a couple of seconds, and the journal isn't spammed at 2s cadence.

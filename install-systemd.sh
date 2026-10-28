@@ -12,11 +12,12 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
+DAEMON_BIN="$ROOT/daemon/solud"
 UNIT_SRC="$ROOT/systemd/soluterminal.service"
 UNIT_DST="$HOME/.config/systemd/user/soluterminal.service"
 
-if [ ! -x "$ROOT/solud" ]; then
-  echo "error: $ROOT/solud not found. Run ./build.sh first."
+if [ ! -x "$DAEMON_BIN" ]; then
+  echo "error: $DAEMON_BIN not found. Follow the build steps in README.md first."
   exit 1
 fi
 
@@ -24,7 +25,7 @@ mkdir -p "$(dirname "$UNIT_DST")"
 cp "$UNIT_SRC" "$UNIT_DST"
 
 # Point the unit at the actual binary location (in case the repo was moved).
-sed -i "s|%h/wsl-projects/soluterminal/solud|$ROOT/solud|" "$UNIT_DST"
+sed -i -E "s|%h/wsl-projects/soluterminal/(daemon/)?solud|$DAEMON_BIN|" "$UNIT_DST"
 
 systemctl --user daemon-reload
 # Clear any prior `failed` state (e.g. a tripped start-limit from a bad
