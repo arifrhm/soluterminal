@@ -58,6 +58,48 @@ export function attachPaneImagePasteHandlers({
     } finally { release?.(); }
   };
 
+  const uploadAndInjectFile = async (file: File, valid = capture()) => {
+    if (!valid()) return;
+    const release = beginInteraction?.();
+    if (beginInteraction && !release) return;
+    try {
+      const { path } = await api.pasteFile(paneId, file, file.name, scope);
+      if (!valid()) return;
+      const ws = wsRef.current;
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        // No newline: user composes the rest manually.
+        ws.send(encoder.encode(imageInjectText(path, atMention)));
+      }
+      useStore.getState().toast(
+        `Pasted file: ${path.split(/[\\/]/).pop()}`,
+        { kind: 'info', ttlMs: 2500 },
+      );
+    } catch (err) {
+      if (!valid()) return;
+      useStore.getState().toast(
+        `Paste file failed: ${(err as Error).message}`,
+        { kind: 'error', ttlMs: 4000 },
+      );
+    } finally { release?.(); }
+  };
+
+  const firstFile = (
+    files: FileList | null | undefined,
+    items?: DataTransferItemList | null,
+  ): File | null => {
+    if (files && files.length > 0) return files[0];
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        if (it.kind === 'file') {
+          const f = it.getAsFile();
+          if (f) return f;
+        }
+      }
+    }
+    return null;
+  };
+
   const firstImageFile = (
     files: FileList | null | undefined,
     items?: DataTransferItemList | null,
@@ -158,15 +200,20 @@ export function attachPaneImagePasteHandlers({
     if (!hasFiles(e.dataTransfer)) return;
     e.preventDefault();
     e.stopPropagation();
-    const file = firstImageFile(e.dataTransfer?.files, e.dataTransfer?.items);
+    const image = firstImageFile(e.dataTransfer?.files, e.dataTransfer?.items);
+    if (image) {
+      void uploadAndInjectImage(image);
+      return;
+    }
+    const file = firstFile(e.dataTransfer?.files, e.dataTransfer?.items);
     if (!file) {
       useStore.getState().toast(
-        'Drop: no image file found',
+        'Drop: no file found',
         { kind: 'warn', ttlMs: 2500 },
       );
       return;
     }
-    void uploadAndInjectImage(file);
+    void uploadAndInjectFile(file);
   };
 
   // Attach at the host element in capture phase so we run before xterm's

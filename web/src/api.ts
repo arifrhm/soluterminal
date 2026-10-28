@@ -4059,6 +4059,20 @@ const coreApi = {
       body: blob,
     }).then(j<{ path: string; bytes: number }>),
 
+  // Upload an arbitrary non-image file. Body is the raw file bytes;
+  // daemon checks the extension from X-Filename header (allowlisted),
+  // writes it to ~/.soluterminal/pastes/ and returns the absolute path
+  // we can feed to Claude Code as `@<path>`.
+  pasteFile: (id: string, file: File | Blob, filename: string, scope?: RoutingScope) =>
+    workflowFetch(scope, `/api/panes/${id}/paste-file`, {
+      method: 'POST',
+      headers: {
+        'content-type': file.type || 'application/octet-stream',
+        'X-Filename': encodeURIComponent(filename),
+      },
+      body: file,
+    }).then(j<{ path: string; bytes: number }>),
+
   listWorkspaces: () => apiFetch('/api/workspaces').then(j<Workspace[]>),
   listWorkspaceSummaries: () => apiFetch('/api/workspaces?summary=1').then(j<WorkspaceSummary[]>),
 

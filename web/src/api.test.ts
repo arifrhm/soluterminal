@@ -27,3 +27,23 @@ describe('workflow settings revisions', () => {
     await expect(api.setWorkflowSettings({ resources: {maxAgentRuns:2} })).rejects.toMatchObject({ status: 412 });
   });
 });
+
+describe('api.pasteFile', () => {
+  it('posts file with X-Filename header and content-type', async () => {
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(JSON.stringify({ path: '/tmp/solu-paste-123.pdf', bytes: 42 }), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    const file = new Blob(['hello pdf'], { type: 'application/pdf' });
+    const res = await api.pasteFile('pane-42', file, 'test report.pdf');
+    expect(res).toEqual({ path: '/tmp/solu-paste-123.pdf', bytes: 42 });
+    expect(fetchMock).toHaveBeenCalledOnce();
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('/api/panes/pane-42/paste-file');
+    expect(init?.method).toBe('POST');
+    const headers = new Headers(init?.headers);
+    expect(headers.get('content-type')).toBe('application/pdf');
+    expect(headers.get('x-filename')).toBe('test%20report.pdf');
+    expect(init?.body).toBe(file);
+  });
+});

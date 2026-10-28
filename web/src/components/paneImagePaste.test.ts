@@ -3,8 +3,8 @@ import { attachPaneImagePasteHandlers, imageInjectText } from './paneImagePaste'
 
 const { toastMock } = vi.hoisted(() => ({ toastMock: vi.fn() }));
 vi.mock('../store', () => ({ useStore: { getState: () => ({ toast: toastMock }) } }));
-const { pasteMock } = vi.hoisted(() => ({ pasteMock: vi.fn() }));
-vi.mock('../api', () => ({ api: { pasteImage: pasteMock } }));
+const { pasteMock, pasteFileMock } = vi.hoisted(() => ({ pasteMock: vi.fn(), pasteFileMock: vi.fn() }));
+vi.mock('../api', () => ({ api: { pasteImage: pasteMock, pasteFile: pasteFileMock } }));
 
 if (typeof WebSocket === 'undefined' || (WebSocket as unknown as { OPEN?: number }).OPEN !== 1) {
   (globalThis as Record<string, unknown>).WebSocket = { OPEN: 1 };
@@ -24,7 +24,9 @@ function itemList(files: File[]): DataTransferItemList {
 }
 
 const png = () => new File(['x'], 'a.png', { type: 'image/png' });
+const pdf = () => new File(['x'], 'report.pdf', { type: 'application/pdf' });
 const PATH = '/home/u/.soluterminal/pastes/solu-paste-abc.png';
+const FILE_PATH = '/home/u/.soluterminal/pastes/solu-paste-xyz.pdf';
 
 function setup(atMention?: boolean) {
   const host = document.createElement('div');
@@ -50,9 +52,18 @@ function pasteImage(host: HTMLElement): boolean {
   return host.dispatchEvent(event);
 }
 
+function dropItem(host: HTMLElement, files: File[]): boolean {
+  const event = new Event('drop', { bubbles: true, cancelable: true });
+  Object.defineProperty(event, 'dataTransfer', {
+    value: { files: fileList(files), items: itemList(files), types: ['Files'] },
+  });
+  return host.dispatchEvent(event);
+}
+
 beforeEach(() => {
   vi.clearAllMocks();
   pasteMock.mockResolvedValue({ path: PATH, bytes: 1 });
+  pasteFileMock.mockResolvedValue({ path: FILE_PATH, bytes: 10 });
 });
 
 describe('imageInjectText', () => {
@@ -124,6 +135,56 @@ describe('image upload interaction lease', () => {
       expect(release).not.toHaveBeenCalled();
       rejectUpload(new Error('fixture upload failed'));
       await vi.waitFor(() => expect(release).toHaveBeenCalledOnce());
+    } finally { cleanup(); }
+  });
+});
+
+describe('pane file drop handling', () => {
+  it('uploads and injects @path when a non-image file is dropped', async () => {
+    const { host, send, cleanup } = setup();
+    try {
+      const file = pdf();
+      expect(dropItem(host, [file])).toBe(false);
+      await vi.waitFor(() => expect(pasteFileMock).toHaveBeenCalledOnce());
+      expect(pasteFileMock).toHaveBeenCalledWith('pane-1', file, 'report.pdf', undefined);
+      await vi.waitFor(() => expect(send).toHaveBeenCalledOnce());
+      expect(new TextDecoder().decode(send.mock.calls[0][0] as Uint8Array)).toBe(`@${FILE_PATH} `);
+      expect(toastMock).toHaveBeenCalledWith('Pasted file: solu-paste-xyz.pdf', expect.any(Object));
+    } finally { cleanup(); }
+  });
+
+  it('uploads via pasteImage when an image is dropped', async () => {
+    const { host, send, cleanup } = setup();
+    try {
+      const file = png();
+      expect(dropItem(host, [file])).toBe(false);
+      await vi.waitFor(() => expect(pasteMock).toHaveBeenCalledOnce());
+      expect(pasteMock).toHaveBeenCalledWith('pane-1', file, undefined);
+      await vi.waitFor(() => expect(send).toHaveBeenCalledOnce());
+      expect(new TextDecoder().decode(send.mock.calls[0][0] as Uint8Array)).toBe(`@${PATH} `);
+      expect(toastMock).toHaveBeenCalledWith('Pasted image: solu-paste-abc.png', expect.any(Object));
+    } finally { cleanup(); }
+  });
+
+  it('toasts error when dropping a non-image file fails', async () => {
+    pasteFileMock.mockRejectedValueOnce(new Error('unsupported file type'));
+    const { host, send, cleanup } = setup();
+    try {
+      dropItem(host, [pdf()]);
+      await vi.waitFor(() => expect(toastMock).toHaveBeenCalledOnce());
+      expect(toastMock.mock.calls[0][0]).toMatch(/Paste file failed: unsupported file type/);
+      expect(send).not.toHaveBeenCalled();
+    } finally { cleanup(); }
+  });
+
+  it('toasts warning when drop event has no files', async () => {
+    const { host, send, cleanup } = setup();
+    try {
+      dropItem(host, []);
+      await vi.waitFor(() => expect(toastMock).toHaveBeenCalledOnce());
+      expect(toastMock.mock.calls[0][0]).toMatch(/Drop: no file found/);
+      expect(pasteFileMock).not.toHaveBeenCalled();
+      expect(send).not.toHaveBeenCalled();
     } finally { cleanup(); }
   });
 });
