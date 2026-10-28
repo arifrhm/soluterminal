@@ -46,6 +46,10 @@ const (
 	entitlementsRefreshEvery = 15 * time.Minute
 	entitlementsHTTPTimeout  = 6 * time.Second
 	entitlementsAccountHdr   = "X-Solu-Account-Token"
+	// entitlementsTeamUpdatesMaxAge bounds how long a cached team update
+	// path counts without a fresh answer (a connected install refreshes
+	// every entitlementsRefreshEvery).
+	entitlementsTeamUpdatesMaxAge = 7 * 24 * time.Hour
 )
 
 // teamOnlyPrefixes are the daemon routes refused to installs without the team
@@ -83,6 +87,13 @@ type entitlementRecord struct {
 	Source         string    `json:"source"`
 	Subject        string    `json:"subject,omitempty"`
 	CheckedAt      time.Time `json:"checkedAt"`
+	// TeamUpdates is the team update endpoint path the paired cloud named in
+	// this answer (team_updates.go), and TeamUpdatesOrigin that cloud's
+	// origin. Both are kept only from a machine-token answer with a team
+	// verdict, and the path counts only for the same origin
+	// (cloudTeamUpdatesPath).
+	TeamUpdates       string `json:"teamUpdates,omitempty"`
+	TeamUpdatesOrigin string `json:"teamUpdatesOrigin,omitempty"`
 }
 
 type teamEntitlements struct {
@@ -90,6 +101,9 @@ type teamEntitlements struct {
 	path       string
 	record     entitlementRecord
 	refreshing bool
+	// answered is true once this process stored a cloud answer: a record
+	// loaded from disk at boot may be stale, whatever its CheckedAt says.
+	answered bool
 
 	cloud       func() (base, token string)
 	accountBase func() string
@@ -97,6 +111,10 @@ type teamEntitlements struct {
 	now         func() time.Time
 	// onChange runs after a stored verdict changes (the web re-reads it).
 	onChange func()
+	// credsChanged, when set, returns a channel closed on the next change of
+	// the cloud credentials, so run() asks the cloud as soon as a machine is
+	// paired instead of on its next timer.
+	credsChanged func() <-chan struct{}
 }
 
 func newTeamEntitlements(dataDir string, cloud func() (string, string)) *teamEntitlements {
@@ -250,8 +268,10 @@ func (e *teamEntitlements) operatorVerdict() (bool, string) {
 
 func (e *teamEntitlements) store(rec entitlementRecord) {
 	e.mu.Lock()
-	changed := e.record.Team != rec.Team || e.record.operatorFlag() != rec.operatorFlag() || e.record.Tier != rec.Tier || e.record.Source != rec.Source || e.record.Subject != rec.Subject
+	changed := e.record.Team != rec.Team || e.record.operatorFlag() != rec.operatorFlag() || e.record.Tier != rec.Tier || e.record.Source != rec.Source || e.record.Subject != rec.Subject ||
+		e.record.TeamUpdates != rec.TeamUpdates || e.record.TeamUpdatesOrigin != rec.TeamUpdatesOrigin
 	e.record = rec
+	e.answered = true
 	e.mu.Unlock()
 	b, err := json.Marshal(rec)
 	if err == nil {
@@ -261,7 +281,7 @@ func (e *teamEntitlements) store(rec entitlementRecord) {
 		log.Printf("entitlements: persist failed: %v", err)
 	}
 	if changed {
-		log.Printf("entitlements: team=%t operator=%t tier=%s source=%s", rec.Team, rec.operatorFlag(), rec.normalizedTier(), rec.Source)
+		log.Printf("entitlements: team=%t operator=%t tier=%s source=%s teamUpdates=%t", rec.Team, rec.operatorFlag(), rec.normalizedTier(), rec.Source, rec.TeamUpdates != "")
 		if e.onChange != nil {
 			e.onChange()
 		}
@@ -277,6 +297,9 @@ type cloudVerdict struct {
 	Operator       *bool  `json:"operator"`
 	Tier           string `json:"tier"`
 	SmartApprovals bool   `json:"smartApprovals"`
+	// TeamUpdates is the team update endpoint path, named only to a team
+	// machine (cloud team_gate.go).
+	TeamUpdates string `json:"teamUpdates"`
 }
 
 // fetch asks the cloud for this bearer's entitlements. A 404 means an older
@@ -316,6 +339,48 @@ func recordFromVerdict(v cloudVerdict, source, subject string, at time.Time) ent
 	return rec
 }
 
+// withTeamUpdates keeps the team update path a machine-token answer from
+// cloudBase named, when it may ever be used: a team verdict, a valid path
+// (never a URL), and a cloud the token may travel to. Anything else is
+// dropped, so the record carries no path.
+func (rec entitlementRecord) withTeamUpdates(path, cloudBase string) entitlementRecord {
+	rec.TeamUpdates, rec.TeamUpdatesOrigin = "", ""
+	path = strings.TrimSpace(path)
+	origin := teamUpdatesOrigin(cloudBase)
+	if rec.Source != "machine" || !rec.Team || rec.normalizedTier() != tierTeam || origin == "" || !validTeamUpdatesPath(path) {
+		return rec
+	}
+	rec.TeamUpdates, rec.TeamUpdatesOrigin = path, origin
+	return rec
+}
+
+// cloudTeamUpdatesPath is the team update endpoint path for the paired cloud
+// cloudBase, or "". It counts only when that same cloud named it in a
+// machine-token answer with a team verdict no older than
+// entitlementsTeamUpdatesMaxAge: a path from another cloud (the machine was
+// re-paired), a non-team verdict, an account answer, or an old one never
+// sends the machine token anywhere.
+func (e *teamEntitlements) cloudTeamUpdatesPath(cloudBase string) string {
+	if e == nil {
+		return ""
+	}
+	origin := teamUpdatesOrigin(cloudBase)
+	e.mu.Lock()
+	rec := e.record
+	now := e.now
+	e.mu.Unlock()
+	if origin == "" || rec.CheckedAt.IsZero() || rec.Source != "machine" || !rec.Team || rec.normalizedTier() != tierTeam {
+		return ""
+	}
+	if now != nil && now().Sub(rec.CheckedAt) > entitlementsTeamUpdatesMaxAge {
+		return ""
+	}
+	if rec.TeamUpdatesOrigin != origin || !validTeamUpdatesPath(rec.TeamUpdates) {
+		return ""
+	}
+	return strings.TrimSpace(rec.TeamUpdates)
+}
+
 // refresh updates the cached verdict. The machine identity wins when paired;
 // otherwise the signed-in account's token (if the web forwarded one) is used.
 func (e *teamEntitlements) refresh(ctx context.Context, accountToken string) {
@@ -326,7 +391,7 @@ func (e *teamEntitlements) refresh(ctx context.Context, accountToken string) {
 	if base != "" && machineToken != "" {
 		v, err := e.fetch(ctx, base, machineToken)
 		if err == nil {
-			e.store(recordFromVerdict(v, "machine", "", e.now()))
+			e.store(recordFromVerdict(v, "machine", "", e.now()).withTeamUpdates(v.TeamUpdates, base))
 		} else if !errors.Is(err, errEntitlementsUnsupported) {
 			log.Printf("entitlements: machine check failed: %v", err)
 		}
@@ -383,6 +448,12 @@ const entitlementsFirstVerdictRetry = 30 * time.Second
 
 func (e *teamEntitlements) run(ctx context.Context) {
 	for {
+		// Taken before the refresh so a pairing that lands during it still
+		// wakes the next wait.
+		var credsChanged <-chan struct{}
+		if e.credsChanged != nil {
+			credsChanged = e.credsChanged()
+		}
 		e.refresh(ctx, "")
 		wait := entitlementsRefreshEvery
 		e.mu.Lock()
@@ -390,10 +461,18 @@ func (e *teamEntitlements) run(ctx context.Context) {
 			wait = entitlementsFirstVerdictRetry
 		}
 		e.mu.Unlock()
+		timer := time.NewTimer(wait)
 		select {
 		case <-ctx.Done():
+			timer.Stop()
 			return
-		case <-time.After(wait):
+		case <-timer.C:
+		case <-credsChanged:
+			// Paired, re-paired or disconnected: ask now. At boot the cloud
+			// credentials arrive after this loop starts, so without this a
+			// cached verdict (and its team update path) waited a full
+			// refresh interval.
+			timer.Stop()
 		}
 	}
 }
@@ -598,6 +677,31 @@ func cachedOperatorVerdict() (on, ok bool) {
 	}
 	on, _ = ent.operatorVerdict()
 	return on, true
+}
+
+// cachedOperatorVerdictFresh is cachedOperatorVerdict plus whether the
+// verdict is fresh: the cloud answered during this daemon's run, or an env
+// override set it. A record loaded from disk at boot (possibly stale, e.g. a
+// machine restored from an old backup or a verdict another daemon wrote) is
+// not fresh until the cloud answers, whatever its CheckedAt says (a clock
+// correction between boots can put that in the future). The verdict and its
+// freshness come from one locked snapshot.
+func cachedOperatorVerdictFresh() (on, ok, fresh bool) {
+	ent := jevEntitlementsRef.Load()
+	if ent == nil {
+		return false, false, false
+	}
+	if on, set := envOperatorOverride(); set {
+		return on, true, true
+	}
+	ent.mu.Lock()
+	rec, answered := ent.record, ent.answered
+	ent.mu.Unlock()
+	if rec.CheckedAt.IsZero() {
+		on, _ = ent.verdict()
+		return on, true, false
+	}
+	return rec.operatorFlag(), true, answered
 }
 
 // teamCloudLLMAllowed reports whether calls to the operator-only cloud LLM

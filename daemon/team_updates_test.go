@@ -56,26 +56,26 @@ func TestUnstampedBuildHasNoTeamEndpoint(t *testing.T) {
 	if teamUpdatesPath != "" || teamUpdatesConfigured() {
 		t.Fatalf("an unstamped build has the team endpoint %q", teamUpdatesPath)
 	}
-	if _, viaCloud, ok := channelSource(releases.FlavorTeam); ok || viaCloud {
+	if _, viaCloud, ok := channelSource(releases.FlavorTeam, teamUpdatesConfigured()); ok || viaCloud {
 		t.Fatal("an unstamped build has a team update source")
 	}
-	if teamUpdatesManifestURL(testTeamCloud) != "" {
+	if teamUpdatesManifestURL(testTeamCloud, teamUpdatesPath) != "" {
 		t.Fatal("an unstamped build builds team URLs")
 	}
 }
 
 func TestTeamUpdatesURLs(t *testing.T) {
 	setTeamUpdatesPath(t, testTeamUpdatesPath)
-	if got := teamUpdatesManifestURL(testTeamCloud + "/"); got != "https://cloud.test/api/test-team-updates/releases/latest/download/update.json" {
+	if got := teamUpdatesManifestURL(testTeamCloud+"/", testTeamUpdatesPath); got != "https://cloud.test/api/test-team-updates/releases/latest/download/update.json" {
 		t.Fatalf("manifest URL = %q", got)
 	}
 	for _, ok := range []string{"http://127.0.0.1:8080", "http://localhost:8080", "http://[::1]:8080"} {
-		if teamUpdatesBase(ok) == "" {
+		if teamUpdatesBase(ok, testTeamUpdatesPath) == "" {
 			t.Errorf("loopback cloud %q refused", ok)
 		}
 	}
 	for _, bad := range []string{"", "cloud.test", "ftp://cloud.test", "https://cloud.test/x", "https://cloud.test?q=1", "https://", "http://cloud.test", "http://10.0.0.5:8080"} {
-		if got := teamUpdatesBase(bad); got != "" {
+		if got := teamUpdatesBase(bad, testTeamUpdatesPath); got != "" {
 			t.Errorf("cloud %q gave base %q", bad, got)
 		}
 	}
@@ -91,7 +91,7 @@ func TestTeamUpdatesURLs(t *testing.T) {
 		"https://github.com/owner/team-releases/releases/download/v3.0.0/solud-linux-amd64":                "https://cloud.test/api/test-team-updates/releases/download/v3.0.0/solud-linux-amd64",
 		"https://github.com/owner/team-releases/releases/download/v2.9.0/soluterminal_2.9.0_x64-setup.exe": "https://cloud.test/api/test-team-updates/releases/download/v2.9.0/soluterminal_2.9.0_x64-setup.exe",
 	} {
-		got, ok := teamAssetURL(raw, testTeamCloud)
+		got, ok := teamAssetURL(raw, testTeamCloud, testTeamUpdatesPath)
 		if !ok || got != want {
 			t.Errorf("teamAssetURL(%s) = %q %v, want %q", raw, got, ok, want)
 		}
@@ -106,7 +106,7 @@ func TestTeamUpdatesURLs(t *testing.T) {
 		"https://github.com/o/r/releases/download/../x",
 		"https://evil.test/o/r/releases/download/v1/x",
 	} {
-		if got, ok := teamAssetURL(raw, testTeamCloud); ok {
+		if got, ok := teamAssetURL(raw, testTeamCloud, testTeamUpdatesPath); ok {
 			t.Errorf("teamAssetURL(%s) mapped to %q", raw, got)
 		}
 	}
@@ -157,7 +157,7 @@ func TestTeamChannelUpdatesThroughTheCloud(t *testing.T) {
 	priv := flavorKey(t)
 	rt := &recordingRoundTripper{bodies: map[string][]byte{}}
 	u := teamCloudUpdater(t, rt)
-	base := teamUpdatesBase(testTeamCloud)
+	base := teamUpdatesBase(testTeamCloud, testTeamUpdatesPath)
 	serveRelease(rt.bodies, priv, base+"releases/", releases.FlavorTeam, "3.0.0")
 	st, err := u.Check(context.Background())
 	if err != nil {
@@ -198,7 +198,7 @@ func TestTeamChannelRefusesAPublicManifestFromTheCloud(t *testing.T) {
 	priv := flavorKey(t)
 	rt := &recordingRoundTripper{bodies: map[string][]byte{}}
 	u := teamCloudUpdater(t, rt)
-	serveRelease(rt.bodies, priv, teamUpdatesBase(testTeamCloud)+"releases/", releases.FlavorPublic, "3.0.0")
+	serveRelease(rt.bodies, priv, teamUpdatesBase(testTeamCloud, testTeamUpdatesPath)+"releases/", releases.FlavorPublic, "3.0.0")
 	_, err := u.Check(context.Background())
 	var fe *manifestFlavorError
 	if !errors.As(err, &fe) {
@@ -258,7 +258,7 @@ func TestTeamChannelStaysPutWhenTheCloudCannotServeIt(t *testing.T) {
 				t.Fatalf("status = %+v", st)
 			}
 			for _, url := range rt.seen {
-				if !strings.HasPrefix(url, teamUpdatesBase(testTeamCloud)) {
+				if !strings.HasPrefix(url, teamUpdatesBase(testTeamCloud, testTeamUpdatesPath)) {
 					t.Fatalf("fell back to %s", url)
 				}
 			}

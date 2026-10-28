@@ -251,10 +251,14 @@ func (u *Updater) syncChannel() {
 	if rec == nil {
 		return
 	}
+	// Read before taking u.mu: the path may come from the entitlements
+	// cache, which has its own lock.
+	_, teamPath := u.teamUpdatesSource()
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	if rec.Channel == u.channel {
 		u.status.UpdateChannel = rec.Channel
+		u.channelWaiting = ""
 		return
 	}
 	if u.shellApplying || u.swapped || (u.restartGate != nil && u.restartGate.Load()) {
@@ -268,17 +272,24 @@ func (u *Updater) syncChannel() {
 	url, viaCloud := u.manifestURL, false
 	if !u.manifestURLOverride {
 		var ok bool
-		url, viaCloud, ok = channelSource(rec.Channel)
+		url, viaCloud, ok = channelSource(rec.Channel, teamPath != "")
 		if !ok {
-			// This build has no source for that channel (a team account on
-			// a public build, which has no team update endpoint). Keep
-			// following the current channel rather than stranding the
-			// install with nothing to poll.
+			// This build has no source for that channel yet: a team account
+			// on a public build whose paired cloud has not named its team
+			// update endpoint (the first fresh entitlements answer does, a
+			// few seconds after pairing). Keep following the current
+			// channel rather than stranding the install with nothing to
+			// poll; the next check switches once the source exists.
+			if u.channelWaiting != rec.Channel {
+				u.channelWaiting = rec.Channel
+				log.Printf("auto-update: the %s channel is chosen (reason %s); this build waits for the paired cloud to name its %s update source, and keeps following %s until then", rec.Channel, rec.Reason, rec.Channel, u.channel)
+			}
 			return
 		}
 	}
 	prev := u.channel
 	u.channel = rec.Channel
+	u.channelWaiting = ""
 	u.status.UpdateChannel = rec.Channel
 	u.manifestURL = url
 	u.teamViaCloud = viaCloud

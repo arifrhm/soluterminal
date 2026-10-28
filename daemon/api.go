@@ -394,6 +394,17 @@ func (a *apiServer) ccCloudCreds() (base, token string) {
 	return a.ccCloudBase, a.ccCloudToken
 }
 
+// cloudCredsChangedCh returns a channel closed on the next change of the
+// cloud credentials (pairing, rotation, Disconnect).
+func (a *apiServer) cloudCredsChangedCh() <-chan struct{} {
+	a.cloudMu.Lock()
+	defer a.cloudMu.Unlock()
+	if a.cloudCredsChanged == nil {
+		a.cloudCredsChanged = make(chan struct{})
+	}
+	return a.cloudCredsChanged
+}
+
 // notifyCloudCredsChangedLocked wakes everything waiting on a.cloudCredsChanged
 // (pairing, rotation, Disconnect). Callers hold cloudMu.
 func (a *apiServer) notifyCloudCredsChangedLocked() {

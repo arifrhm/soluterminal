@@ -151,7 +151,7 @@ func TestPublicSourceNeverSpellsTheTeamMarker(t *testing.T) {
 func TestEachFlavourPollsOnlyItsOwnSource(t *testing.T) {
 	setTeamUpdatesPath(t, testTeamUpdatesPath)
 	t.Setenv("SOLU_UPDATE_MANIFEST_URL", "")
-	teamBase := teamUpdatesBase(testTeamCloud)
+	teamBase := teamUpdatesBase(testTeamCloud, testTeamUpdatesPath)
 	for _, tc := range []struct {
 		stamp, flavor, base string
 	}{

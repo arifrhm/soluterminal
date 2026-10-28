@@ -12,7 +12,9 @@ package main
 //  1. where the updater looks: the public channel reads the public releases
 //     repo (shared/releases/repo.txt); the team channel reads the team
 //     build's releases through the SoluTerminal cloud (team_updates.go), with
-//     this machine's token, because the team releases repo is private;
+//     this machine's token, because the team releases repo is private. A
+//     public build reads the team channel too, once the paired cloud has
+//     confirmed the machine is on a team and named the endpoint;
 //  2. what it accepts: the signed update.json names the flavour it was
 //     published for ("flavor"), and the updater refuses any manifest whose
 //     flavour is missing or is not the install's channel, on every path that
@@ -54,13 +56,14 @@ func currentBuildFlavor() string {
 // (no SOLU_UPDATE_MANIFEST_URL override): the public releases repo's latest
 // alias for the public channel; for the team channel, the cloud's team
 // update endpoint (viaCloud, URL derived per request from the cloud
-// credentials, team_updates.go). ok is false when this build has no source
-// for channel: a build without the team endpoint (every public build) never
-// polls the team channel, and never falls back to the public one.
-func channelSource(channel string) (url string, viaCloud, ok bool) {
+// credentials, team_updates.go). haveTeamPath reports that the install has
+// an endpoint path for its paired cloud (Updater.teamUpdatesPathFor: the
+// team build's stamp, or the path that cloud named in its team answer). ok is
+// false when there is no source for channel: without a team path the build
+// never polls the team channel, and never falls back to the public one.
+func channelSource(channel string, haveTeamPath bool) (url string, viaCloud, ok bool) {
 	if releases.NormalizeFlavor(channel) == releases.FlavorTeam {
-		configured := teamUpdatesConfigured()
-		return "", configured, configured
+		return "", haveTeamPath, haveTeamPath
 	}
 	if releases.Repo == "" {
 		return "", false, false

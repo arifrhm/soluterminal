@@ -47,11 +47,11 @@ func (u *Updater) download(ctx context.Context, url, wantHex, dstPath string) er
 	// GitHub URLs; the bytes come through the cloud instead (team_updates.go).
 	// The SHA-256 check below is unchanged.
 	if u.teamViaCloudNow() {
-		base, _ := u.cloudCreds()
-		if base == "" {
-			return errTeamUpdatesNoCloud
+		base, path := u.teamUpdatesSource()
+		if base == "" || path == "" {
+			return u.teamUpdatesUnavailable()
 		}
-		if mapped, ok := teamAssetURL(url, base); ok {
+		if mapped, ok := teamAssetURL(url, base, path); ok {
 			url = mapped
 		}
 	}

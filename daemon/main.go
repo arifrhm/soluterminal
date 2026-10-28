@@ -1248,6 +1248,11 @@ func main() {
 	updater.channelEvidence = func() channelEvidence {
 		return entitlementChannelEvidence(api.entitlements)
 	}
+	// A public build has no team update path of its own: it uses the one the
+	// paired cloud names in its team answer, for that cloud only
+	// (team_updates.go). A team build keeps its stamp.
+	updater.SetCloudTeamUpdates(api.entitlements.cloudTeamUpdatesPath)
+	api.entitlements.credsChanged = api.cloudCredsChangedCh
 	api.agentAuthority = newAgentAuthority(*dataDir)
 	api.trustedDevices = newTrustedDevices(*dataDir)
 	// Reminder names already mirrored to the cloud are replaced as soon as

@@ -277,6 +277,9 @@ type Updater struct {
 	// is read through the paired cloud (team_updates.go): manifestURL is then
 	// unused and every URL derives from the cloud credentials.
 	teamViaCloud bool
+	// channelWaiting is a stored channel this build has no source for yet
+	// (logged once per wait, syncChannel in update_channel.go).
+	channelWaiting string
 	// channel is the install's update channel (update_channel.go): every
 	// manifest the updater trusts must be signed for it. It starts as the
 	// build's initial channel and follows channelStore once main wires it.
@@ -473,6 +476,8 @@ type Updater struct {
 	cloudCredsMu sync.Mutex
 	cloudBase    string
 	cloudToken   string
+	// cloudTeamUpdates is SetCloudTeamUpdates' seam (nil: stamp only).
+	cloudTeamUpdates func(cloudBase string) string
 
 	// localFloor is a machine-local min_daemon_version armed at boot when the
 	// running binary is OLDER than its own version marker — i.e. something
@@ -535,7 +540,9 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	override := url != ""
 	viaCloud := false
 	if !override {
-		url, viaCloud, _ = channelSource(channel)
+		// Only the stamp is known this early; a path the cloud names is
+		// picked up by syncChannel on the first Check.
+		url, viaCloud, _ = channelSource(channel, teamUpdatesConfigured())
 	}
 	// Backward compat: if no explicit shell platform was passed, infer
 	// it. Old Tauri shells (pre-v0.0.330) don't pass --shell-platform,
@@ -593,7 +600,7 @@ func NewUpdater(current, shellCurrent, shellPlatform string, bus *uiBus, metrics
 	}
 	// The machine token rides only on requests for the paired cloud's team
 	// update endpoint (team_updates.go).
-	u.httpClient = &http.Client{Transport: &teamUpdatesAuth{next: transport, creds: u.cloudCreds}, Timeout: 20 * time.Second}
+	u.httpClient = &http.Client{Transport: &teamUpdatesAuth{next: transport, creds: u.cloudCreds, path: u.teamUpdatesPathFor}, Timeout: 20 * time.Second}
 	return u
 }
 
@@ -1146,6 +1153,50 @@ func (u *Updater) cloudCreds() (string, string) {
 	u.cloudCredsMu.Lock()
 	defer u.cloudCredsMu.Unlock()
 	return u.cloudBase, u.cloudToken
+}
+
+// SetCloudTeamUpdates wires the team update endpoint path the paired cloud
+// named in its own team answer (teamEntitlements.cloudTeamUpdatesPath). fn
+// gets the paired cloud base and returns "" unless that very cloud named
+// the path. A team build ignores it and keeps its stamp.
+func (u *Updater) SetCloudTeamUpdates(fn func(cloudBase string) string) {
+	u.cloudCredsMu.Lock()
+	u.cloudTeamUpdates = fn
+	u.cloudCredsMu.Unlock()
+}
+
+// teamUpdatesPathFor is the team update endpoint path for the paired cloud
+// cloudBase: the team build's stamp, else the path that cloud itself named
+// (validated again here), else "".
+func (u *Updater) teamUpdatesPathFor(cloudBase string) string {
+	if teamUpdatesConfigured() {
+		return strings.TrimSpace(teamUpdatesPath)
+	}
+	u.cloudCredsMu.Lock()
+	fn := u.cloudTeamUpdates
+	u.cloudCredsMu.Unlock()
+	if fn == nil || teamUpdatesOrigin(cloudBase) == "" {
+		return ""
+	}
+	if p := strings.TrimSpace(fn(cloudBase)); validTeamUpdatesPath(p) {
+		return p
+	}
+	return ""
+}
+
+// teamUpdatesSource is the paired cloud base and its endpoint path ("" when
+// there is none).
+func (u *Updater) teamUpdatesSource() (base, path string) {
+	base, _ = u.cloudCreds()
+	return base, u.teamUpdatesPathFor(base)
+}
+
+// teamUpdatesUnavailable says why the team channel has nowhere to ask.
+func (u *Updater) teamUpdatesUnavailable() error {
+	if base, _ := u.cloudCreds(); strings.TrimSpace(base) == "" {
+		return errTeamUpdatesNoCloud
+	}
+	return errTeamUpdatesNoSource
 }
 
 // reportApplyFailureAsync fires a fire-and-forget update-FAILURE report to the

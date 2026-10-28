@@ -83,7 +83,7 @@ func (u *Updater) fetchManifest(ctx context.Context) (*Manifest, error) {
 		// paired cloud there is nowhere to ask; either way the install stays
 		// on its version and never falls back to the public repo.
 		if u.manifestURLNow() == "" {
-			return nil, errTeamUpdatesNoCloud
+			return nil, u.teamUpdatesUnavailable()
 		}
 		m, err := u.fetchManifestResolveThenPin(ctx)
 		return m, teamUpdatesError(err)
@@ -243,8 +243,9 @@ func (u *Updater) fetchUpdateAsset(ctx context.Context, assetURL string, notFoun
 
 // manifestURLNow is the current channel's manifest URL. syncChannel can
 // change it, so fetches read it under the lock. On the team channel through
-// the cloud it is derived from the paired cloud's origin ("" while there is
-// none), so pairing or a new cloud takes effect on the next check.
+// the cloud it is derived from the paired cloud's origin and that cloud's
+// endpoint path ("" while either is missing), so pairing or a new cloud
+// takes effect on the next check.
 func (u *Updater) manifestURLNow() string {
 	u.mu.Lock()
 	url, viaCloud := u.manifestURL, u.teamViaCloud
@@ -252,8 +253,7 @@ func (u *Updater) manifestURLNow() string {
 	if !viaCloud {
 		return url
 	}
-	base, _ := u.cloudCreds()
-	return teamUpdatesManifestURL(base)
+	return teamUpdatesManifestURL(u.teamUpdatesSource())
 }
 
 // teamViaCloudNow reports that the current channel is the team channel read

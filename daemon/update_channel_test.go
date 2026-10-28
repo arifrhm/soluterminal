@@ -187,7 +187,7 @@ func TestUpdaterFollowsTheChannelAcrossSources(t *testing.T) {
 	setBuildFlavorStamp(t, "solu-build-flavor=public")
 	priv := flavorKey(t)
 	bodies := map[string][]byte{}
-	teamReleases := teamUpdatesBase(testTeamCloud) + "releases/"
+	teamReleases := teamUpdatesBase(testTeamCloud, testTeamUpdatesPath) + "releases/"
 	serveRelease(bodies, priv, releases.ReleasesBase(releases.Repo), releases.FlavorPublic, "2.0.0")
 	serveRelease(bodies, priv, teamReleases, releases.FlavorTeam, "3.0.0")
 	sources := map[string]string{releases.FlavorPublic: releases.ReleasesBase(releases.Repo), releases.FlavorTeam: teamReleases}
